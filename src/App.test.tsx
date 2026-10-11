@@ -34,8 +34,22 @@ describe("RL Field Guide", () => {
     await user.click(screen.getByRole("button", { name: "Run one sweep" }));
 
     expect(screen.getByText("Pass 1")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "State S5, value 10" })).toBeInTheDocument();
+    const goalSignalState = screen.getByRole("button", { name: "State S5, value 10" });
+    const stepCostOnlyState = screen.getByRole("button", { name: "State S4, value -1" });
+    expect(goalSignalState).toHaveAttribute("data-signal", "true");
+    expect(stepCostOnlyState).toHaveAttribute("data-signal", "false");
     expect(screen.getByText("Terminal transitions stop here. No bootstrap is added.")).toBeInTheDocument();
+  });
+
+  it("connects every solution and explanation tab to a real tab panel", async () => {
+    const user = await openAndUnlockLesson();
+
+    const orderedTab = screen.getByRole("tab", { name: "Ordered backward pass" });
+    expect(document.getElementById(orderedTab.getAttribute("aria-controls") ?? "")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Run one sweep" }));
+    const symbolsTab = screen.getByRole("tab", { name: "Symbols" });
+    expect(document.getElementById(symbolsTab.getAttribute("aria-controls") ?? "")).toBeInTheDocument();
   });
 
   it("shows that dependency order can solve the acyclic known model in one pass", async () => {

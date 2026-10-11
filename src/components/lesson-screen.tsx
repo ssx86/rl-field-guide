@@ -6,8 +6,9 @@ import { CorridorExperiment } from "@/components/corridor-experiment";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { ExplanationLens } from "@/components/explanation-lens";
 import { LessonRoute } from "@/components/lesson-route";
-import { MethodTabs, type LessonMethod } from "@/components/method-tabs";
+import { MethodTabs } from "@/components/method-tabs";
 import { PredictionPanel } from "@/components/prediction-panel";
+import { METHOD_SUMMARIES, type LessonMethod } from "@/content/planning-lesson";
 import {
   createInitialValues,
   orderedBackwardPass,
@@ -25,19 +26,10 @@ interface LessonScreenProps {
   readonly onEvidenceCreated: () => void;
 }
 
-const METHOD_COPY: Record<LessonMethod, { readonly action: string; readonly summary: string }> = {
-  synchronous: {
-    action: "Run one sweep",
-    summary: "All states read the same old table, so new information moves one dependency per sweep.",
-  },
-  ordered: {
-    action: "Solve in one pass",
-    summary: "The acyclic dependency order lets each backup use the value calculated immediately before it.",
-  },
-  sampled: {
-    action: "Run one episode",
-    summary: "The agent follows the corridor and updates from sampled transitions instead of using the full model.",
-  },
+const METHOD_ACTIONS: Record<LessonMethod, string> = {
+  synchronous: "Run one sweep",
+  ordered: "Solve in one pass",
+  sampled: "Run one episode",
 };
 
 export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLocked, onEvidenceCreated }: LessonScreenProps) {
@@ -78,13 +70,14 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLoc
   };
 
   const selectedTrace = lastResult?.traces[selectedState];
+  const signalStates = lastResult?.traces.filter((trace) => trace.target > 0).map((trace) => trace.state) ?? [];
   const resultStatement = method === "ordered" && pass > 0
     ? "One dependency-ordered pass solved all six non-terminal states."
     : method === "synchronous" && pass > 0
       ? "The goal reward moves through one additional predecessor on each synchronous sweep."
       : method === "sampled" && pass > 0
         ? "One sampled episode updated each visited state once. Earlier states need later episodes to inherit the goal reward."
-        : METHOD_COPY[method].summary;
+        : METHOD_SUMMARIES[method];
 
   return (
     <main className="min-h-[100dvh] bg-background text-foreground">
@@ -123,10 +116,9 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLoc
               </div>
               <div className="p-4 sm:p-5">
                 <MethodTabs value={method} onChange={changeMethod} />
-                <p className="mt-3 text-xs leading-5 text-muted-foreground">{METHOD_COPY[method].summary}</p>
-                <CorridorExperiment values={values} changedStates={lastResult?.changedStates ?? []} selectedState={selectedState} onSelectState={setSelectedState} />
+                <CorridorExperiment values={values} changedStates={lastResult?.changedStates ?? []} signalStates={signalStates} selectedState={selectedState} onSelectState={setSelectedState} />
                 <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-                  <Button disabled={!predictionLocked} onClick={run}><Play size={16} weight="fill" />{METHOD_COPY[method].action}</Button>
+                  <Button disabled={!predictionLocked} onClick={run}><Play size={16} weight="fill" />{METHOD_ACTIONS[method]}</Button>
                   <Button variant="secondary" onClick={reset}><ArrowCounterClockwise size={16} />Reset values</Button>
                   <p className="min-w-[220px] flex-1 text-xs leading-5 text-muted-foreground" aria-live="polite">{resultStatement}</p>
                 </div>

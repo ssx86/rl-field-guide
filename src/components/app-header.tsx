@@ -13,7 +13,7 @@ export function AppHeader({ theme, onToggleTheme, onOpenHome, context }: AppHead
   return (
     <header className="border-b border-border bg-card/95">
       <div className="mx-auto flex h-[68px] max-w-[1680px] items-center justify-between gap-4 px-4 sm:px-6">
-        <button className="group flex items-center gap-3 text-left" onClick={onOpenHome}>
+        <button className="group flex items-center gap-3 text-left" aria-label="RL Field Guide home" onClick={onOpenHome}>
           <span className="grid size-10 place-items-center rounded-control bg-accent text-primary">
             <Flask size={22} weight="fill" aria-hidden="true" />
           </span>

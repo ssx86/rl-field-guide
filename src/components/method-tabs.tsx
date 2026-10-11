@@ -1,7 +1,6 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { Calculator, Repeat, WaveSawtooth } from "@phosphor-icons/react";
-
-export type LessonMethod = "synchronous" | "ordered" | "sampled";
+import { METHOD_SUMMARIES, type LessonMethod } from "@/content/planning-lesson";
 
 interface MethodTabsProps {
   readonly value: LessonMethod;
@@ -28,6 +27,11 @@ export function MethodTabs({ value, onChange }: MethodTabsProps) {
           );
         })}
       </Tabs.List>
+      {METHODS.map((method) => (
+        <Tabs.Content key={method.id} value={method.id} forceMount className="method-summary mt-3 text-xs leading-5 text-muted-foreground">
+          {METHOD_SUMMARIES[method.id]}
+        </Tabs.Content>
+      ))}
     </Tabs.Root>
   );
 }

@@ -307,7 +307,8 @@ button:disabled {
 }
 
 .corridor-cell[data-selected="true"] { box-shadow: 0 0 0 2px var(--accent); }
-.corridor-cell[data-changed="true"] { animation: value-update 480ms ease both; background: var(--accent); }
+.corridor-cell[data-changed="true"] { animation: value-update 480ms ease both; background: color-mix(in srgb, var(--surface-subtle) 72%, var(--card)); }
+.corridor-cell[data-signal="true"] { border-color: var(--amber-border); background: var(--accent); }
 .corridor-cell[data-goal="true"] { border-color: var(--primary); color: var(--primary); }
 
 .corridor-state,
@@ -324,6 +325,25 @@ button:disabled {
 }
 
 .corridor-arrow { margin-inline: 3px; color: var(--muted-foreground); }
+
+.corridor-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.corridor-legend i {
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--surface-subtle) 72%, var(--card));
+}
+
+.corridor-legend i[data-kind="signal"] {
+  border-color: var(--amber-border);
+  background: var(--accent);
+}
 
 .evidence-panel {
   min-height: calc(100dvh - 161px);
@@ -359,7 +379,10 @@ button:disabled {
   font-weight: 700;
 }
 
-.lens-tabs button[aria-selected="true"] { background: var(--card); color: var(--foreground); }
+.lens-tabs button[data-state="active"] { background: var(--card); color: var(--foreground); }
+
+.method-summary[data-state="inactive"],
+.lens-panel[data-state="inactive"] { display: none; }
 
 .numeric-equation {
   display: grid;
