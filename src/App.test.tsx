@@ -115,4 +115,36 @@ describe("RL Field Guide", () => {
     expect(screen.getByRole("heading", { name: "Worked examples" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Counterexample" })).toBeInTheDocument();
   });
+
+  it("turns complete returns into inspectable Monte Carlo evidence", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "Open Complete Returns from course map" }));
+    expect(await screen.findByRole("heading", { name: "Episode evidence microscope" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Run episode calculation" }));
+
+    expect(screen.getByText("0.81", { selector: "strong" })).toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "Monte Carlo update" }));
+    expect(screen.getByText("0.51", { selector: "strong" })).toBeInTheDocument();
+    await user.click(screen.getByRole("tab", { name: "Importance sampling" }));
+    expect(screen.getByText("2.40", { selector: "strong" })).toBeInTheDocument();
+  });
+
+  it("compares control targets and removes bootstrap at a terminal transition", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "Open TD Learning from course map" }));
+    expect(await screen.findByText("One transition, four targets", { selector: "h2" })).toBeInTheDocument();
+    await user.click(screen.getByText("Q-learning", { selector: "button" }));
+    await user.click(screen.getByText("Run control update", { selector: "button" }));
+    expect(screen.getByText("5.30", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("off-policy")).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText(/Terminal transition/));
+    await user.click(screen.getByText("Run control update", { selector: "button" }));
+    expect(screen.getByText("0.00", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("-1.00", { selector: "strong" })).toBeInTheDocument();
+  });
 });

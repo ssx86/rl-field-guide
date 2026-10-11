@@ -5,6 +5,8 @@ import { ChapterCheckpoint } from "@/components/chapter-checkpoint";
 import { ChapterContent } from "@/components/chapter-content";
 import { ChapterPrediction } from "@/components/chapter-prediction";
 import { ChapterSidebar } from "@/components/chapter-sidebar";
+import { ControlUpdateLab } from "@/components/control-update-lab";
+import { ReturnLab } from "@/components/return-lab";
 import { Button } from "@/components/ui/button";
 import type { Chapter } from "@/content/chapter-types";
 import type { EvidenceKind } from "@/domain/course-progress";
@@ -36,6 +38,11 @@ export function ChapterScreen({ chapter, theme, progress, onToggleTheme, onOpenH
     onRecordEvidence("numeric");
   };
 
+  const recordNumericExperiment = () => {
+    onRecordEvidence("experiment");
+    onRecordEvidence("numeric");
+  };
+
   return (
     <main className="min-h-[100dvh] bg-background text-foreground">
       <AppHeader theme={theme} onToggleTheme={onToggleTheme} onOpenHome={onOpenHome} context={chapter.section} />
@@ -59,6 +66,8 @@ export function ChapterScreen({ chapter, theme, progress, onToggleTheme, onOpenH
 
           <div className="min-w-0 space-y-4 px-4 py-5 sm:px-6 lg:px-8">
             <ChapterPrediction chapter={chapter} selected={prediction} locked={predictionLocked} onSelect={setPrediction} onLock={lockPrediction} />
+            {chapter.id === "returns" ? <ReturnLab onEvidence={recordNumericExperiment} /> : null}
+            {chapter.id === "td-control" ? <ControlUpdateLab onEvidence={recordNumericExperiment} /> : null}
             <ChapterContent chapter={chapter} examplesOpen={examplesOpen} onOpenExamples={openExamples} />
             <ChapterCheckpoint chapter={chapter} onPassed={() => onRecordEvidence("transfer")} onReflected={() => onRecordEvidence("reflection")} />
           </div>

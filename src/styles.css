@@ -657,6 +657,214 @@ button:disabled {
   line-height: 1.6;
 }
 
+.learning-lab {
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius-panel);
+  background: var(--card);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.learning-lab-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.learning-lab-heading p {
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.learning-lab-heading h2 {
+  margin-top: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+
+.learning-lab-heading > span {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-subtle);
+  padding: 0.45rem 0.65rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
+.learning-lab-intro {
+  margin-top: 0.75rem;
+  max-width: 72ch;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.learning-lab-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.learning-lab-tabs button {
+  flex: 0 0 auto;
+  min-height: 2.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  padding: 0.45rem 0.7rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.learning-lab-tabs button[aria-selected="true"] {
+  border-color: var(--amber-border);
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.learning-lab-tabs button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.learning-lab-canvas {
+  min-height: 10rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--surface-subtle);
+  padding: 1rem;
+}
+
+.return-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.return-track > span {
+  display: grid;
+  min-width: 4rem;
+  min-height: 3.5rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.return-track small {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 650;
+}
+
+.return-track .terminal-node {
+  border-color: var(--amber-border);
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.learning-lab-prompt {
+  display: flex;
+  min-height: 5.2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.lab-result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.lab-metric {
+  display: grid;
+  gap: 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  padding: 0.75rem;
+}
+
+.lab-metric span {
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.lab-metric strong {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.lab-metric-emphasis {
+  border-color: var(--amber-border);
+  background: var(--accent);
+}
+
+.lab-metric-emphasis strong {
+  color: var(--primary);
+}
+
+.lab-result-note {
+  grid-column: 1 / -1;
+  border-left: 2px solid var(--primary);
+  padding-left: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.terminal-toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.15rem 0.6rem;
+  align-items: center;
+  margin-top: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-subtle);
+  padding: 0.65rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.terminal-toggle input {
+  grid-row: 1 / span 2;
+  accent-color: var(--primary);
+}
+
+.terminal-toggle small {
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .learning-lab-heading { flex-direction: column; }
+  .learning-lab-heading > span { width: 100%; }
+  .return-track { justify-content: flex-start; }
+}
+
 .chapter-boundary svg { margin-top: 2px; flex: 0 0 auto; color: var(--primary); }
 
 .worked-example {
