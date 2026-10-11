@@ -6,6 +6,18 @@ export interface PlanningResult {
   readonly values: number[];
   readonly changedStates: number[];
   readonly backups: number;
+  readonly traces: BackupTrace[];
+}
+
+export interface BackupTrace {
+  readonly state: number;
+  readonly nextState: number;
+  readonly oldValue: number;
+  readonly reward: number;
+  readonly nextValue: number;
+  readonly target: number;
+  readonly newValue: number;
+  readonly terminal: boolean;
 }
 
 export interface QLearningOptions {
@@ -37,15 +49,28 @@ export function synchronousBellmanSweep(
 ): PlanningResult {
   const values = [...currentValues];
   const changedStates: number[] = [];
+  const traces: BackupTrace[] = [];
 
   for (let state = 0; state < TERMINAL_STATE; state += 1) {
+    const nextState = state + 1;
+    const reward = transitionReward(state);
     const nextValue = bellmanBackup(state, currentValues, gamma);
     values[state] = nextValue;
+    traces[state] = {
+      state,
+      nextState,
+      oldValue: currentValues[state],
+      reward,
+      nextValue: currentValues[nextState],
+      target: nextValue,
+      newValue: nextValue,
+      terminal: nextState === TERMINAL_STATE,
+    };
     if (nextValue !== currentValues[state]) changedStates.push(state);
   }
 
   values[TERMINAL_STATE] = 0;
-  return { values, changedStates, backups: TERMINAL_STATE };
+  return { values, changedStates, backups: TERMINAL_STATE, traces };
 }
 
 export function orderedBackwardPass(
@@ -54,15 +79,28 @@ export function orderedBackwardPass(
 ): PlanningResult {
   const values = [...currentValues];
   const changedStates: number[] = [];
+  const traces: BackupTrace[] = [];
 
   for (let state = TERMINAL_STATE - 1; state >= 0; state -= 1) {
+    const nextState = state + 1;
+    const reward = transitionReward(state);
     const nextValue = bellmanBackup(state, values, gamma);
     values[state] = nextValue;
+    traces[state] = {
+      state,
+      nextState,
+      oldValue: currentValues[state],
+      reward,
+      nextValue: values[nextState],
+      target: nextValue,
+      newValue: nextValue,
+      terminal: nextState === TERMINAL_STATE,
+    };
     if (nextValue !== currentValues[state]) changedStates.push(state);
   }
 
   values[TERMINAL_STATE] = 0;
-  return { values, changedStates, backups: TERMINAL_STATE };
+  return { values, changedStates, backups: TERMINAL_STATE, traces };
 }
 
 export function qLearningEpisode(
@@ -71,6 +109,7 @@ export function qLearningEpisode(
 ): PlanningResult {
   const values = [...currentValues];
   const changedStates: number[] = [];
+  const traces: BackupTrace[] = [];
 
   for (let state = 0; state < TERMINAL_STATE; state += 1) {
     const nextState = state + 1;
@@ -78,11 +117,21 @@ export function qLearningEpisode(
     const target = nextState === TERMINAL_STATE ? reward : reward + options.gamma * values[nextState];
     const nextValue = roundForDisplay(values[state] + options.alpha * (target - values[state]));
     values[state] = nextValue;
+    traces[state] = {
+      state,
+      nextState,
+      oldValue: currentValues[state],
+      reward,
+      nextValue: values[nextState],
+      target: roundForDisplay(target),
+      newValue: nextValue,
+      terminal: nextState === TERMINAL_STATE,
+    };
     if (nextValue !== currentValues[state]) changedStates.push(state);
   }
 
   values[TERMINAL_STATE] = 0;
-  return { values, changedStates, backups: TERMINAL_STATE };
+  return { values, changedStates, backups: TERMINAL_STATE, traces };
 }
 
 export function valueForState(values: readonly number[], state: number): number {

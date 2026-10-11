@@ -40,4 +40,19 @@ describe("known-model planning lesson", () => {
 
     expect(result.values[5]).toBe(10);
   });
+
+  it("returns the exact numeric evidence used by each displayed backup", () => {
+    const result = synchronousBellmanSweep(createInitialValues());
+
+    expect(result.traces[5]).toEqual({
+      state: 5,
+      nextState: 6,
+      oldValue: 0,
+      reward: 10,
+      nextValue: 0,
+      target: 10,
+      newValue: 10,
+      terminal: true,
+    });
+  });
 });
