@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { App } from "./App";
 
 async function openAndUnlockLesson() {
@@ -15,6 +15,8 @@ async function openAndUnlockLesson() {
 }
 
 describe("RL Field Guide", () => {
+  beforeEach(() => localStorage.clear());
+
   it("moves from the learning map into an evidence-first lesson", async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -69,8 +71,35 @@ describe("RL Field Guide", () => {
     await user.click(screen.getByRole("button", { name: /RL Field Guide/ }));
 
     const notebook = screen.getByRole("complementary", { name: "Evidence notebook" });
-    expect(within(notebook).getByText("2 / 4")).toBeInTheDocument();
+    expect(within(notebook).getByText("3 / 5")).toBeInTheDocument();
     expect(within(notebook).getByText("Predictions checked").nextSibling).toHaveTextContent("1");
     expect(within(notebook).getByText("Formulas used with numbers").nextSibling).toHaveTextContent("1");
+  });
+
+  it("turns an uncertain bandit choice into numeric evidence and a transfer check", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("button", { name: "Decisions Under Uncertainty" }));
+    expect(await screen.findByRole("heading", { name: "The Best-Looking Arm Can Be a Trap" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Run one decision" })).toBeDisabled();
+
+    await user.click(screen.getByRole("radio", { name: "Try the untested arm" }));
+    await user.click(screen.getByRole("button", { name: "Lock prediction" }));
+    await user.click(screen.getByRole("tab", { name: "UCB" }));
+    await user.click(screen.getByRole("button", { name: "Run one decision" }));
+
+    expect(screen.getByText("Untried C was selected")).toBeInTheDocument();
+    expect(screen.getByText("0 + (4 - 0) / 1 = 4")).toBeInTheDocument();
+    expect(screen.getByText("Instant regret").nextSibling).toHaveTextContent("0");
+    expect(within(screen.getByRole("row", { name: /Untried C/ })).getByText("6.68")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "UCB adds an explicit uncertainty bonus" }));
+    await user.click(screen.getByRole("button", { name: "Check transfer" }));
+    expect(screen.getByText("Transfer passed")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "it guarantees the next reward will be larger" }));
+    await user.click(screen.getByRole("button", { name: "Save reflection" }));
+    expect(screen.getByText("Try again: exploration buys information, not a guaranteed reward.")).toBeInTheDocument();
   });
 });

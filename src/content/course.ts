@@ -1,6 +1,9 @@
+import type { LessonId } from "@/domain/course-progress";
+
 export interface CourseTopic {
   readonly title: string;
   readonly status: "available" | "planned";
+  readonly lessonId?: LessonId;
 }
 
 export interface CourseGroup {
@@ -13,15 +16,15 @@ export const COURSE_GROUPS: readonly CourseGroup[] = [
     label: "Foundations",
     topics: [
       { title: "Start Here", status: "available" },
-      { title: "Decisions Under Uncertainty", status: "planned" },
-      { title: "When the Model Is Known", status: "available" },
+      { title: "Decisions Under Uncertainty", status: "available", lessonId: "bandits" },
+      { title: "When the Model Is Known", status: "available", lessonId: "planning" },
     ],
   },
   {
     label: "Learning from experience",
     topics: [
-      { title: "Complete Returns", status: "planned" },
-      { title: "TD Learning", status: "planned" },
+      { title: "Complete Returns", status: "planned", lessonId: "returns" },
+      { title: "TD Learning", status: "planned", lessonId: "td-control" },
       { title: "Deep Value Methods", status: "planned" },
     ],
   },

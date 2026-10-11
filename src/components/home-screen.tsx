@@ -9,17 +9,20 @@ import {
 import { AppHeader } from "@/components/app-header";
 import { Button } from "@/components/ui/button";
 import { COURSE_GROUPS, LEARNING_STAGES } from "@/content/course";
+import { evidenceTotals, type CourseProgress, type LessonId } from "@/domain/course-progress";
 import type { Theme } from "@/hooks/use-theme";
 
 interface HomeScreenProps {
   readonly theme: Theme;
-  readonly progress: { readonly prediction: boolean; readonly numericEvidence: boolean };
+  readonly progress: CourseProgress;
   readonly onToggleTheme: () => void;
-  readonly onBegin: () => void;
+  readonly onOpenLesson: (lesson: LessonId) => void;
 }
 
-export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScreenProps) {
-  const progressCount = Number(progress.prediction) + Number(progress.numericEvidence);
+export function HomeScreen({ theme, progress, onToggleTheme, onOpenLesson }: HomeScreenProps) {
+  const totals = evidenceTotals(progress);
+  const progressCount = (["prediction", "experiment", "numeric", "transfer", "reflection"] as const)
+    .filter((kind) => totals[kind] > 0).length;
   return (
     <main className="min-h-[100dvh] bg-background text-foreground">
       <AppHeader theme={theme} onToggleTheme={onToggleTheme} onOpenHome={() => undefined} />
@@ -37,7 +40,7 @@ export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScre
                       <span>{topic.title}</span><span className="text-primary">Here</span>
                     </div>
                   ) : (
-                    <button key={topic.title} disabled={topic.status === "planned"} onClick={topic.title === "When the Model Is Known" ? onBegin : undefined} className="flex w-full items-center justify-between rounded-control px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors enabled:hover:bg-accent enabled:hover:text-foreground disabled:opacity-55">
+                    <button key={topic.title} aria-label={topic.title} disabled={topic.status === "planned"} onClick={() => topic.lessonId && onOpenLesson(topic.lessonId)} className="flex w-full items-center justify-between rounded-control px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors enabled:hover:bg-accent enabled:hover:text-foreground disabled:opacity-55">
                       <span>{topic.title}</span>{topic.status === "available" ? <span className="text-primary">Open</span> : null}
                     </button>
                   ))}
@@ -60,7 +63,7 @@ export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScre
               Predict first. Run the system. Inspect what changed. Use the formula only when the evidence needs a name.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Button onClick={onBegin}>
+              <Button onClick={() => onOpenLesson("planning")}>
                 Begin the experiment <ArrowRight size={17} weight="bold" />
               </Button>
               <Button variant="secondary" onClick={() => document.getElementById("learning-loop")?.scrollIntoView()}>
@@ -97,7 +100,10 @@ export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScre
                 <h2 className="mt-5 text-lg font-bold">Recommended next</h2>
                 <p className="mt-2 text-2xl font-bold leading-tight tracking-tight">Planning Is Not Training</p>
                 <p className="mt-4 text-sm leading-6 text-muted-foreground">Use one known corridor to compare an ordered calculation, parallel sweeps, and sampled Q-learning.</p>
-                <Button className="mt-6 w-full" variant="secondary" onClick={onBegin}>Open lesson</Button>
+                <div className="mt-6 grid gap-2">
+                  <Button className="w-full" variant="secondary" onClick={() => onOpenLesson("planning")}>Open planning lesson</Button>
+                  <Button className="w-full" variant="ghost" onClick={() => onOpenLesson("bandits")}>Explore uncertain choices</Button>
+                </div>
               </div>
             </div>
           </section>
@@ -117,13 +123,14 @@ export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScre
 
         <aside className="border-t border-border bg-surface-subtle px-5 py-8 lg:border-l lg:border-t-0" aria-label="Evidence notebook">
           <div className="sticky top-6">
-            <div className="flex items-center justify-between"><h2 className="text-sm font-bold">Evidence notebook</h2><span className="font-mono text-xs text-muted-foreground">{progressCount} / 4</span></div>
+            <div className="flex items-center justify-between"><h2 className="text-sm font-bold">Evidence notebook</h2><span className="font-mono text-xs text-muted-foreground">{progressCount} / 5</span></div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">Progress records explanations and transfer, not scrolling.</p>
             <div className="mt-6 space-y-4">
-              <NotebookRow label="Predictions checked" value={progress.prediction ? "1" : "0"} />
-              <NotebookRow label="Misconceptions corrected" value="0" />
-              <NotebookRow label="Formulas used with numbers" value={progress.numericEvidence ? "1" : "0"} />
-              <NotebookRow label="Transfer challenges passed" value="0" />
+              <NotebookRow label="Predictions checked" value={String(totals.prediction)} />
+              <NotebookRow label="Experiments run" value={String(totals.experiment)} />
+              <NotebookRow label="Formulas used with numbers" value={String(totals.numeric)} />
+              <NotebookRow label="Transfer challenges passed" value={String(totals.transfer)} />
+              <NotebookRow label="Reflections saved" value={String(totals.reflection)} />
             </div>
             <div className="mt-8 rounded-panel border border-amber-border bg-accent p-4">
               <p className="text-xs font-bold text-primary">First question</p>

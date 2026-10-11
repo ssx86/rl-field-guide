@@ -1,31 +1,53 @@
 import { lazy, Suspense, useState } from "react";
 import { HomeScreen } from "@/components/home-screen";
+import type { EvidenceKind, LessonId } from "@/domain/course-progress";
+import { useCourseProgress } from "@/hooks/use-course-progress";
 import { useTheme } from "@/hooks/use-theme";
 
 const LessonScreen = lazy(() =>
   import("@/components/lesson-screen").then((module) => ({ default: module.LessonScreen })),
 );
+const BanditScreen = lazy(() =>
+  import("@/components/bandit-screen").then((module) => ({ default: module.BanditScreen })),
+);
 
 export function App() {
-  const [screen, setScreen] = useState<"home" | "lesson">("home");
-  const [progress, setProgress] = useState({ prediction: false, numericEvidence: false });
+  const [screen, setScreen] = useState<"home" | LessonId>("home");
+  const { progress, addEvidence } = useCourseProgress();
   const { theme, toggleTheme } = useTheme();
 
-  if (screen === "lesson") {
+  if (screen === "planning") {
     return (
       <Suspense fallback={<LessonLoading />}>
         <LessonScreen
           theme={theme}
           onToggleTheme={toggleTheme}
           onOpenHome={() => setScreen("home")}
-          onPredictionLocked={() => setProgress((current) => ({ ...current, prediction: true }))}
-          onEvidenceCreated={() => setProgress((current) => ({ ...current, numericEvidence: true }))}
+          onPredictionLocked={() => addEvidence("planning", "prediction")}
+          onEvidenceCreated={() => {
+            addEvidence("planning", "experiment");
+            addEvidence("planning", "numeric");
+          }}
         />
       </Suspense>
     );
   }
 
-  return <HomeScreen theme={theme} progress={progress} onToggleTheme={toggleTheme} onBegin={() => setScreen("lesson")} />;
+  if (screen === "bandits") {
+    return (
+      <Suspense fallback={<LessonLoading />}>
+        <BanditScreen
+          theme={theme}
+          progress={progress.bandits}
+          onToggleTheme={toggleTheme}
+          onOpenHome={() => setScreen("home")}
+          onRecordEvidence={(kind: EvidenceKind) => addEvidence("bandits", kind)}
+        />
+      </Suspense>
+    );
+  }
+
+  return <HomeScreen theme={theme} progress={progress} onToggleTheme={toggleTheme} onOpenLesson={setScreen} />;
 }
 
 function LessonLoading() {

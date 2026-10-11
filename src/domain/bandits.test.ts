@@ -41,5 +41,7 @@ describe("bandit calculations", () => {
     expect(trace.newEstimate).toBe(4);
     expect(trace.instantRegret).toBe(0);
     expect(trace.reason).toContain("has not been tried");
+    expect(trace.updatedArms[2]).toMatchObject({ pulls: 1, totalReward: 4, estimate: 4 });
+    expect(trace.updatedScores[2]).toBe(6.68);
   });
 });

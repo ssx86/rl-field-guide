@@ -21,6 +21,8 @@ export interface BanditDecisionTrace {
   readonly instantRegret: number;
   readonly reason: string;
   readonly scores: readonly number[];
+  readonly updatedArms: readonly BanditArm[];
+  readonly updatedScores: readonly number[];
 }
 
 export const INITIAL_BANDIT_ARMS: readonly BanditArm[] = [
@@ -80,6 +82,12 @@ export function runBanditDecision(
   const chosenArm = arms[chosenIndex];
   const reward = chosenArm.rewards[chosenArm.pulls % chosenArm.rewards.length];
   const bestMean = Math.max(...arms.map((arm) => arm.trueMean));
+  const newEstimate = sampleMeanUpdate(chosenArm.estimate, chosenArm.pulls, reward);
+  const updatedArms = arms.map((arm, index) => index === chosenIndex
+    ? { ...arm, pulls: arm.pulls + 1, totalReward: round(arm.totalReward + reward), estimate: newEstimate }
+    : arm);
+  const updatedTotalPulls = totalPulls + 1;
+  const updatedScores = updatedArms.map((arm) => ucbScore(arm.estimate, updatedTotalPulls, arm.pulls));
 
   return {
     strategy,
@@ -87,7 +95,7 @@ export function runBanditDecision(
     chosenArm,
     reward,
     oldEstimate: chosenArm.estimate,
-    newEstimate: sampleMeanUpdate(chosenArm.estimate, chosenArm.pulls, reward),
+    newEstimate,
     previousPulls: chosenArm.pulls,
     newPulls: chosenArm.pulls + 1,
     instantRegret: round(bestMean - chosenArm.trueMean),
@@ -95,5 +103,7 @@ export function runBanditDecision(
       ? `${chosenArm.name} has not been tried, so its uncertainty bonus is treated as infinite.`
       : `The epsilon roll is 0.42, above epsilon 0.10, so the largest current estimate is exploited.`,
     scores,
+    updatedArms,
+    updatedScores,
   };
 }
