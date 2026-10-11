@@ -13,11 +13,13 @@ import type { Theme } from "@/hooks/use-theme";
 
 interface HomeScreenProps {
   readonly theme: Theme;
+  readonly progress: { readonly prediction: boolean; readonly numericEvidence: boolean };
   readonly onToggleTheme: () => void;
   readonly onBegin: () => void;
 }
 
-export function HomeScreen({ theme, onToggleTheme, onBegin }: HomeScreenProps) {
+export function HomeScreen({ theme, progress, onToggleTheme, onBegin }: HomeScreenProps) {
+  const progressCount = Number(progress.prediction) + Number(progress.numericEvidence);
   return (
     <main className="min-h-[100dvh] bg-background text-foreground">
       <AppHeader theme={theme} onToggleTheme={onToggleTheme} onOpenHome={() => undefined} />
@@ -30,15 +32,13 @@ export function HomeScreen({ theme, onToggleTheme, onBegin }: HomeScreenProps) {
               <section key={group.label}>
                 <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{group.label}</h2>
                 <div className="space-y-1">
-                  {group.topics.map((topic) => (
-                    <button
-                      key={topic.title}
-                      disabled={topic.status === "planned"}
-                      onClick={topic.title === "When the Model Is Known" ? onBegin : undefined}
-                      className="flex w-full items-center justify-between rounded-control px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors enabled:hover:bg-accent enabled:hover:text-foreground disabled:opacity-55"
-                    >
-                      <span>{topic.title}</span>
-                      {topic.status === "available" ? <span className="text-primary">Open</span> : null}
+                  {group.topics.map((topic) => topic.title === "Start Here" ? (
+                    <div key={topic.title} aria-current="page" className="flex w-full items-center justify-between rounded-control bg-card px-2.5 py-2 text-xs font-semibold text-foreground">
+                      <span>{topic.title}</span><span className="text-primary">Here</span>
+                    </div>
+                  ) : (
+                    <button key={topic.title} disabled={topic.status === "planned"} onClick={topic.title === "When the Model Is Known" ? onBegin : undefined} className="flex w-full items-center justify-between rounded-control px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors enabled:hover:bg-accent enabled:hover:text-foreground disabled:opacity-55">
+                      <span>{topic.title}</span>{topic.status === "available" ? <span className="text-primary">Open</span> : null}
                     </button>
                   ))}
                 </div>
@@ -117,12 +117,12 @@ export function HomeScreen({ theme, onToggleTheme, onBegin }: HomeScreenProps) {
 
         <aside className="border-t border-border bg-surface-subtle px-5 py-8 lg:border-l lg:border-t-0" aria-label="Evidence notebook">
           <div className="sticky top-6">
-            <div className="flex items-center justify-between"><h2 className="text-sm font-bold">Evidence notebook</h2><span className="font-mono text-xs text-muted-foreground">0 / 4</span></div>
+            <div className="flex items-center justify-between"><h2 className="text-sm font-bold">Evidence notebook</h2><span className="font-mono text-xs text-muted-foreground">{progressCount} / 4</span></div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">Progress records explanations and transfer, not scrolling.</p>
             <div className="mt-6 space-y-4">
-              <NotebookRow label="Predictions checked" value="0" />
+              <NotebookRow label="Predictions checked" value={progress.prediction ? "1" : "0"} />
               <NotebookRow label="Misconceptions corrected" value="0" />
-              <NotebookRow label="Formulas used with numbers" value="0" />
+              <NotebookRow label="Formulas used with numbers" value={progress.numericEvidence ? "1" : "0"} />
               <NotebookRow label="Transfer challenges passed" value="0" />
             </div>
             <div className="mt-8 rounded-panel border border-amber-border bg-accent p-4">

@@ -393,7 +393,8 @@ button:disabled {
 @media (max-width: 767px) {
   html { scroll-behavior: auto; }
   .lesson-heading { grid-template-columns: 1fr; padding: 18px 16px; }
-  .lesson-layout { display: flex; flex-direction: column; }
+  .lesson-layout { display: flex; flex-direction: column; align-items: stretch; }
+  .lesson-layout > * { min-width: 0; max-width: 100%; }
   .lesson-route { order: 4; width: 100%; min-height: 0; border-top: 1px solid var(--border); border-right: 0; }
   .evidence-panel { order: 3; width: 100%; }
   .method-tabs { grid-template-columns: 1fr; }

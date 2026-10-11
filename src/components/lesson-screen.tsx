@@ -21,6 +21,8 @@ interface LessonScreenProps {
   readonly theme: Theme;
   readonly onToggleTheme: () => void;
   readonly onOpenHome: () => void;
+  readonly onPredictionLocked: () => void;
+  readonly onEvidenceCreated: () => void;
 }
 
 const METHOD_COPY: Record<LessonMethod, { readonly action: string; readonly summary: string }> = {
@@ -38,7 +40,7 @@ const METHOD_COPY: Record<LessonMethod, { readonly action: string; readonly summ
   },
 };
 
-export function LessonScreen({ theme, onToggleTheme, onOpenHome }: LessonScreenProps) {
+export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLocked, onEvidenceCreated }: LessonScreenProps) {
   const [method, setMethod] = useState<LessonMethod>("synchronous");
   const [values, setValues] = useState(createInitialValues);
   const [pass, setPass] = useState(0);
@@ -65,6 +67,7 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome }: LessonScreenP
     setLastResult(result);
     setPass((current) => current + 1);
     setSelectedState(method === "ordered" ? 0 : 5);
+    onEvidenceCreated();
   };
 
   const reset = () => {
@@ -106,7 +109,12 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome }: LessonScreenP
           <LessonRoute />
 
           <div className="min-w-0 space-y-4 px-4 py-5 sm:px-6 lg:px-8">
-            <PredictionPanel choice={prediction} locked={predictionLocked} onChoose={setPrediction} onLock={() => setPredictionLocked(true)} />
+            <PredictionPanel
+              choice={prediction}
+              locked={predictionLocked}
+              onChoose={setPrediction}
+              onLock={() => { setPredictionLocked(true); onPredictionLocked(); }}
+            />
 
             <section className="experiment-panel" aria-labelledby="experiment-title">
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border px-4 py-4 sm:px-5">
