@@ -15,7 +15,7 @@ export const COURSE_GROUPS: readonly CourseGroup[] = [
   {
     label: "Foundations",
     topics: [
-      { title: "Start Here", status: "available" },
+      { title: "Start Here", status: "available", lessonId: "foundations" },
       { title: "Decisions Under Uncertainty", status: "available", lessonId: "bandits" },
       { title: "When the Model Is Known", status: "available", lessonId: "planning" },
     ],
@@ -23,25 +23,25 @@ export const COURSE_GROUPS: readonly CourseGroup[] = [
   {
     label: "Learning from experience",
     topics: [
-      { title: "Complete Returns", status: "planned", lessonId: "returns" },
-      { title: "TD Learning", status: "planned", lessonId: "td-control" },
-      { title: "Deep Value Methods", status: "planned" },
+      { title: "Complete Returns", status: "available", lessonId: "returns" },
+      { title: "TD Learning", status: "available", lessonId: "td-control" },
+      { title: "Deep Value Methods", status: "available", lessonId: "deep-value" },
     ],
   },
   {
     label: "Learning behavior",
     topics: [
-      { title: "Policy Learning", status: "planned" },
-      { title: "Continuous Control", status: "planned" },
-      { title: "Model-Based RL", status: "planned" },
+      { title: "Policy Learning", status: "available", lessonId: "policy-learning" },
+      { title: "Continuous Control", status: "available", lessonId: "continuous-control" },
+      { title: "Model-Based RL", status: "available", lessonId: "model-based" },
     ],
   },
   {
     label: "Practice",
     topics: [
-      { title: "Modern Practice", status: "planned" },
-      { title: "Challenge Lab", status: "planned" },
-      { title: "Formula Atlas", status: "planned" },
+      { title: "Modern Practice", status: "available", lessonId: "modern-practice" },
+      { title: "Challenge Lab", status: "available", lessonId: "challenge-lab" },
+      { title: "Formula Atlas", status: "available", lessonId: "formula-atlas" },
     ],
   },
 ] as const;

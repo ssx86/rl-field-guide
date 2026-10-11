@@ -35,11 +35,7 @@ export function HomeScreen({ theme, progress, onToggleTheme, onOpenLesson }: Hom
               <section key={group.label}>
                 <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{group.label}</h2>
                 <div className="space-y-1">
-                  {group.topics.map((topic) => topic.title === "Start Here" ? (
-                    <div key={topic.title} aria-current="page" className="flex w-full items-center justify-between rounded-control bg-card px-2.5 py-2 text-xs font-semibold text-foreground">
-                      <span>{topic.title}</span><span className="text-primary">Here</span>
-                    </div>
-                  ) : (
+                  {group.topics.map((topic) => (
                     <button key={topic.title} aria-label={topic.title} disabled={topic.status === "planned"} onClick={() => topic.lessonId && onOpenLesson(topic.lessonId)} className="flex w-full items-center justify-between rounded-control px-2.5 py-2 text-left text-xs font-medium text-muted-foreground transition-colors enabled:hover:bg-accent enabled:hover:text-foreground disabled:opacity-55">
                       <span>{topic.title}</span>{topic.status === "available" ? <span className="text-primary">Open</span> : null}
                     </button>
@@ -105,6 +101,41 @@ export function HomeScreen({ theme, progress, onToggleTheme, onOpenLesson }: Hom
                   <Button className="w-full" variant="ghost" onClick={() => onOpenLesson("bandits")}>Explore uncertain choices</Button>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className="mt-12" aria-labelledby="complete-course-map-title">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary">Breadth first</p>
+                <h2 id="complete-course-map-title" className="mt-2 text-2xl font-bold tracking-tight">Complete course map</h2>
+                <p className="mt-2 max-w-[62ch] text-sm leading-6 text-muted-foreground">
+                  Start anywhere. Every route includes a prediction, mechanism, worked examples, a failure case, and a transfer check.
+                </p>
+              </div>
+              <span className="rounded-full border border-amber-border bg-accent px-3 py-1.5 font-mono text-xs font-bold text-primary">12 routes · all open</span>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {COURSE_GROUPS.map((group) => (
+                <article key={group.label} className="rounded-panel border border-border bg-card p-4 shadow-soft">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">{group.label}</h3>
+                  <div className="mt-3 grid gap-2">
+                    {group.topics.map((topic, topicIndex) => (
+                      <button
+                        key={topic.title}
+                        type="button"
+                        aria-label={`Open ${topic.title} from course map`}
+                        onClick={() => topic.lessonId && onOpenLesson(topic.lessonId)}
+                        className="group flex min-h-12 items-center gap-3 rounded-control border border-border bg-surface-subtle px-3 py-2.5 text-left transition-colors hover:border-amber-border hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <span className="font-mono text-[10px] font-bold text-primary">{String(topicIndex + 1).padStart(2, "0")}</span>
+                        <span className="min-w-0 flex-1 text-sm font-semibold text-foreground">{topic.title}</span>
+                        <ArrowRight className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" size={16} aria-hidden="true" />
+                      </button>
+                    ))}
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 

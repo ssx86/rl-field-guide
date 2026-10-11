@@ -19,10 +19,18 @@ function restoreProgress(): CourseProgress {
       ? saved[lesson].filter((kind): kind is EvidenceKind => EVIDENCE.includes(kind as EvidenceKind))
       : [];
     return {
+      foundations: restored("foundations"),
       planning: restored("planning"),
       bandits: restored("bandits"),
       returns: restored("returns"),
       "td-control": restored("td-control"),
+      "deep-value": restored("deep-value"),
+      "policy-learning": restored("policy-learning"),
+      "continuous-control": restored("continuous-control"),
+      "model-based": restored("model-based"),
+      "modern-practice": restored("modern-practice"),
+      "challenge-lab": restored("challenge-lab"),
+      "formula-atlas": restored("formula-atlas"),
     };
   } catch {
     return empty;

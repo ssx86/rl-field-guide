@@ -102,4 +102,17 @@ describe("RL Field Guide", () => {
     await user.click(screen.getByRole("button", { name: "Save reflection" }));
     expect(screen.getByText("Try again: exploration buys information, not a guaranteed reward.")).toBeInTheDocument();
   });
+
+  it("opens the breadth-first deep value chapter from the complete learning map", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    expect(screen.getByRole("heading", { name: "Complete course map" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: /from course map$/ })).toHaveLength(12);
+    await user.click(screen.getByRole("button", { name: "Open Deep Value Methods from course map" }));
+    expect(await screen.findByRole("heading", { name: "When a Table Stops Fitting" })).toBeInTheDocument();
+    expect(screen.getByText("DQN stabilizes a moving regression problem with replay and a target network.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Worked examples" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Counterexample" })).toBeInTheDocument();
+  });
 });

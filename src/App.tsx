@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { HomeScreen } from "@/components/home-screen";
+import { CHAPTERS, isChapterId } from "@/content/chapters";
 import type { EvidenceKind, LessonId } from "@/domain/course-progress";
 import { useCourseProgress } from "@/hooks/use-course-progress";
 import { useTheme } from "@/hooks/use-theme";
@@ -9,6 +10,9 @@ const LessonScreen = lazy(() =>
 );
 const BanditScreen = lazy(() =>
   import("@/components/bandit-screen").then((module) => ({ default: module.BanditScreen })),
+);
+const ChapterScreen = lazy(() =>
+  import("@/components/chapter-screen").then((module) => ({ default: module.ChapterScreen })),
 );
 
 export function App() {
@@ -42,6 +46,21 @@ export function App() {
           onToggleTheme={toggleTheme}
           onOpenHome={() => setScreen("home")}
           onRecordEvidence={(kind: EvidenceKind) => addEvidence("bandits", kind)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (isChapterId(screen)) {
+    return (
+      <Suspense fallback={<LessonLoading />}>
+        <ChapterScreen
+          chapter={CHAPTERS[screen]}
+          theme={theme}
+          progress={progress[screen]}
+          onToggleTheme={toggleTheme}
+          onOpenHome={() => setScreen("home")}
+          onRecordEvidence={(kind: EvidenceKind) => addEvidence(screen, kind)}
         />
       </Suspense>
     );

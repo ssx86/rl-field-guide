@@ -1,4 +1,16 @@
-export type LessonId = "planning" | "bandits" | "returns" | "td-control";
+export type LessonId =
+  | "foundations"
+  | "bandits"
+  | "planning"
+  | "returns"
+  | "td-control"
+  | "deep-value"
+  | "policy-learning"
+  | "continuous-control"
+  | "model-based"
+  | "modern-practice"
+  | "challenge-lab"
+  | "formula-atlas";
 export type EvidenceKind = "prediction" | "experiment" | "numeric" | "transfer" | "reflection";
 export type CourseProgress = Record<LessonId, readonly EvidenceKind[]>;
 
@@ -8,10 +20,18 @@ export interface EvidenceTotals extends Record<EvidenceKind, number> {
 
 export function createEmptyProgress(): CourseProgress {
   return {
+    foundations: [],
     planning: [],
     bandits: [],
     returns: [],
     "td-control": [],
+    "deep-value": [],
+    "policy-learning": [],
+    "continuous-control": [],
+    "model-based": [],
+    "modern-practice": [],
+    "challenge-lab": [],
+    "formula-atlas": [],
   };
 }
 
