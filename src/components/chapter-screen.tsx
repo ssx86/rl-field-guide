@@ -6,9 +6,11 @@ import { ChapterContent } from "@/components/chapter-content";
 import { ChapterPrediction } from "@/components/chapter-prediction";
 import { ChapterSidebar } from "@/components/chapter-sidebar";
 import { ControlUpdateLab } from "@/components/control-update-lab";
+import { MechanicsWorkbench } from "@/components/mechanics-workbench";
 import { ReturnLab } from "@/components/return-lab";
 import { Button } from "@/components/ui/button";
 import type { Chapter } from "@/content/chapter-types";
+import { hasMechanicsLab, MECHANICS_LABS } from "@/content/mechanics-labs";
 import type { EvidenceKind } from "@/domain/course-progress";
 import type { Theme } from "@/hooks/use-theme";
 
@@ -50,7 +52,7 @@ export function ChapterScreen({ chapter, theme, progress, onToggleTheme, onOpenH
         <div className="lesson-heading">
           <Button variant="ghost" size="sm" onClick={onOpenHome}><ArrowLeft size={16} /> Learn map</Button>
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-bold tracking-[-0.025em] sm:text-3xl">{chapter.title}</h1><span className="rounded-control bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">Overview · breadth first</span></div>
+            <div className="flex flex-wrap items-center gap-3"><h1 className="text-2xl font-bold tracking-[-0.025em] sm:text-3xl">{chapter.title}</h1><span className="rounded-control bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">Complete route</span></div>
             <p className="mt-2 max-w-[76ch] text-sm leading-6 text-muted-foreground"><span className="mr-1 font-semibold text-foreground">{chapter.eyebrow}.</span>{chapter.claim}</p>
           </div>
         </div>
@@ -61,13 +63,14 @@ export function ChapterScreen({ chapter, theme, progress, onToggleTheme, onOpenH
             {chapter.concepts.map((concept, index) => <a key={concept.title} href={`#concept-${chapter.id}-${index}`}>{String(index + 1).padStart(2, "0")} {concept.title}</a>)}
             <a href="#worked-examples-title">Examples</a>
             <a href="#comparison-title">Compare methods</a>
-            <div className="mt-6 rounded-panel border border-amber-border bg-accent p-4"><CheckCircle size={18} className="text-primary" /><p className="mt-2 text-xs font-semibold leading-5">Breadth pass: complete. Interactive depth will be added without changing this map.</p></div>
+            <div className="mt-6 rounded-panel border border-amber-border bg-accent p-4"><CheckCircle size={18} className="text-primary" /><p className="mt-2 text-xs font-semibold leading-5">Full route: causal workbench, concepts, examples, failure case, comparison, and transfer.</p></div>
           </nav>
 
           <div className="min-w-0 space-y-4 px-4 py-5 sm:px-6 lg:px-8">
             <ChapterPrediction chapter={chapter} selected={prediction} locked={predictionLocked} onSelect={setPrediction} onLock={lockPrediction} />
             {chapter.id === "returns" ? <ReturnLab onEvidence={recordNumericExperiment} /> : null}
             {chapter.id === "td-control" ? <ControlUpdateLab onEvidence={recordNumericExperiment} /> : null}
+            {hasMechanicsLab(chapter.id) ? <MechanicsWorkbench lab={MECHANICS_LABS[chapter.id]} onEvidence={recordNumericExperiment} /> : null}
             <ChapterContent chapter={chapter} examplesOpen={examplesOpen} onOpenExamples={openExamples} />
             <ChapterCheckpoint chapter={chapter} onPassed={() => onRecordEvidence("transfer")} onReflected={() => onRecordEvidence("reflection")} />
           </div>

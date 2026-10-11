@@ -859,10 +859,143 @@ button:disabled {
   font-weight: 500;
 }
 
+.mechanics-canvas {
+  min-height: 13rem;
+}
+
+.mechanics-question {
+  font-size: 0.95rem;
+  font-weight: 750;
+}
+
+.mechanics-givens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.mechanics-givens span {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  padding: 0.3rem 0.55rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.mechanics-trace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(7rem, 0.55fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.mechanics-trace > div {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  padding: 0.75rem;
+}
+
+.mechanics-trace > svg {
+  align-self: center;
+  color: var(--primary);
+}
+
+.mechanics-trace small {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mechanics-trace p {
+  color: var(--muted-foreground);
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+.mechanics-result {
+  display: grid;
+  align-content: center;
+  border-color: var(--amber-border) !important;
+  background: var(--accent) !important;
+  text-align: center;
+}
+
+.mechanics-result strong {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.extension-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.extension-grid article {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  background: var(--surface-subtle);
+  padding: 1rem;
+}
+
+.extension-grid h3 {
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.extension-grid article > p {
+  margin-top: 0.45rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.extension-grid dl {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.7rem;
+}
+
+.extension-grid dt {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--foreground);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.extension-grid dd {
+  margin-top: 0.2rem;
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
 @media (max-width: 640px) {
   .learning-lab-heading { flex-direction: column; }
   .learning-lab-heading > span { width: 100%; }
   .return-track { justify-content: flex-start; }
+  .mechanics-trace { grid-template-columns: 1fr; }
+  .mechanics-trace > svg { transform: rotate(90deg); justify-self: center; }
+  .extension-grid { grid-template-columns: 1fr; }
 }
 
 .chapter-boundary svg { margin-top: 2px; flex: 0 0 auto; color: var(--primary); }

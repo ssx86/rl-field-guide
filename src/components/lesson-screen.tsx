@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { CorridorExperiment } from "@/components/corridor-experiment";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { ExplanationLens } from "@/components/explanation-lens";
+import { FoundationalExtensions } from "@/components/foundational-extensions";
 import { LessonRoute } from "@/components/lesson-route";
 import { MethodTabs } from "@/components/method-tabs";
 import { PredictionPanel } from "@/components/prediction-panel";
+import { PlanningCheckpoint } from "@/components/planning-checkpoint";
 import { METHOD_SUMMARIES, type LessonMethod } from "@/content/planning-lesson";
 import {
   createInitialValues,
@@ -24,6 +26,8 @@ interface LessonScreenProps {
   readonly onOpenHome: () => void;
   readonly onPredictionLocked: () => void;
   readonly onEvidenceCreated: () => void;
+  readonly onTransferPassed: () => void;
+  readonly onReflectionSaved: () => void;
 }
 
 const METHOD_ACTIONS: Record<LessonMethod, string> = {
@@ -32,7 +36,7 @@ const METHOD_ACTIONS: Record<LessonMethod, string> = {
   sampled: "Run one episode",
 };
 
-export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLocked, onEvidenceCreated }: LessonScreenProps) {
+export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLocked, onEvidenceCreated, onTransferPassed, onReflectionSaved }: LessonScreenProps) {
   const [method, setMethod] = useState<LessonMethod>("synchronous");
   const [values, setValues] = useState(createInitialValues);
   const [pass, setPass] = useState(0);
@@ -89,7 +93,7 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLoc
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <h1 className="text-2xl font-bold tracking-[-0.025em] sm:text-3xl">Planning Is Not Training</h1>
-              <span className="rounded-control bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">Lesson 1 of 8</span>
+              <span className="rounded-control bg-accent px-2.5 py-1 text-[11px] font-semibold text-primary">Planning route · complete</span>
             </div>
             <p className="mt-2 max-w-[72ch] text-sm leading-6 text-muted-foreground">
               <span className="mr-1 font-semibold text-foreground">A reward appears at the goal.</span>
@@ -131,6 +135,8 @@ export function LessonScreen({ theme, onToggleTheme, onOpenHome, onPredictionLoc
             </section>
 
             <ExplanationLens trace={selectedTrace} gamma={0.9} />
+            <FoundationalExtensions route="planning" />
+            <PlanningCheckpoint onTransferPassed={onTransferPassed} onReflectionSaved={onReflectionSaved} />
           </div>
 
           <EvidencePanel trace={selectedTrace} pass={pass} />

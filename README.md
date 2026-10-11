@@ -46,6 +46,7 @@ Every chapter includes:
 - at least two worked examples and one counterexample
 - method comparisons, boundaries, a transfer check, and a method passport
 - persistent evidence progress across predictions, experiments, numeric work, transfer, and reflection
+- three causal mechanics experiments in every concept-first route, plus dedicated planning, bandit, return, and TD-control labs
 - light and dark themes
 - responsive course navigation for mobile and desktop
 

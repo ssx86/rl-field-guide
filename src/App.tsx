@@ -32,6 +32,8 @@ export function App() {
             addEvidence("planning", "experiment");
             addEvidence("planning", "numeric");
           }}
+          onTransferPassed={() => addEvidence("planning", "transfer")}
+          onReflectionSaved={() => addEvidence("planning", "reflection")}
         />
       </Suspense>
     );

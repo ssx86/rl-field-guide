@@ -68,10 +68,13 @@ describe("RL Field Guide", () => {
     const user = await openAndUnlockLesson();
 
     await user.click(screen.getByRole("button", { name: "Run one sweep" }));
+    await user.click(screen.getByRole("radio", { name: "Policy iteration" }));
+    await user.click(screen.getByRole("button", { name: "Check planning transfer" }));
+    await user.click(screen.getByRole("button", { name: "I can explain planning plainly" }));
     await user.click(screen.getByRole("button", { name: /RL Field Guide/ }));
 
     const notebook = screen.getByRole("complementary", { name: "Evidence notebook" });
-    expect(within(notebook).getByText("3 / 5")).toBeInTheDocument();
+    expect(within(notebook).getByText("5 / 5")).toBeInTheDocument();
     expect(within(notebook).getByText("Predictions checked").nextSibling).toHaveTextContent("1");
     expect(within(notebook).getByText("Formulas used with numbers").nextSibling).toHaveTextContent("1");
   });
@@ -112,6 +115,9 @@ describe("RL Field Guide", () => {
     await user.click(screen.getByRole("button", { name: "Open Deep Value Methods from course map" }));
     expect(await screen.findByRole("heading", { name: "When a Table Stops Fitting" })).toBeInTheDocument();
     expect(screen.getByText("DQN stabilizes a moving regression problem with replay and a target network.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "DQN stability workbench" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Run causal trace" }));
+    expect(screen.getByText("5.30", { selector: "strong" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Worked examples" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Counterexample" })).toBeInTheDocument();
   });
