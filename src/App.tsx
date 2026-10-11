@@ -1,7 +1,15 @@
+import { useState } from "react";
+import { HomeScreen } from "@/components/home-screen";
+import { LessonScreen } from "@/components/lesson-screen";
+import { useTheme } from "@/hooks/use-theme";
+
 export function App() {
-  return (
-    <main className="min-h-[100dvh] bg-background text-foreground">
-      <h1>RL Field Guide</h1>
-    </main>
-  );
+  const [screen, setScreen] = useState<"home" | "lesson">("home");
+  const { theme, toggleTheme } = useTheme();
+
+  if (screen === "lesson") {
+    return <LessonScreen theme={theme} onToggleTheme={toggleTheme} onOpenHome={() => setScreen("home")} />;
+  }
+
+  return <HomeScreen theme={theme} onToggleTheme={toggleTheme} onBegin={() => setScreen("lesson")} />;
 }
