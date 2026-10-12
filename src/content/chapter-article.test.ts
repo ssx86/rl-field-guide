@@ -5,6 +5,8 @@ import { PART_TWO_ARTICLES } from "@/content/chapters/part-2";
 import { PART_THREE_ARTICLES } from "@/content/chapters/part-3";
 import { PART_FOUR_ARTICLES } from "@/content/chapters/part-4";
 import { PART_FIVE_ARTICLES } from "@/content/chapters/part-5";
+import { PART_SIX_ARTICLES } from "@/content/chapters/part-6";
+import { PART_SEVEN_ARTICLES } from "@/content/chapters/part-7";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
@@ -82,6 +84,25 @@ describe.each([
   it("matches the curriculum and supplies complete teaching evidence", () => {
     const expected = CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug);
     expect(articles.map((chapter) => chapter.slug)).toEqual(expected);
+    for (const chapter of articles) {
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
+      expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
+      expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
+      expect(articleWords(chapter)).toBeGreaterThan(500);
+    }
+  });
+});
+
+describe.each([
+  ["data", PART_SIX_ARTICLES],
+  ["structure", PART_SEVEN_ARTICLES],
+] as const)("%s long-form chapter articles", (part, articles) => {
+  it("matches the curriculum and teaches each family beyond a name check", () => {
+    expect(articles.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug));
     for (const chapter of articles) {
       expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
