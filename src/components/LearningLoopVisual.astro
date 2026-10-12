@@ -1,0 +1,15 @@
+---
+interface Props { language: "en" | "zh" }
+const { language } = Astro.props;
+const labels = language === "zh"
+  ? ["观察情境", "选择动作", "环境变化", "收到证据", "更新行为"]
+  : ["See a situation", "Choose an action", "World changes", "Receive evidence", "Update behavior"];
+---
+
+<figure class="loop-visual" aria-label={language === "zh" ? "强化学习交互闭环" : "Reinforcement learning interaction loop"}>
+  <div class="loop-core"><span>RL</span><small>{language === "zh" ? "反复决策" : "repeated decisions"}</small></div>
+  <div class="loop-orbit">
+    {labels.map((label, index) => <div class={`loop-node loop-node-${index + 1}`}><span>{String(index + 1).padStart(2, "0")}</span>{label}</div>)}
+  </div>
+  <figcaption>{language === "zh" ? "重点不是某个算法，而是动作与后果构成的闭环。" : "The loop—not any single algorithm—is the foundation."}</figcaption>
+</figure>

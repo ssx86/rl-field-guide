@@ -1,0 +1,22 @@
+---
+interface Props { language: "en" | "zh" }
+const { language } = Astro.props;
+const t = language === "zh" ? {
+  root: "完整模型已知吗？", yes: "已知", no: "未知", plan: "规划 / 搜索", data: "只能获得经验", one: "一次决策", seq: "连续决策", bandit: "老虎机", learn: "MC / TD / 控制", scale: "状态太多？", deep: "深度价值 / 策略学习",
+} : {
+  root: "Is the full model known?", yes: "Yes", no: "No", plan: "Plan / search", data: "Experience only", one: "One decision", seq: "Sequential", bandit: "Bandits", learn: "MC / TD / control", scale: "Too many states?", deep: "Deep value / policy learning",
+};
+---
+
+<div class="method-map" role="img" aria-label={language === "zh" ? "强化学习方法选择地图" : "Reinforcement learning method selection map"}>
+  <div class="method-root">{t.root}</div>
+  <div class="method-split">
+    <div><span>{t.yes}</span><strong>{t.plan}</strong></div>
+    <div><span>{t.no}</span><strong>{t.data}</strong></div>
+  </div>
+  <div class="method-lower">
+    <div><small>{t.one}</small><strong>{t.bandit}</strong></div>
+    <div><small>{t.seq}</small><strong>{t.learn}</strong></div>
+    <div><small>{t.scale}</small><strong>{t.deep}</strong></div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+---
+import GuideHeader from "@/components/GuideHeader.astro";
+import LearningLoopVisual from "@/components/LearningLoopVisual.astro";
+import MethodMap from "@/components/MethodMap.astro";
+import { COURSE, LANGUAGES, type Language } from "@/content/bilingual-course";
+import GuideLayout from "@/layouts/GuideLayout.astro";
+
+export function getStaticPaths() {
+  return LANGUAGES.map((lang) => ({ params: { lang }, props: { language: lang } }));
+}
+
+const { language } = Astro.props as { language: Language };
+const course = COURSE[language];
+const alternateLanguage: Language = language === "en" ? "zh" : "en";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const homeHref = `${base}/${language}/`;
+const startHref = `${base}/${language}/learn/${course.lessons[0].id}/`;
+---
+
+<GuideLayout title={`${course.title} · ${course.brand}`} description={course.introduction} language={language} canonicalPath={homeHref}>
+  <GuideHeader language={language} brand={course.brand} homeHref={homeHref} alternateHref={`${base}/${alternateLanguage}/`} alternateLabel={course.labels.language} themeLabel={course.labels.theme} />
+
+  <main class="course-home">
+    <section class="course-hero">
+      <div class="course-hero-copy">
+        <p class="instrument-label">{course.labels.zeroStart} · {course.lessons.length} {language === "zh" ? "课" : "lessons"}</p>
+        <h1>{course.title}</h1>
+        <p class="course-strapline">{course.strapline}</p>
+        <p class="course-intro">{course.introduction}</p>
+        <div class="hero-actions">
+          <a class="primary-link" href={startHref}>{course.startLabel}<span>→</span></a>
+          <a class="text-link" href="#course-route">{course.routeLabel}<span>↓</span></a>
+        </div>
+        <div class="course-promises" aria-label={course.promiseTitle}>
+          <strong>{course.promiseTitle}</strong>
+          <ul>{course.promises.map((promise) => <li>{promise}</li>)}</ul>
+        </div>
+      </div>
+      <LearningLoopVisual language={language} />
+    </section>
+
+    <section class="method-section" aria-labelledby="method-title">
+      <div class="section-heading">
+        <p class="instrument-label">01 · Learning method</p>
+        <h2 id="method-title">{course.methodTitle}</h2>
+      </div>
+      <div class="method-layout">
+        <ol class="method-steps">
+          {course.methodSteps.map((step, index) => (
+            <li><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{step.label}</h3><p>{step.note}</p></div></li>
+          ))}
+        </ol>
+        <MethodMap language={language} />
+      </div>
+    </section>
+
+    <section id="course-route" class="route-section" aria-labelledby="route-title">
+      <div class="section-heading route-heading">
+        <div><p class="instrument-label">02 · Structured route</p><h2 id="route-title">{course.routeLabel}</h2></div>
+        <p>{language === "zh" ? "先建立问题感，再加入公式；先覆盖完整地图，再逐步深入。" : "Problem sense before equations; a complete map before specialization."}</p>
+      </div>
+      <div class="lesson-roadmap">
+        {course.lessons.map((lesson, index) => (
+          <article class="roadmap-card">
+            <div class="roadmap-index"><span>{String(index + 1).padStart(2, "0")}</span><small>{lesson.stage}</small></div>
+            <div class="roadmap-copy">
+              <h3><a href={`${base}/${language}/learn/${lesson.id}/`}>{lesson.title}</a></h3>
+              <p>{lesson.subtitle}</p>
+              <div><span>{lesson.formulas.length === 0 ? (language === "zh" ? "无公式" : "No formula") : `${lesson.formulas.length} ${language === "zh" ? "个公式" : "formula"}`}</span><span>2 {language === "zh" ? "个完整例子" : "worked examples"}</span></div>
+            </div>
+            <a class="roadmap-open" href={`${base}/${language}/learn/${lesson.id}/`} aria-label={`${course.labels.lesson} ${index + 1}: ${lesson.title}`}>→</a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</GuideLayout>

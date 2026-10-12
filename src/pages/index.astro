@@ -1,0 +1,20 @@
+---
+import GuideLayout from "@/layouts/GuideLayout.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<GuideLayout title="RL Field Guide" description="A bilingual, zero-to-practice reinforcement learning course." language="en" canonicalPath={`${base}/`}>
+  <main class="language-gate">
+    <div class="language-gate-card">
+      <span class="guide-brand-mark" aria-hidden="true">RL</span>
+      <p class="instrument-label">RL FIELD GUIDE · 强化学习指南</p>
+      <h1>Choose your learning language<br /><span>选择学习语言</span></h1>
+      <p>Both routes contain the same lessons, examples, formulas, and interactive evidence.</p>
+      <p>两个版本拥有相同的课程结构、例子、公式与交互证据。</p>
+      <div class="language-gate-actions">
+        <a class="primary-link" href={`${base}/en/`}>Continue in English <span>→</span></a>
+        <a class="secondary-link" href={`${base}/zh/`}>使用中文学习 <span>→</span></a>
+      </div>
+    </div>
+  </main>
+</GuideLayout>

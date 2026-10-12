@@ -1,53 +1,48 @@
 # RL Field Guide
 
-An evidence-first, English-language reinforcement learning tutorial. The course covers the full route from problem formulation and tabular learning through deep, policy-based, continuous-control, model-based, offline, safe, and human-feedback methods.
+A bilingual, zero-to-practice reinforcement-learning course built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components.
 
-## Run locally
+The site is prerendered at build time so every English and Chinese lesson ships as complete HTML. React is hydrated only for interactive evidence components.
 
-```bash
+## Local use
+
+```sh
 npm install
 npm run dev
 ```
 
-The development server uses `http://localhost:5180`.
-
-To run the verified production build:
-
-```bash
-npm run build
-npm run preview
-```
+The development server uses port `5180` and the GitHub Pages base path `/rl-field-guide/`.
 
 ## Quality checks
 
-```bash
+```sh
 npm test
 npm run lint
 npm run build
+npm run verify:static
 ```
 
-## Course coverage
+The build generates the language gate, two localized course maps, and every lesson in both languages under `dist/`.
 
-- foundations: agent–environment boundaries, state, observation, rewards, returns, policies, and value
-- exploration: bandits, epsilon-greedy, UCB, regret, and uncertainty
-- planning: Bellman backups, ordered calculation, value iteration, and planning versus learning
-- sampled learning: Monte Carlo, importance sampling, TD, n-step returns, eligibility traces, SARSA, Q-learning, and Double Q-learning
-- deep value methods: function approximation, DQN, replay, target networks, Double DQN, dueling networks, and prioritized replay
-- policy learning: REINFORCE, baselines, actor-critic, GAE, and PPO
-- continuous control: DDPG, TD3, SAC, action bounds, and evaluation
-- model-based RL: Dyna, MPC, MCTS, learned dynamics, and world models
-- modern practice: offline RL, imitation and inverse RL, hierarchical and multi-agent RL, POMDPs, safety, reward hacking, reproducibility, and RLHF
-- challenge lab and connected formula atlas
+## Learning route
 
-Every chapter includes:
+The 16-lesson route starts before formal RL vocabulary and builds in prerequisite order:
 
-- prediction gate before evidence is revealed
-- mechanism-first explanations and correct rendered formulas
-- at least two worked examples and one counterexample
-- method comparisons, boundaries, a transfer check, and a method passport
-- persistent evidence progress across predictions, experiments, numeric work, transfer, and reflection
-- three causal mechanics experiments in every concept-first route, plus dedicated planning, bandit, return, and TD-control labs
-- light and dark themes
-- responsive course navigation for mobile and desktop
+1. recognizing sequential decision problems
+2. the agent–environment interaction loop
+3. return, discounting, and termination
+4. bandits and exploration
+5. MDPs, policies, and values
+6. planning with a known model
+7. Monte Carlo and temporal-difference learning
+8. SARSA, Q-learning, and control
+9. deep value learning and DQN
+10. policy gradients, actor–critic, and PPO
+11. continuous control and model-based RL
+12. where RL enters the LLM post-training pipeline
+13. reward models and PPO-style RLHF
+14. DPO, online preference learning, and RLAIF
+15. RLVR, GRPO, process supervision, and reasoning models
+16. offline data, safety, robust evaluation, and deployment boundaries
 
-The existing `qlearning` project is not modified by this application.
+Every lesson has the same English and Chinese structure, at least two worked examples, a misconception boundary, a transfer check, and formula rendering only after the underlying quantities have been introduced.

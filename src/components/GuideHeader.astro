@@ -1,0 +1,28 @@
+---
+import type { Language } from "@/content/bilingual-course";
+
+interface Props {
+  language: Language;
+  brand: string;
+  alternateHref: string;
+  alternateLabel: string;
+  homeHref: string;
+  themeLabel: string;
+}
+
+const { brand, alternateHref, alternateLabel, homeHref, themeLabel } = Astro.props;
+---
+
+<header class="guide-header">
+  <a class="guide-brand" href={homeHref} aria-label={`${brand} home`}>
+    <span class="guide-brand-mark" aria-hidden="true">RL</span>
+    <span>{brand}</span>
+  </a>
+  <div class="guide-header-actions">
+    <a class="guide-control" href={alternateHref}>{alternateLabel}</a>
+    <button class="guide-control" type="button" data-theme-toggle aria-label={themeLabel}>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.64 5.64 7.2 7.2M16.8 16.8l1.56 1.56M18.36 5.64 16.8 7.2M7.2 16.8l-1.56 1.56"/><circle cx="12" cy="12" r="4"/></svg>
+      <span class="sr-only">{themeLabel}</span>
+    </button>
+  </div>
+</header>
