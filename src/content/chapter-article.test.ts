@@ -7,6 +7,7 @@ import { PART_FOUR_ARTICLES } from "@/content/chapters/part-4";
 import { PART_FIVE_ARTICLES } from "@/content/chapters/part-5";
 import { PART_SIX_ARTICLES } from "@/content/chapters/part-6";
 import { PART_SEVEN_ARTICLES } from "@/content/chapters/part-7";
+import { PART_EIGHT_ARTICLES } from "@/content/chapters/part-8";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
@@ -85,6 +86,22 @@ describe.each([
     const expected = CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug);
     expect(articles.map((chapter) => chapter.slug)).toEqual(expected);
     for (const chapter of articles) {
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
+      expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
+      expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
+      expect(articleWords(chapter)).toBeGreaterThan(500);
+    }
+  });
+});
+
+describe("reliability long-form chapter articles", () => {
+  it("covers objective, constraints, experiments, and systems in curriculum order", () => {
+    expect(PART_EIGHT_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === "reliability").map((chapter) => chapter.slug));
+    for (const chapter of PART_EIGHT_ARTICLES) {
       expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
