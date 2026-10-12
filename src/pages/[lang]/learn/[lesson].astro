@@ -26,6 +26,13 @@ const previous = course.lessons[lessonIndex - 1];
 const next = course.lessons[lessonIndex + 1];
 const prerequisites = lesson.prerequisites.map((id) => course.lessons.find((item) => item.id === id)).filter(Boolean);
 const reading = getLearningLab(language, lesson.id);
+const chapterBridge = previous
+  ? language === "zh"
+    ? `上一课先解决了“${previous.title}”。这一课沿着同一条因果链往前走：${lesson.subtitle}`
+    : `The previous chapter established ${previous.title.toLowerCase()}. This chapter follows the same causal thread: ${lesson.subtitle}`
+  : language === "zh"
+    ? "这一课先不讲算法。我们从任务本身开始，判断它是否真的需要从连续后果中学习。"
+    : "This first chapter does not begin with an algorithm. It begins by asking whether the task actually requires learning from a sequence of consequences.";
 ---
 
 <GuideLayout title={`${lesson.title} · ${course.brand}`} description={lesson.outcome} language={language} canonicalPath={lessonHref} alternatePath={`${base}/${alternateLanguage}/learn/${lesson.id}/`}>
@@ -72,10 +79,13 @@ const reading = getLearningLab(language, lesson.id);
 
       <section id="scenario" class="lesson-section story-section" aria-labelledby="story-title">
         <p class="instrument-label">01 · {course.labels.story}</p>
-        <h2 id="story-title">{language === "zh" ? "先把问题放进一个能看见后果的场景" : "Put the question in a situation with visible consequences"}</h2>
-        <p class="story-lead">{lesson.story}</p>
-        <div class="causal-strip" aria-label={language === "zh" ? "因果学习链" : "Causal learning chain"}>
-          {lesson.concepts.map((concept, index) => <div><span>{String(index + 1).padStart(2, "0")}</span><strong>{concept.title}</strong></div>)}
+        <h2 id="story-title">{language === "zh" ? "这一课为什么接在这里" : "Why this question comes next"}</h2>
+        <div class="longform-prose">
+          <p class="chapter-bridge">{chapterBridge}</p>
+          <p>{lesson.story}</p>
+          <p>{language === "zh"
+            ? `先别急着记“${lesson.concepts[0].title}”这样的名字。下面的图会把参与者、信息和后果放在同一个画面里；随后再用数字走一遍，概念才会正式出现。`
+            : `Do not memorize names such as “${lesson.concepts[0].title}” yet. The diagram below puts the actors, information, and consequences in one view. A worked example will then make the relationship concrete before the terminology is introduced.`}</p>
         </div>
       </section>
 
@@ -86,26 +96,38 @@ const reading = getLearningLab(language, lesson.id);
       <section id="example" class="lesson-section" aria-labelledby="examples-title">
         <p class="instrument-label">03 · {course.labels.examples}</p>
         <h2 id="examples-title">{language === "zh" ? "用一组数字把图里的关系走一遍" : "Walk through the diagram with concrete numbers"}</h2>
+        <div class="longform-prose section-lead">
+          <p>{language === "zh"
+            ? "图示说明各部分怎样相连，数字例子则负责暴露每一步到底用了什么。计算会完整展开；答案直接写在页面上，不需要点击揭晓。"
+            : "The diagram shows how the pieces connect. The worked example now exposes what each step actually uses. Every calculation stays visible on the page; there is nothing to unlock."}</p>
+        </div>
         <StaticEvidence language={language} reading={reading} />
-        <div class="worked-grid">
+        <div class="example-continuation longform-prose">
           {lesson.examples.slice(1).map((example, exampleIndex) => (
-            <article class="worked-card">
-              <div class="worked-number">{language === "zh" ? "情境" : "SCENARIO"} {String(exampleIndex + 1).padStart(2, "0")}</div>
+            <section class="prose-subsection">
+              <p class="prose-kicker">{language === "zh" ? "换一个情境" : "A second situation"} · {String(exampleIndex + 1).padStart(2, "0")}</p>
               <h3>{example.title}</h3>
               <p>{example.setup}</p>
               <ol>{example.steps.map((step) => <li>{step}</li>)}</ol>
-              <strong>{example.result}</strong>
-            </article>
+              <p><strong>{language === "zh" ? "结果：" : "Result: "}</strong>{example.result}</p>
+            </section>
           ))}
         </div>
       </section>
 
       <section class="lesson-section" aria-labelledby="ideas-title">
         <p class="instrument-label">04 · {course.labels.ideas}</p>
-        <h2 id="ideas-title">{language === "zh" ? "用刚才的证据给概念命名" : "Name the ideas you just used"}</h2>
-        <div class="concept-list">
+        <h2 id="ideas-title">{language === "zh" ? "现在再给刚才的关系命名" : "Now name the relationships you have already used"}</h2>
+        <div class="longform-prose">
+          <p>{language === "zh"
+            ? "前面的场景、图示和计算已经把机制走完了。下面这些术语只是为已经看见的关系提供稳定名称，方便后续章节继续使用。"
+            : "The situation, diagram, and calculation have already exposed the mechanism. The terms below give stable names to those relationships so later chapters can reuse them without starting over."}</p>
           {lesson.concepts.map((concept, index) => (
-            <article><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{concept.title}</h3><p>{concept.body}</p></div></article>
+            <section class="prose-subsection">
+              <p class="prose-kicker">{String(index + 1).padStart(2, "0")}</p>
+              <h3>{concept.title}</h3>
+              <p>{concept.body}</p>
+            </section>
           ))}
         </div>
       </section>
@@ -114,6 +136,11 @@ const reading = getLearningLab(language, lesson.id);
         <section class="lesson-section" aria-labelledby="formula-title">
           <p class="instrument-label">05 · {course.labels.formula}</p>
           <h2 id="formula-title">{language === "zh" ? "公式压缩的是你刚看过的因果步骤" : "The equation compresses the causal steps you just saw"}</h2>
+          <div class="longform-prose section-lead">
+            <p>{language === "zh"
+              ? "公式不会带来一套新的故事。它把已经出现的数量和关系压成一种可以检查、推导和实现的写法；读公式时仍然可以逐项指回上面的例子。"
+              : "The equation does not introduce a second story. It compresses quantities and relationships that have already appeared into a form that can be checked, derived, and implemented. Each symbol should still point back to the example above."}</p>
+          </div>
           <div class="formula-list">
             {lesson.formulas.map((formula) => (
               <article>
@@ -126,8 +153,15 @@ const reading = getLearningLab(language, lesson.id);
         </section>
       ) : null}
 
-      <section id="check-title" class="boundary-grid single" aria-label={course.labels.misconception}>
-        <article class="trap-card"><p class="instrument-label">{course.labels.misconception}</p><h2>{lesson.title}: {language === "zh" ? "边界检查" : "boundary check"}</h2><p>{lesson.misconception}</p></article>
+      <section id="check-title" class="lesson-section boundary-section" aria-label={course.labels.misconception}>
+        <p class="instrument-label">06 · {course.labels.misconception}</p>
+        <h2>{language === "zh" ? "这个结论到哪里会失效" : "Where this conclusion stops working"}</h2>
+        <div class="longform-prose">
+          <p>{language === "zh"
+            ? "一个方法只有在前提成立时才有意义。读完本课前，把下面这条边界和刚才的成功例子放在一起看。"
+            : "A method is useful only while its assumptions hold. Before leaving the chapter, read this boundary beside the successful example above."}</p>
+        </div>
+        <article class="trap-card"><h3>{lesson.title}</h3><p>{lesson.misconception}</p></article>
       </section>
 
       {lesson.references?.length ? (

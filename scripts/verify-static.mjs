@@ -39,6 +39,10 @@ for (const language of ["en", "zh"]) {
     const html = readFileSync(join(rootPath, page), "utf8");
     assert(html.includes("knowledge-diagram"), `${page} is missing its core knowledge diagram`);
     assert(html.includes("static-evidence"), `${page} is missing its visible worked example`);
+    assert(html.includes("longform-prose"), `${page} is missing its continuous article prose`);
+    assert(!html.includes("causal-strip"), `${page} still presents the opening as a slide strip`);
+    assert(!html.includes("concept-list"), `${page} still presents explanation as a concept-card list`);
+    assert(!html.includes("worked-grid"), `${page} still presents the second example as a card grid`);
     assert(!html.includes("<astro-island"), `${page} must not ship an interactive lesson island`);
     assert(!html.includes("evidence-stepper"), `${page} still contains the old reveal interaction`);
   }
