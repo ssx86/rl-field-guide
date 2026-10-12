@@ -1,8 +1,12 @@
 # RL Field Guide
 
-A bilingual, zero-to-practice reinforcement-learning course built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components.
+An English-only, zero-start reading course that covers reinforcement learning from problem framing through modern language-model post-training. It is built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components, and runs independently on port `5180`.
 
-The site is prerendered at build time so every English and Chinese lesson ships as complete HTML. React is hydrated only for interactive evidence components.
+The published route contains 46 chapters in nine connected parts. Every chapter is prerendered as complete HTML and follows one evidence-first sequence:
+
+`situation → semantic diagram → worked evidence → mechanism → equation when useful → validity boundary → next question`
+
+The course deliberately names methods only after their job is visible. It includes tabular RL, deep value and policy methods, exploration and memory, model-based RL, imitation and offline RL, hierarchical and multi-agent RL, safety and evaluation, RL systems, RLHF, direct preference objectives, RLAIF, RLVR, GRPO, test-time compute, and method selection.
 
 ## Local use
 
@@ -11,38 +15,20 @@ npm install
 npm run dev
 ```
 
-The development server uses port `5180` and the GitHub Pages base path `/rl-field-guide/`.
+The development server uses `http://localhost:5180/rl-field-guide/`.
 
 ## Quality checks
 
 ```sh
-npm test
+npm test -- --run
 npm run lint
 npm run build
 npm run verify:static
+python scripts/audit-browser.py
 ```
 
-The build generates the language gate, two localized course maps, and every lesson in both languages under `dist/`.
+The build produces 48 static pages: the root redirect, the English course map, and 46 chapters. The verification scripts enforce route order, long-form depth, major terminology coverage, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, theme behavior, and document-level overflow checks at four responsive widths.
 
-## Learning route
+## Evidence boundary
 
-The 16-lesson route starts before formal RL vocabulary and builds in prerequisite order:
-
-1. recognizing sequential decision problems
-2. the agent–environment interaction loop
-3. return, discounting, and termination
-4. bandits and exploration
-5. MDPs, policies, and values
-6. planning with a known model
-7. Monte Carlo and temporal-difference learning
-8. SARSA, Q-learning, and control
-9. deep value learning and DQN
-10. policy gradients, actor–critic, and PPO
-11. continuous control and model-based RL
-12. where RL enters the LLM post-training pipeline
-13. reward models and PPO-style RLHF
-14. DPO, online preference learning, and RLAIF
-15. RLVR, GRPO, process supervision, and reasoning models
-16. offline data, safety, robust evaluation, and deployment boundaries
-
-Every lesson has the same English and Chinese structure, at least two worked examples, a misconception boundary, a transfer check, and formula rendering only after the underlying quantities have been introduced.
+A passing build proves that the course artifact is internally consistent and browser-readable. It does not prove that a learner has mastered RL, that every research branch is settled, or that tutorial results justify production deployment. The final chapters make those limits explicit.

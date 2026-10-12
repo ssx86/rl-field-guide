@@ -1,0 +1,32 @@
+---
+import type { ChapterArticle } from "@/content/chapter-article";
+
+interface Props {
+  diagram: ChapterArticle["diagram"];
+  slug: string;
+}
+
+const { diagram, slug } = Astro.props;
+---
+
+<figure class="knowledge-diagram diagram-flow" aria-labelledby={`diagram-title-${slug}`}>
+  <header>
+    <div>
+      <p class="instrument-label">Core diagram</p>
+      <h2 id={`diagram-title-${slug}`}>{diagram.title}</h2>
+    </div>
+  </header>
+  <ol class="diagram-items">
+    {diagram.items.map((item, index) => (
+      <li>
+        <span class="diagram-index">{String(index + 1).padStart(2, "0")}</span>
+        <div class="diagram-copy">
+          <strong>{item.label}</strong>
+          <b>{item.value}</b>
+          <small>{item.note}</small>
+        </div>
+      </li>
+    ))}
+  </ol>
+  <figcaption>{diagram.caption}</figcaption>
+</figure>

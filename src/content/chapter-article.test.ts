@@ -9,6 +9,7 @@ import { PART_SIX_ARTICLES } from "@/content/chapters/part-6";
 import { PART_SEVEN_ARTICLES } from "@/content/chapters/part-7";
 import { PART_EIGHT_ARTICLES } from "@/content/chapters/part-8";
 import { PART_NINE_ARTICLES } from "@/content/chapters/part-9";
+import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
@@ -128,6 +129,38 @@ describe("language-model long-form chapter articles", () => {
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
       expect(articleWords(chapter)).toBeGreaterThan(500);
     }
+  });
+});
+
+describe("complete article collection", () => {
+  it("provides exactly one article for every curriculum chapter in route order", () => {
+    expect(CHAPTER_ARTICLES).toHaveLength(46);
+    expect(CHAPTER_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.map((chapter) => chapter.slug));
+    expect(new Set(CHAPTER_ARTICLES.map((chapter) => chapter.slug)).size).toBe(46);
+  });
+
+  it("keeps the major RL method families and modern post-training boundaries in the published prose", () => {
+    const corpus = JSON.stringify(CHAPTER_ARTICLES).toLowerCase();
+    const requiredTerms = [
+      "markov decision process", "bellman", "policy iteration", "value iteration",
+      "monte carlo", "td(0)", "eligibility traces", "sarsa", "expected sarsa",
+      "q-learning", "double q-learning", "importance sampling", "deadly triad",
+      "linear value", "neural function", "dqn", "double dqn", "dueling",
+      "prioritized replay", "distributional", "noisy", "rainbow", "reinforce",
+      "policy gradient", "actor–critic", "a2c", "a3c", "gae", "natural gradient",
+      "trpo", "ppo", "ddpg", "td3", "sac", "ape-x", "impala", "r2d2",
+      "pomdp", "belief", "curiosity", "rnd", "reward redistribution", "hindsight",
+      "mcts", "alphazero", "dyna", "mpc", "pets", "mbpo", "dreamer", "muzero",
+      "behavior cloning", "dagger", "inverse rl", "maximum entropy", "gail",
+      "bcq", "cql", "iql", "decision transformer", "fqe", "doubly robust",
+      "options", "maxq", "vdn", "qmix", "maddpg", "meta-rl", "sim-to-real",
+      "reward shaping", "specification gaming", "cmdp", "cpo", "cvar",
+      "random seeds", "checkpoints", "sft", "rlhf", "dpo", "ipo", "kto",
+      "orpo", "simpo", "rlaif", "constitutional", "rlvr", "grpo",
+      "process reward", "outcome reward", "test-time compute", "distillation",
+    ];
+
+    for (const term of requiredTerms) expect(corpus, `missing ${term}`).toContain(term);
   });
 });
 

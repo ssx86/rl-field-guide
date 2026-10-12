@@ -4,8 +4,8 @@ import type { Language } from "@/content/bilingual-course";
 interface Props {
   language: Language;
   brand: string;
-  alternateHref: string;
-  alternateLabel: string;
+  alternateHref?: string;
+  alternateLabel?: string;
   homeHref: string;
   themeLabel: string;
 }
@@ -21,7 +21,7 @@ const lightLabel = language === "zh" ? "切换到亮色" : "Switch to light";
     <span>{brand}</span>
   </a>
   <div class="guide-header-actions">
-    <a class="guide-control" href={alternateHref}>{alternateLabel}</a>
+    {alternateHref && alternateLabel ? <a class="guide-control" href={alternateHref}>{alternateLabel}</a> : null}
     <button class="guide-control theme-control" type="button" data-theme-toggle data-dark-label={darkLabel} data-light-label={lightLabel} aria-label={themeLabel} aria-pressed="false">{darkLabel}</button>
   </div>
 </header>

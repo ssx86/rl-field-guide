@@ -9,13 +9,13 @@ interface Props {
   description: string;
   language: Language;
   canonicalPath: string;
-  alternatePath: string;
+  alternatePath?: string;
 }
 
 const { title, description, language, canonicalPath, alternatePath } = Astro.props;
 const htmlLang = language === "zh" ? "zh-CN" : "en";
 const canonical = new URL(canonicalPath, Astro.site);
-const alternate = new URL(alternatePath, Astro.site);
+const alternate = alternatePath ? new URL(alternatePath, Astro.site) : undefined;
 const alternateLang = language === "zh" ? "en" : "zh-CN";
 ---
 
@@ -27,7 +27,7 @@ const alternateLang = language === "zh" ? "en" : "zh-CN";
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f5f6f4" data-theme-color />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={alternateLang} href={alternate} />
+    {alternate ? <link rel="alternate" hreflang={alternateLang} href={alternate} /> : null}
     <link rel="alternate" hreflang={htmlLang} href={canonical} />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <title>{title}</title>

@@ -17,15 +17,17 @@ function assert(condition, message) {
 }
 
 const pages = collect(rootPath, "index.html");
-assert(pages.length === 35, `Expected 35 prerendered pages, found ${pages.length}`);
+assert(pages.length === 48, `Expected 48 prerendered pages, found ${pages.length}`);
+assert(!existsSync(join(rootPath, "zh")), "The English-only product must not generate a Chinese route");
 
 const requiredPages = [
-  ["en/index.html", 'lang="en"', "Reinforcement learning, from zero to the real world"],
-  ["zh/index.html", 'lang="zh-CN"', "从零开始，直到真实世界的强化学习"],
-  ["en/learn/before-rl/index.html", "Before RL: what kind of problem is this?", "Nothing—begin here"],
-  ["zh/learn/before-rl/index.html", "学 RL 之前：这到底是哪一类问题？", "无需前置知识"],
-  ["en/learn/llm-rlhf/index.html", "RLHF under the microscope", "katex-display"],
-  ["zh/learn/llm-reasoning/index.html", "面向推理与可验证结果的 RL", "DeepSeekMath 与 GRPO"],
+  ["index.html", "Open the complete English course", "46 CHAPTERS"],
+  ["en/index.html", "A field guide to reinforcement learning", "Nine connected parts"],
+  ["en/learn/before-rl/index.html", "decide whether learning from consequences is needed", "No prior RL vocabulary required"],
+  ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
+  ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
+  ["en/learn/rlvr-grpo/index.html", "RLVR, process rewards, and GRPO", "group-relative"],
+  ["en/learn/method-selection/index.html", "deployment evidence is still missing", "claim strength"],
 ];
 
 for (const [page, ...needles] of requiredPages) {
@@ -33,19 +35,21 @@ for (const [page, ...needles] of requiredPages) {
   for (const needle of needles) assert(html.includes(needle), `${page} is missing prerendered content: ${needle}`);
 }
 
-for (const language of ["en", "zh"]) {
-  for (const lesson of ["before-rl", "interaction-loop", "return-and-time", "bandits", "mdp", "planning", "mc-and-td", "control", "deep-value", "policy-learning", "continuous-and-models", "llm-post-training", "llm-rlhf", "llm-preference", "llm-reasoning", "real-world-practice"]) {
-    const page = `${language}/learn/${lesson}/index.html`;
-    const html = readFileSync(join(rootPath, page), "utf8");
-    assert(html.includes("knowledge-diagram"), `${page} is missing its core knowledge diagram`);
-    assert(html.includes("static-evidence"), `${page} is missing its visible worked example`);
-    assert(html.includes("longform-prose"), `${page} is missing its continuous article prose`);
-    assert(!html.includes("causal-strip"), `${page} still presents the opening as a slide strip`);
-    assert(!html.includes("concept-list"), `${page} still presents explanation as a concept-card list`);
-    assert(!html.includes("worked-grid"), `${page} still presents the second example as a card grid`);
-    assert(!html.includes("<astro-island"), `${page} must not ship an interactive lesson island`);
-    assert(!html.includes("evidence-stepper"), `${page} still contains the old reveal interaction`);
-  }
+const lessonPages = collect(join(rootPath, "en", "learn"), "index.html");
+assert(lessonPages.length === 46, `Expected 46 English chapter pages, found ${lessonPages.length}`);
+
+for (const page of lessonPages) {
+  const html = readFileSync(page, "utf8");
+  const name = relative(rootPath, page);
+  assert(html.includes("knowledge-diagram"), `${name} is missing its semantic diagram`);
+  assert(html.includes("static-evidence"), `${name} is missing its worked example`);
+  assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
+  assert(html.includes("Original and official sources"), `${name} is missing source provenance`);
+  assert(html.includes("Where it stops working"), `${name} is missing its failure boundary`);
+  assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
+  assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
+  assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
+  assert(!html.includes("<astro-island"), `${name} must not depend on an interactive learning island`);
 }
 
 const brokenLinks = [];
@@ -60,4 +64,4 @@ for (const page of pages) {
 }
 
 assert(brokenLinks.length === 0, `Broken generated links:\n${brokenLinks.join("\n")}`);
-stdout.write(`Verified ${pages.length} prerendered pages, 32 reading lessons with diagrams, formulas, and internal links.\n`);
+stdout.write(`Verified ${pages.length} prerendered pages and all ${lessonPages.length} English long-form chapters.\n`);

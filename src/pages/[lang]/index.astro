@@ -2,90 +2,85 @@
 import GuideHeader from "@/components/GuideHeader.astro";
 import LearningLoopVisual from "@/components/LearningLoopVisual.astro";
 import MethodMap from "@/components/MethodMap.astro";
-import { COURSE, LANGUAGES, type Language } from "@/content/bilingual-course";
+import { CURRICULUM, PARTS } from "@/content/curriculum";
 import GuideLayout from "@/layouts/GuideLayout.astro";
 
 export function getStaticPaths() {
-  return LANGUAGES.map((lang) => ({ params: { lang }, props: { language: lang } }));
+  return [{ params: { lang: "en" } }];
 }
 
-const { language } = Astro.props as { language: Language };
-const course = COURSE[language];
-const alternateLanguage: Language = language === "en" ? "zh" : "en";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const homeHref = `${base}/${language}/`;
-const startHref = `${base}/${language}/learn/${course.lessons[0].id}/`;
-const stages = [
-  { id: "orientation", start: 0, end: 2, title: language === "zh" ? "先认清问题" : "Recognize the problem", note: language === "zh" ? "分清哪些问题需要序列决策，再建立最小交互循环。" : "Separate sequential decisions from simpler tasks, then build the interaction loop." },
-  { id: "foundations", start: 2, end: 4, title: language === "zh" ? "回报与探索" : "Return & exploration", note: language === "zh" ? "先学会比较长期结果，再研究未知选项。" : "Compare outcomes over time, then handle uncertain options." },
-  { id: "tabular", start: 4, end: 6, title: language === "zh" ? "已知模型下的规划" : "Plan with a known model", note: language === "zh" ? "把概率后果写成模型，并把远处奖励向前传。" : "Represent uncertain consequences and move distant value backward." },
-  { id: "experience", start: 6, end: 8, title: language === "zh" ? "从经验中学习" : "Learn from experience", note: language === "zh" ? "比较 MC、TD、SARSA 与 Q-learning 的目标。" : "Compare MC, TD, SARSA, and Q-learning targets." },
-  { id: "scaling", start: 8, end: 11, title: language === "zh" ? "扩大到函数与连续动作" : "Scale to functions & continuous actions", note: language === "zh" ? "从表格升级到共享函数、策略概率和学习模型。" : "Move from tables to shared functions, policy probabilities, and learned models." },
-  { id: "llm", start: 11, end: 15, title: language === "zh" ? "大模型后训练" : "LLM post-training", note: language === "zh" ? "沿一条回答追踪 SFT、RLHF、DPO 与可验证奖励。" : "Trace one response through SFT, RLHF, DPO, and verifiable rewards." },
-  { id: "practice", start: 15, end: 16, title: language === "zh" ? "真实世界验收" : "Real-world evidence", note: language === "zh" ? "用综合任务检查方法选择、安全和部署证据。" : "Use a capstone to check method choice, safety, and deployment evidence." },
-].map((stage) => ({ ...stage, lessons: course.lessons.slice(stage.start, stage.end) }));
+const homeHref = `${base}/en/`;
+const startHref = `${base}/en/learn/${CURRICULUM[0].slug}/`;
+const partRows = PARTS.map((part) => ({ ...part, chapters: CURRICULUM.filter((chapter) => chapter.part === part.id) }));
 ---
 
-<GuideLayout title={`${course.title} · ${course.brand}`} description={course.introduction} language={language} canonicalPath={homeHref} alternatePath={`${base}/${alternateLanguage}/`}>
-  <GuideHeader language={language} brand={course.brand} homeHref={homeHref} alternateHref={`${base}/${alternateLanguage}/`} alternateLabel={course.labels.language} themeLabel={course.labels.theme} />
+<GuideLayout title="RL Field Guide · A complete reading course" description="A 46-chapter, example-first field guide to reinforcement learning from sequential decisions through modern language-model post-training." language="en" canonicalPath={homeHref}>
+  <GuideHeader language="en" brand="RL FIELD GUIDE" homeHref={homeHref} themeLabel="Switch color theme" />
 
   <main id="main-content" class="course-home" tabindex="-1">
     <section class="course-hero">
       <div class="course-hero-copy">
-        <p class="instrument-label">{course.labels.zeroStart} · {course.lessons.length} {language === "zh" ? "课" : "lessons"}</p>
-        <h1>{course.title}</h1>
-        <p class="course-strapline">{course.strapline}</p>
-        <p class="course-intro">{course.introduction}</p>
+        <p class="instrument-label">Zero-start · 46 chapters · 9 parts</p>
+        <h1>A field guide to reinforcement learning</h1>
+        <p class="course-strapline">Begin with the decision. Watch the evidence move. Name the method only after its job is visible.</p>
+        <p class="course-intro">This is a reading course, not a stack of slides and not a catalog of acronyms. Every chapter connects to the previous question, begins with a concrete situation, works through numbers or procedure, introduces notation after its quantities have jobs, and ends by showing where the conclusion stops working.</p>
         <div class="hero-actions">
-          <a class="primary-link" href={startHref}>{course.startLabel}<span>→</span></a>
-          <a class="text-link" href="#course-route">{course.routeLabel}<span>↓</span></a>
+          <a class="primary-link" href={startHref}>Start with the problem<span>→</span></a>
+          <a class="text-link" href="#course-route">See the complete field map<span>↓</span></a>
         </div>
-        <div class="course-promises" aria-label={course.promiseTitle}>
-          <strong>{course.promiseTitle}</strong>
-          <ul>{course.promises.map((promise) => <li>{promise}</li>)}</ul>
+        <div class="course-promises" aria-label="Reading contract">
+          <strong>Reading contract</strong>
+          <ul>
+            <li>Continuous prose before terminology</li>
+            <li>One semantic diagram and one worked example per chapter</li>
+            <li>Equations tied back to visible quantities</li>
+            <li>Counterexamples, boundaries, and original sources</li>
+          </ul>
         </div>
       </div>
-      <LearningLoopVisual language={language} />
+      <LearningLoopVisual language="en" />
     </section>
 
     <section class="method-section" aria-labelledby="method-title">
       <div class="section-heading">
-        <p class="instrument-label">01 · {language === "zh" ? "学习方法" : "Learning method"}</p>
-        <h2 id="method-title">{course.methodTitle}</h2>
+        <p class="instrument-label">01 · How to read</p>
+        <h2 id="method-title">Use the same evidence loop in every chapter</h2>
       </div>
       <div class="method-layout">
         <ol class="method-steps">
-          {course.methodSteps.map((step, index) => (
-            <li><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{step.label}</h3><p>{step.note}</p></div></li>
-          ))}
+          <li><span>01</span><div><h3>Predict</h3><p>Commit to what you expect before the explanation makes the answer feel obvious.</p></div></li>
+          <li><span>02</span><div><h3>Trace</h3><p>Follow the state, action, feedback, and next consequence through one concrete case.</p></div></li>
+          <li><span>03</span><div><h3>Calculate</h3><p>Reproduce the numeric target or procedural decision with every intermediate step visible.</p></div></li>
+          <li><span>04</span><div><h3>Name</h3><p>Attach terminology and notation only after the mechanism already has meaning.</p></div></li>
+          <li><span>05</span><div><h3>Break</h3><p>Test the boundary with a counterexample, missing assumption, or unsupported state.</p></div></li>
         </ol>
-        <MethodMap language={language} />
+        <MethodMap language="en" />
       </div>
     </section>
 
     <section id="course-route" class="route-section" aria-labelledby="route-title">
       <div class="section-heading route-heading">
-        <div><p class="instrument-label">02 · {language === "zh" ? "课程路线" : "Structured route"}</p><h2 id="route-title">{course.routeLabel}</h2></div>
-        <p>{language === "zh" ? "先建立问题感，再加入公式；先覆盖完整地图，再逐步深入。" : "Problem sense before equations; a complete map before specialization."}</p>
+        <div><p class="instrument-label">02 · Complete curriculum</p><h2 id="route-title">Nine connected parts, not forty-six isolated topics</h2></div>
+        <p>Each part closes one unanswered question before opening the next. The route covers the major problem settings, method families, training signals, evaluation tools, system concerns, and language-model post-training boundaries.</p>
       </div>
       <div class="lesson-roadmap">
-        {stages.map((stage) => (
-          <section class="route-stage" aria-labelledby={`stage-${stage.id}`}>
-            <header><div><span>{String(stages.indexOf(stage) + 1).padStart(2, "0")}</span><h3 id={`stage-${stage.id}`}>{stage.title}</h3></div><p>{stage.note}</p><small>{stage.lessons.length} {language === "zh" ? "课" : stage.lessons.length === 1 ? "lesson" : "lessons"}</small></header>
-            {stage.lessons.map((lesson) => {
-              const index = course.lessons.indexOf(lesson);
-              const formulaCount = lesson.formulas.length;
-              const formulaLabel = formulaCount === 0 ? (language === "zh" ? "无公式" : "No formula") : language === "zh" ? `${formulaCount} 个公式` : `${formulaCount} ${formulaCount === 1 ? "formula" : "formulas"}`;
-              return (
-                <article class="roadmap-card">
-                  <a class="roadmap-link" href={`${base}/${language}/learn/${lesson.id}/`} aria-label={`${course.labels.lesson} ${index + 1}: ${lesson.title}`}>
-                    <div class="roadmap-index"><span>{String(index + 1).padStart(2, "0")}</span><small>{lesson.stage}</small></div>
-                    <div class="roadmap-copy"><h4>{lesson.title}</h4><p>{lesson.subtitle}</p><div><span>{formulaLabel}</span><span>{language === "zh" ? "1 张核心图解 + 2 个例子" : "1 core diagram + 2 examples"}</span></div></div>
-                    <span class="roadmap-open" aria-hidden="true">→</span>
-                  </a>
-                </article>
-              );
-            })}
+        {partRows.map((part, partIndex) => (
+          <section class="route-stage" aria-labelledby={`part-${part.id}`}>
+            <header>
+              <div><span>{String(partIndex + 1).padStart(2, "0")}</span><h3 id={`part-${part.id}`}>{part.title}</h3></div>
+              <p>{part.purpose}</p>
+              <small>{part.chapters.length} chapters</small>
+            </header>
+            {part.chapters.map((chapter) => (
+              <article class="roadmap-card">
+                <a class="roadmap-link" href={`${base}/en/learn/${chapter.slug}/`} aria-label={`Chapter ${chapter.order}: ${chapter.title}`}>
+                  <div class="roadmap-index"><span>{String(chapter.order).padStart(2, "0")}</span><small>Part {partIndex + 1}</small></div>
+                  <div class="roadmap-copy"><h4>{chapter.title}</h4><p>{chapter.purpose}</p><div><span>Core diagram</span><span>Worked example</span><span>Formula + boundary</span></div></div>
+                  <span class="roadmap-open" aria-hidden="true">→</span>
+                </a>
+              </article>
+            ))}
           </section>
         ))}
       </div>

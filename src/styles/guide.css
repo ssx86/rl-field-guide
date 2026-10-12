@@ -108,6 +108,7 @@
 .language-gate-card h1 span { color: var(--primary); }
 .language-gate-card > p:not(.instrument-label) { margin: 6px auto; max-width: 58ch; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
 .language-gate-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 32px; }
+.language-gate-actions.single-action { grid-template-columns: 1fr; }
 
 .course-home { max-width: 1500px; margin: 0 auto; padding: 0 28px 96px; }
 
@@ -242,8 +243,8 @@
 .evidence-result p { margin: 0; font-size: 12px; line-height: 1.55; }
 .evidence-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 
-.formula-list { display: grid; gap: 14px; margin-top: 28px; }
-.formula-list article { border: 1px solid var(--border); border-radius: 12px; padding: clamp(20px, 4vw, 34px); background: var(--card); }
+.formula-list { display: grid; min-width: 0; gap: 14px; margin-top: 28px; }
+.formula-list article { min-width: 0; border: 1px solid var(--border); border-radius: 12px; padding: clamp(20px, 4vw, 34px); background: var(--card); }
 .formula-render { max-width: 100%; padding: 18px 0 28px; overflow-x: auto; color: var(--foreground); font-size: clamp(13px, 2.2vw, 19px); }
 .formula-list p { margin: 6px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.65; }
 .formula-list p strong { color: var(--foreground); }
@@ -268,6 +269,7 @@
 .lesson-references h2 { margin: 8px 0 0; font-size: 20px; }
 .lesson-references ul { display: grid; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
 .lesson-references a { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--foreground); font-size: 12px; font-weight: 700; text-decoration: none; }
+.lesson-references a small { display: block; margin-top: 4px; color: var(--muted-foreground); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .lesson-references a:hover { border-color: var(--amber-border); background: var(--accent); color: var(--primary); }
 .lesson-next a { display: grid; align-content: start; border: 1px solid var(--border); border-radius: 12px; padding: 18px; color: var(--foreground); text-decoration: none; }
 .lesson-next a:hover { border-color: var(--amber-border); background: var(--accent); }
@@ -491,6 +493,10 @@
 .static-evidence-steps li:last-child { border-bottom: 1px solid var(--border); }
 .static-evidence-steps span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 900; }
 .static-evidence-steps p { margin: 0; color: var(--foreground); font-size: 13px; line-height: 1.65; }
+.static-evidence-steps strong { display: block; font-size: 13px; line-height: 1.5; }
+.static-evidence-steps code { display: block; margin: 6px 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; line-height: 1.65; white-space: normal; }
+.worked-result { display: grid; gap: 8px; margin: 20px 0 0; border-left: 3px solid var(--primary); padding: 10px 0 10px 16px; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
+.worked-result strong { color: var(--foreground); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .static-result { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; margin: 18px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
 .static-result strong { color: var(--success); text-transform: uppercase; }
 .reading-transfer { margin-top: 24px; border-left: 3px solid var(--primary); padding: 4px 0 4px 18px; }
