@@ -342,3 +342,183 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* Audited course behavior */
+.skip-link { position: fixed; z-index: 100; top: 8px; left: 12px; transform: translateY(-160%); border-radius: 8px; padding: 10px 14px; background: var(--foreground); color: var(--background); font-size: 13px; font-weight: 800; text-decoration: none; }
+.skip-link:focus-visible { transform: translateY(0); outline: 3px solid var(--ring); outline-offset: 2px; }
+.guide-header { padding-right: max(28px, env(safe-area-inset-right)); padding-left: max(28px, env(safe-area-inset-left)); }
+.guide-control { min-width: 44px; min-height: 44px; }
+.theme-control { width: auto; padding-inline: 13px; font-size: 11px; font-weight: 800; }
+[id] { scroll-margin-top: 80px; }
+
+.course-progress { display: grid; gap: 10px; max-width: 560px; margin-top: 24px; border: 1px solid var(--amber-border); border-radius: 12px; padding: 16px; background: var(--accent); }
+.course-progress > div:first-child { display: flex; justify-content: space-between; color: var(--foreground); font-size: 12px; }
+.course-progress > div:first-child span { font-weight: 800; }
+.course-progress > div:first-child strong { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; }
+.progress-track { height: 5px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--border) 70%, transparent); }
+.progress-track span { display: block; height: 100%; border-radius: inherit; background: var(--primary); transition: width 180ms ease; }
+.course-progress a { display: flex; justify-content: space-between; gap: 12px; color: var(--foreground); font-size: 13px; font-weight: 800; text-decoration: none; }
+.course-progress a:hover { color: var(--primary); }
+.course-progress small { color: var(--muted-foreground); font-size: 10px; line-height: 1.5; }
+
+.route-stage { display: grid; gap: 10px; margin-top: 28px; }
+.route-stage > header { display: grid; grid-template-columns: minmax(190px, .75fr) minmax(0, 1.4fr) auto; align-items: end; gap: 18px; padding: 0 4px 8px; }
+.route-stage > header > div { display: flex; align-items: center; gap: 10px; }
+.route-stage > header span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 800; }
+.route-stage > header h3 { margin: 0; font-size: 18px; }
+.route-stage > header p { margin: 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.55; }
+.route-stage > header small { color: var(--muted-foreground); font-size: 10px; font-weight: 800; white-space: nowrap; }
+.roadmap-card { display: block; padding: 0; }
+.roadmap-link { display: grid; grid-template-columns: 90px minmax(0, 1fr) 44px; align-items: center; gap: 22px; min-height: 116px; padding: 18px 20px; color: var(--foreground); text-decoration: none; }
+.roadmap-link:focus-visible { border-radius: 12px; outline: 3px solid var(--ring); outline-offset: 3px; }
+.roadmap-copy h4 { margin: 0; font-size: 16px; line-height: 1.45; }
+.roadmap-card[data-complete="true"] { border-color: color-mix(in srgb, var(--success) 55%, var(--border)); }
+.roadmap-card[data-complete="true"] .roadmap-index::after { content: "✓"; margin-left: 7px; color: var(--success); font-size: 12px; font-weight: 900; }
+
+.lesson-shell { min-width: 0; }
+.lesson-article { min-width: 0; }
+.lesson-rail { min-width: 0; }
+.lesson-rail-links a[data-complete="true"] span::after { content: " ✓"; color: var(--success); }
+.lesson-mobile-current, .lesson-mobile-menu { display: none; }
+.foundation-note { display: grid; grid-template-columns: 1fr 1fr; margin-top: 14px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface-subtle); }
+.foundation-note > div { padding: 14px 16px; }
+.foundation-note > div + div { border-left: 1px solid var(--border); }
+.foundation-note strong { color: var(--primary); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+.foundation-note p { margin: 6px 0 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.55; }
+.lesson-contract a { color: var(--foreground); text-underline-offset: 3px; }
+.lesson-sections { position: sticky; z-index: 6; top: 64px; display: flex; gap: 6px; margin: 24px 0 0; border: 1px solid var(--border); border-radius: 10px; padding: 6px; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(12px); }
+.lesson-sections a { flex: 1; border-radius: 7px; padding: 8px; color: var(--muted-foreground); font-size: 10px; font-weight: 800; text-align: center; text-decoration: none; text-transform: uppercase; }
+.lesson-sections a:hover, .lesson-sections a:focus-visible { background: var(--accent); color: var(--primary); outline: none; }
+
+.lab-stage { margin: 22px 0 0; border: 0; border-top: 1px solid var(--border); padding: 22px 0 0; }
+.lab-stage legend, .lab-stage h4 { margin: 0; padding: 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.lab-stage > p { margin: 10px 0 0; color: var(--foreground); font-size: 14px; line-height: 1.65; }
+.lab-options { display: grid; gap: 8px; margin: 14px 0; }
+.lab-options label { display: grid; grid-template-columns: 20px 1fr; align-items: start; gap: 10px; min-height: 48px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--card); color: var(--muted-foreground); cursor: pointer; }
+.lab-options label:hover { border-color: var(--amber-border); background: var(--accent); color: var(--foreground); }
+.lab-options label[data-selected="true"] { border-color: var(--primary); background: var(--accent); color: var(--foreground); }
+.lab-options label[data-result="correct"] { border-color: var(--success); }
+.lab-options label[data-result="incorrect"] { border-color: var(--danger); }
+.lab-options input { margin-top: 3px; accent-color: var(--primary); }
+.lab-options span { font-size: 12px; line-height: 1.5; }
+.prediction-comparison { border-left: 3px solid var(--primary); padding: 10px 13px; background: var(--accent); }
+.prediction-comparison span { color: var(--muted-foreground); font-size: 12px; }
+.inspect-stage[data-enabled="false"] { opacity: .55; }
+.evidence-hidden { color: var(--border); letter-spacing: .18em; }
+.lab-feedback { margin-top: 14px !important; border-left: 3px solid; padding: 10px 13px; font-size: 12px !important; }
+.lab-feedback.is-correct { border-color: var(--success); color: var(--success); }
+.lab-feedback.is-retry { border-color: var(--danger); color: var(--danger); }
+.boundary-grid.single { grid-template-columns: 1fr; }
+
+@media (max-width: 1050px) {
+  .lesson-shell { grid-template-columns: minmax(0, 1fr); }
+  .lesson-rail { width: 100%; max-width: 100%; overflow: visible; }
+  .lesson-rail-links { display: none !important; }
+  .lesson-mobile-current { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px; }
+  .lesson-mobile-current > a, .lesson-mobile-current > span { display: grid; min-width: 44px; min-height: 44px; place-items: center; border: 1px solid var(--border); border-radius: 8px; color: var(--foreground); text-decoration: none; }
+  .lesson-mobile-current > strong { min-width: 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; text-align: center; }
+  .lesson-mobile-current small { display: block; margin-top: 4px; overflow: hidden; color: var(--foreground); font-family: Arial, sans-serif; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .lesson-mobile-menu { display: block; margin-top: 8px; }
+  .lesson-mobile-menu summary { min-height: 44px; border-radius: 8px; padding: 12px 14px; background: var(--surface-subtle); color: var(--muted-foreground); font-size: 11px; font-weight: 800; cursor: pointer; }
+  .lesson-mobile-menu nav { display: grid; max-height: 50vh; margin-top: 8px; overflow-y: auto; }
+  .lesson-mobile-menu nav a { display: grid; grid-template-columns: 30px 1fr; gap: 8px; min-height: 44px; align-items: center; border-bottom: 1px solid var(--border); color: var(--foreground); font-size: 11px; text-decoration: none; }
+  .lesson-mobile-menu nav a[aria-current="page"] { color: var(--primary); font-weight: 800; }
+}
+
+@media (max-width: 720px) {
+  .guide-header { padding-right: max(16px, env(safe-area-inset-right)); padding-left: max(16px, env(safe-area-inset-left)); }
+  .theme-control { max-width: 112px; }
+  .route-stage > header { grid-template-columns: 1fr auto; align-items: start; }
+  .route-stage > header p { grid-column: 1 / -1; }
+  .roadmap-link { grid-template-columns: 60px minmax(0, 1fr) 36px; gap: 12px; min-height: 104px; padding: 15px 14px; }
+  .roadmap-open { min-width: 36px; }
+  .foundation-note { grid-template-columns: 1fr; }
+  .foundation-note > div + div { border-top: 1px solid var(--border); border-left: 0; }
+  .lesson-sections { top: 58px; overflow-x: auto; }
+  .lesson-sections a { min-width: 64px; }
+  .evidence-stepper-head { align-items: start; }
+  .lab-stage .inline-flex { width: 100%; }
+}
+
+/* Reading-first knowledge diagrams */
+.diagram-section { padding-top: 56px; }
+.knowledge-diagram {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: clamp(22px, 4vw, 36px);
+  background: var(--card);
+  box-shadow: var(--shadow-main);
+}
+.knowledge-diagram header { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.knowledge-diagram header h2 { max-width: 680px; margin: 8px 0 0; font-size: clamp(24px, 4vw, 38px); line-height: 1.12; letter-spacing: -.04em; }
+.diagram-items { display: grid; gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; }
+.diagram-items li { position: relative; min-width: 0; border: 1px solid var(--border); border-radius: 10px; padding: 18px; background: var(--surface-subtle); }
+.diagram-index { display: block; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 900; }
+.diagram-copy { display: grid; align-content: start; gap: 7px; margin-top: 18px; }
+.diagram-copy strong { font-size: 13px; line-height: 1.4; }
+.diagram-copy b { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: clamp(15px, 2vw, 20px); line-height: 1.35; overflow-wrap: anywhere; }
+.diagram-copy small { color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
+.knowledge-diagram figcaption { margin-top: 24px; border-left: 3px solid var(--primary); padding: 10px 0 10px 16px; color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
+
+.diagram-flow .diagram-items,
+.diagram-pipeline .diagram-items { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.diagram-flow .diagram-items li:not(:last-child)::after,
+.diagram-pipeline .diagram-items li:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; top: 50%; right: -20px; width: 26px; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 18px; font-weight: 900; text-align: center; transform: translateY(-50%); }
+.diagram-pipeline .diagram-items li { border-top: 3px solid var(--primary); }
+
+.diagram-compare .diagram-items { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.diagram-compare .diagram-items li:first-child { border-color: var(--amber-border); background: var(--accent); }
+
+.diagram-branch .diagram-items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.diagram-branch .diagram-items li:first-child { grid-column: 1 / -1; width: min(280px, 100%); justify-self: center; border-color: var(--amber-border); background: var(--accent); text-align: center; }
+.diagram-branch .diagram-items li:nth-child(2)::before,
+.diagram-branch .diagram-items li:nth-child(3)::before,
+.diagram-branch .diagram-items li:nth-child(4)::before { content: "↓"; position: absolute; top: -25px; left: 50%; color: var(--primary); font-size: 17px; font-weight: 900; transform: translateX(-50%); }
+
+.diagram-matrix .diagram-items { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.diagram-matrix .diagram-items li { min-height: 142px; }
+.diagram-matrix .diagram-items li:nth-child(1),
+.diagram-matrix .diagram-items li:nth-child(4) { border-color: var(--amber-border); }
+
+.diagram-bars .diagram-items { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
+.diagram-bars .diagram-items li { display: grid; grid-template-rows: auto auto; min-height: 210px; }
+.diagram-bars .diagram-items i { position: relative; display: block; height: 72px; align-self: end; overflow: hidden; border: 1px solid var(--border); border-radius: 7px; background: var(--card); }
+.diagram-bars .diagram-items i span { position: absolute; right: 0; bottom: 0; left: 0; height: var(--level); background: var(--primary); opacity: .78; }
+
+.static-evidence { margin-top: 28px; border: 1px solid var(--border); border-radius: 12px; padding: clamp(22px, 4vw, 34px); background: var(--card); }
+.static-evidence > header h3 { margin: 9px 0 0; font-size: 21px; }
+.static-evidence > header > p:last-child { max-width: 72ch; margin: 10px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
+.reading-question { margin-top: 24px; border: 1px solid var(--amber-border); border-radius: 10px; padding: 18px; background: var(--accent); }
+.reading-question > span,
+.reading-transfer > span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.reading-question > strong { display: block; margin-top: 8px; font-size: 14px; line-height: 1.6; }
+.reading-question p,
+.reading-transfer p { margin: 12px 0 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
+.reading-question p b,
+.reading-transfer p b { color: var(--foreground); }
+.static-evidence-steps { margin: 24px 0 0; padding: 0; list-style: none; }
+.static-evidence-steps li { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 10px; border-top: 1px solid var(--border); padding: 16px 0; }
+.static-evidence-steps li:last-child { border-bottom: 1px solid var(--border); }
+.static-evidence-steps span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 900; }
+.static-evidence-steps p { margin: 0; color: var(--foreground); font-size: 13px; line-height: 1.65; }
+.static-result { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; margin: 18px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
+.static-result strong { color: var(--success); text-transform: uppercase; }
+.reading-transfer { margin-top: 24px; border-left: 3px solid var(--primary); padding: 4px 0 4px 18px; }
+.reading-transfer h3 { margin: 8px 0 0; font-size: 16px; line-height: 1.5; }
+
+@media (max-width: 720px) {
+  .knowledge-diagram { padding: 20px 16px; }
+  .knowledge-diagram header { display: block; }
+  .diagram-flow .diagram-items,
+  .diagram-pipeline .diagram-items,
+  .diagram-branch .diagram-items,
+  .diagram-matrix .diagram-items,
+  .diagram-bars .diagram-items { grid-template-columns: 1fr; }
+  .diagram-flow .diagram-items li:not(:last-child)::after,
+  .diagram-pipeline .diagram-items li:not(:last-child)::after { top: auto; right: 50%; bottom: -23px; transform: translateX(50%) rotate(90deg); }
+  .diagram-branch .diagram-items li:first-child { grid-column: auto; width: 100%; }
+  .diagram-branch .diagram-items li:nth-child(n+2)::before { content: "↓"; top: -24px; }
+  .diagram-bars .diagram-items li { min-height: 160px; }
+  .static-result { grid-template-columns: 1fr; }
+}

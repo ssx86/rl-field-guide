@@ -33,6 +33,17 @@ for (const [page, ...needles] of requiredPages) {
   for (const needle of needles) assert(html.includes(needle), `${page} is missing prerendered content: ${needle}`);
 }
 
+for (const language of ["en", "zh"]) {
+  for (const lesson of ["before-rl", "interaction-loop", "return-and-time", "bandits", "mdp", "planning", "mc-and-td", "control", "deep-value", "policy-learning", "continuous-and-models", "llm-post-training", "llm-rlhf", "llm-preference", "llm-reasoning", "real-world-practice"]) {
+    const page = `${language}/learn/${lesson}/index.html`;
+    const html = readFileSync(join(rootPath, page), "utf8");
+    assert(html.includes("knowledge-diagram"), `${page} is missing its core knowledge diagram`);
+    assert(html.includes("static-evidence"), `${page} is missing its visible worked example`);
+    assert(!html.includes("<astro-island"), `${page} must not ship an interactive lesson island`);
+    assert(!html.includes("evidence-stepper"), `${page} still contains the old reveal interaction`);
+  }
+}
+
 const brokenLinks = [];
 for (const page of pages) {
   const html = readFileSync(page, "utf8");
@@ -45,4 +56,4 @@ for (const page of pages) {
 }
 
 assert(brokenLinks.length === 0, `Broken generated links:\n${brokenLinks.join("\n")}`);
-stdout.write(`Verified ${pages.length} prerendered pages, bilingual content, formulas, and internal links.\n`);
+stdout.write(`Verified ${pages.length} prerendered pages, 32 reading lessons with diagrams, formulas, and internal links.\n`);

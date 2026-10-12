@@ -10,7 +10,9 @@ interface Props {
   themeLabel: string;
 }
 
-const { brand, alternateHref, alternateLabel, homeHref, themeLabel } = Astro.props;
+const { language, brand, alternateHref, alternateLabel, homeHref, themeLabel } = Astro.props;
+const darkLabel = language === "zh" ? "切换到暗色" : "Switch to dark";
+const lightLabel = language === "zh" ? "切换到亮色" : "Switch to light";
 ---
 
 <header class="guide-header">
@@ -20,9 +22,6 @@ const { brand, alternateHref, alternateLabel, homeHref, themeLabel } = Astro.pro
   </a>
   <div class="guide-header-actions">
     <a class="guide-control" href={alternateHref}>{alternateLabel}</a>
-    <button class="guide-control" type="button" data-theme-toggle aria-label={themeLabel}>
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.64 5.64 7.2 7.2M16.8 16.8l1.56 1.56M18.36 5.64 16.8 7.2M7.2 16.8l-1.56 1.56"/><circle cx="12" cy="12" r="4"/></svg>
-      <span class="sr-only">{themeLabel}</span>
-    </button>
+    <button class="guide-control theme-control" type="button" data-theme-toggle data-dark-label={darkLabel} data-light-label={lightLabel} aria-label={themeLabel} aria-pressed="false">{darkLabel}</button>
   </div>
 </header>

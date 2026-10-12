@@ -15,12 +15,21 @@ const alternateLanguage: Language = language === "en" ? "zh" : "en";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const homeHref = `${base}/${language}/`;
 const startHref = `${base}/${language}/learn/${course.lessons[0].id}/`;
+const stages = [
+  { id: "orientation", start: 0, end: 2, title: language === "zh" ? "先认清问题" : "Recognize the problem", note: language === "zh" ? "分清哪些问题需要序列决策，再建立最小交互循环。" : "Separate sequential decisions from simpler tasks, then build the interaction loop." },
+  { id: "foundations", start: 2, end: 4, title: language === "zh" ? "回报与探索" : "Return & exploration", note: language === "zh" ? "先学会比较长期结果，再研究未知选项。" : "Compare outcomes over time, then handle uncertain options." },
+  { id: "tabular", start: 4, end: 6, title: language === "zh" ? "已知模型下的规划" : "Plan with a known model", note: language === "zh" ? "把概率后果写成模型，并把远处奖励向前传。" : "Represent uncertain consequences and move distant value backward." },
+  { id: "experience", start: 6, end: 8, title: language === "zh" ? "从经验中学习" : "Learn from experience", note: language === "zh" ? "比较 MC、TD、SARSA 与 Q-learning 的目标。" : "Compare MC, TD, SARSA, and Q-learning targets." },
+  { id: "scaling", start: 8, end: 11, title: language === "zh" ? "扩大到函数与连续动作" : "Scale to functions & continuous actions", note: language === "zh" ? "从表格升级到共享函数、策略概率和学习模型。" : "Move from tables to shared functions, policy probabilities, and learned models." },
+  { id: "llm", start: 11, end: 15, title: language === "zh" ? "大模型后训练" : "LLM post-training", note: language === "zh" ? "沿一条回答追踪 SFT、RLHF、DPO 与可验证奖励。" : "Trace one response through SFT, RLHF, DPO, and verifiable rewards." },
+  { id: "practice", start: 15, end: 16, title: language === "zh" ? "真实世界验收" : "Real-world evidence", note: language === "zh" ? "用综合任务检查方法选择、安全和部署证据。" : "Use a capstone to check method choice, safety, and deployment evidence." },
+].map((stage) => ({ ...stage, lessons: course.lessons.slice(stage.start, stage.end) }));
 ---
 
-<GuideLayout title={`${course.title} · ${course.brand}`} description={course.introduction} language={language} canonicalPath={homeHref}>
+<GuideLayout title={`${course.title} · ${course.brand}`} description={course.introduction} language={language} canonicalPath={homeHref} alternatePath={`${base}/${alternateLanguage}/`}>
   <GuideHeader language={language} brand={course.brand} homeHref={homeHref} alternateHref={`${base}/${alternateLanguage}/`} alternateLabel={course.labels.language} themeLabel={course.labels.theme} />
 
-  <main class="course-home">
+  <main id="main-content" class="course-home" tabindex="-1">
     <section class="course-hero">
       <div class="course-hero-copy">
         <p class="instrument-label">{course.labels.zeroStart} · {course.lessons.length} {language === "zh" ? "课" : "lessons"}</p>
@@ -41,7 +50,7 @@ const startHref = `${base}/${language}/learn/${course.lessons[0].id}/`;
 
     <section class="method-section" aria-labelledby="method-title">
       <div class="section-heading">
-        <p class="instrument-label">01 · Learning method</p>
+        <p class="instrument-label">01 · {language === "zh" ? "学习方法" : "Learning method"}</p>
         <h2 id="method-title">{course.methodTitle}</h2>
       </div>
       <div class="method-layout">
@@ -56,20 +65,28 @@ const startHref = `${base}/${language}/learn/${course.lessons[0].id}/`;
 
     <section id="course-route" class="route-section" aria-labelledby="route-title">
       <div class="section-heading route-heading">
-        <div><p class="instrument-label">02 · Structured route</p><h2 id="route-title">{course.routeLabel}</h2></div>
+        <div><p class="instrument-label">02 · {language === "zh" ? "课程路线" : "Structured route"}</p><h2 id="route-title">{course.routeLabel}</h2></div>
         <p>{language === "zh" ? "先建立问题感，再加入公式；先覆盖完整地图，再逐步深入。" : "Problem sense before equations; a complete map before specialization."}</p>
       </div>
       <div class="lesson-roadmap">
-        {course.lessons.map((lesson, index) => (
-          <article class="roadmap-card">
-            <div class="roadmap-index"><span>{String(index + 1).padStart(2, "0")}</span><small>{lesson.stage}</small></div>
-            <div class="roadmap-copy">
-              <h3><a href={`${base}/${language}/learn/${lesson.id}/`}>{lesson.title}</a></h3>
-              <p>{lesson.subtitle}</p>
-              <div><span>{lesson.formulas.length === 0 ? (language === "zh" ? "无公式" : "No formula") : `${lesson.formulas.length} ${language === "zh" ? "个公式" : "formula"}`}</span><span>2 {language === "zh" ? "个完整例子" : "worked examples"}</span></div>
-            </div>
-            <a class="roadmap-open" href={`${base}/${language}/learn/${lesson.id}/`} aria-label={`${course.labels.lesson} ${index + 1}: ${lesson.title}`}>→</a>
-          </article>
+        {stages.map((stage) => (
+          <section class="route-stage" aria-labelledby={`stage-${stage.id}`}>
+            <header><div><span>{String(stages.indexOf(stage) + 1).padStart(2, "0")}</span><h3 id={`stage-${stage.id}`}>{stage.title}</h3></div><p>{stage.note}</p><small>{stage.lessons.length} {language === "zh" ? "课" : stage.lessons.length === 1 ? "lesson" : "lessons"}</small></header>
+            {stage.lessons.map((lesson) => {
+              const index = course.lessons.indexOf(lesson);
+              const formulaCount = lesson.formulas.length;
+              const formulaLabel = formulaCount === 0 ? (language === "zh" ? "无公式" : "No formula") : language === "zh" ? `${formulaCount} 个公式` : `${formulaCount} ${formulaCount === 1 ? "formula" : "formulas"}`;
+              return (
+                <article class="roadmap-card">
+                  <a class="roadmap-link" href={`${base}/${language}/learn/${lesson.id}/`} aria-label={`${course.labels.lesson} ${index + 1}: ${lesson.title}`}>
+                    <div class="roadmap-index"><span>{String(index + 1).padStart(2, "0")}</span><small>{lesson.stage}</small></div>
+                    <div class="roadmap-copy"><h4>{lesson.title}</h4><p>{lesson.subtitle}</p><div><span>{formulaLabel}</span><span>{language === "zh" ? "1 张核心图解 + 2 个例子" : "1 core diagram + 2 examples"}</span></div></div>
+                    <span class="roadmap-open" aria-hidden="true">→</span>
+                  </a>
+                </article>
+              );
+            })}
+          </section>
         ))}
       </div>
     </section>

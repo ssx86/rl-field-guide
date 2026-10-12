@@ -1,5 +1,5 @@
 ---
-import "@/styles.css";
+import "@/styles/guide-base.css";
 import "@/styles/guide.css";
 import "katex/dist/katex.min.css";
 import type { Language } from "@/content/bilingual-course";
@@ -9,11 +9,14 @@ interface Props {
   description: string;
   language: Language;
   canonicalPath: string;
+  alternatePath: string;
 }
 
-const { title, description, language, canonicalPath } = Astro.props;
+const { title, description, language, canonicalPath, alternatePath } = Astro.props;
 const htmlLang = language === "zh" ? "zh-CN" : "en";
 const canonical = new URL(canonicalPath, Astro.site);
+const alternate = new URL(alternatePath, Astro.site);
+const alternateLang = language === "zh" ? "en" : "zh-CN";
 ---
 
 <!doctype html>
@@ -22,8 +25,10 @@ const canonical = new URL(canonicalPath, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f5f6f4" />
+    <meta name="theme-color" content="#f5f6f4" data-theme-color />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={alternateLang} href={alternate} />
+    <link rel="alternate" hreflang={htmlLang} href={canonical} />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <title>{title}</title>
     <script is:inline>
@@ -32,10 +37,12 @@ const canonical = new URL(canonicalPath, Astro.site);
         const theme = saved === "dark" ? "dark" : "light";
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
+        document.querySelector('meta[data-theme-color]')?.setAttribute('content', theme === 'dark' ? '#111614' : '#f5f6f4');
       } catch {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">{language === "zh" ? "跳到主要内容" : "Skip to main content"}</a>
     <slot />
     <script is:inline>
       document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
@@ -43,8 +50,19 @@ const canonical = new URL(canonicalPath, Astro.site);
           const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
           document.documentElement.dataset.theme = next;
           document.documentElement.style.colorScheme = next;
+          const isDark = next === "dark";
+          button.setAttribute("aria-pressed", String(isDark));
+          const label = isDark ? button.dataset.lightLabel : button.dataset.darkLabel;
+          if (label) { button.setAttribute("aria-label", label); button.textContent = label; }
+          document.querySelector('meta[data-theme-color]')?.setAttribute('content', isDark ? '#111614' : '#f5f6f4');
           try { localStorage.setItem("rl-field-guide-theme", next); } catch {}
         });
+      });
+      document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+        const isDark = document.documentElement.dataset.theme === "dark";
+        button.setAttribute("aria-pressed", String(isDark));
+        const label = isDark ? button.dataset.lightLabel : button.dataset.darkLabel;
+        if (label) { button.setAttribute("aria-label", label); button.textContent = label; }
       });
     </script>
   </body>

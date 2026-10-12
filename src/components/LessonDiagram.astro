@@ -1,0 +1,210 @@
+---
+import type { Language, LessonId } from "@/content/bilingual-course";
+
+interface DiagramItem {
+  label: string;
+  value?: string;
+  note: string;
+  level?: number;
+}
+
+interface DiagramCopy {
+  kind: "flow" | "branch" | "compare" | "bars" | "matrix" | "pipeline";
+  title: string;
+  items: DiagramItem[];
+  caption: string;
+}
+
+interface Props { language: Language; lessonId: LessonId }
+const { language, lessonId } = Astro.props;
+const zh = language === "zh";
+
+const diagrams: Record<LessonId, DiagramCopy> = {
+  "before-rl": {
+    kind: "compare",
+    title: zh ? "先判断：答案是谁给的？" : "First test: who supplies the answer?",
+    items: [
+      { label: zh ? "规则程序" : "Rule-based program", value: zh ? "规则已写好" : "Rule supplied", note: zh ? "传感器触发，门就打开。" : "The sensor fires, so the door opens." },
+      { label: zh ? "监督学习" : "Supervised learning", value: zh ? "标签已给出" : "Label supplied", note: zh ? "每张照片带着正确类别。" : "Each image arrives with its correct class." },
+      { label: zh ? "强化学习" : "Reinforcement learning", value: zh ? "只有后果" : "Consequence only", note: zh ? "动作改变下一步处境，答案要从长期后果里学。" : "An action changes the next situation; the answer must be learned from consequences." },
+    ],
+    caption: zh ? "有奖励不等于 RL；关键是反复决策，以及动作会改变后面的处境。" : "A reward alone does not make RL. Repeated decisions and action-dependent futures do.",
+  },
+  "interaction-loop": {
+    kind: "flow",
+    title: zh ? "一次转移里到底发生了什么" : "What one transition contains",
+    items: [
+      { label: "Sₜ", value: zh ? "状态" : "State", note: zh ? "现在看见 A 房间" : "See room A now" },
+      { label: "Aₜ", value: zh ? "动作" : "Action", note: zh ? "选择向右走" : "Choose move right" },
+      { label: "Rₜ₊₁", value: zh ? "奖励 −1" : "Reward −1", note: zh ? "为这一步付出成本" : "Pay the step cost" },
+      { label: "Sₜ₊₁", value: zh ? "下一状态" : "Next state", note: zh ? "到达 B 房间" : "Arrive in room B" },
+    ],
+    caption: zh ? "状态不是一张图片的同义词；它要保留预测下一步后果所需的信息。" : "State is not a synonym for an image. It must retain what is needed to predict the next consequence.",
+  },
+  "return-and-time": {
+    kind: "bars",
+    title: zh ? "同一个 +10，离得越远权重越小" : "The same +10 matters less when it is farther away",
+    items: [
+      { label: "γ = 1.0", value: "10.0", note: "1² × 10", level: 100 },
+      { label: "γ = 0.9", value: "8.1", note: "0.9² × 10", level: 81 },
+      { label: "γ = 0.5", value: "2.5", note: "0.5² × 10", level: 25 },
+    ],
+    caption: zh ? "折扣不是“未来不重要”的道德判断，而是模型怎样给时间分配权重。" : "Discounting is not a moral claim that the future is unimportant; it is how the model weights time.",
+  },
+  bandits: {
+    kind: "compare",
+    title: zh ? "利用与探索在买两种不同的东西" : "Exploitation and exploration buy different things",
+    items: [
+      { label: zh ? "利用" : "Exploit", value: "Q(tea) = 7", note: zh ? "用当前最佳估计换取眼前收益。" : "Use the best measured option for reward now." },
+      { label: zh ? "探索" : "Explore", value: "N(new) = 0", note: zh ? "尝试未知选项，购买未来会用到的信息。" : "Try the unknown option to buy information for later." },
+      { label: zh ? "更新" : "Update", value: "7 → 7.18", note: zh ? "第 11 次得到 9：7 + (9−7)/11。" : "The 11th reward is 9: 7 + (9−7)/11." },
+    ],
+    caption: zh ? "探索不保证这一次更高分；它的价值来自减少未知。" : "Exploration does not promise a better reward this time. Its value is reducing uncertainty.",
+  },
+  mdp: {
+    kind: "branch",
+    title: zh ? "一个动作可以通向多个后果" : "One action can lead to several outcomes",
+    items: [
+      { label: zh ? "向右" : "Move right", value: "a", note: zh ? "同一个动作" : "The same action" },
+      { label: zh ? "顺利到达" : "Clear path", value: "80% × 5", note: zh ? "贡献 4.0" : "Contribution 4.0" },
+      { label: zh ? "遇到拥堵" : "Congestion", value: "20% × 1", note: zh ? "贡献 0.2" : "Contribution 0.2" },
+      { label: zh ? "期望价值" : "Expected value", value: "4.2", note: zh ? "把所有可能后果按概率相加" : "Add every outcome with its probability weight" },
+    ],
+    caption: zh ? "概率不是挑出“最可能”的一条路，而是让所有可能后果共同参与比较。" : "Probability does not select only the most likely branch; every possible outcome contributes.",
+  },
+  planning: {
+    kind: "flow",
+    title: zh ? "已知模型时，价值怎样向前传" : "How value moves backward through a known model",
+    items: [
+      { label: zh ? "终点" : "Goal", value: "V = 1", note: zh ? "已知结果" : "Known outcome" },
+      { label: "S₁", value: "0 + 0.9×1 = 0.9", note: zh ? "向后备份一次" : "One backup" },
+      { label: "S₀", value: "0 + 0.9×0.9 = 0.81", note: zh ? "再向前传一步" : "Propagate one step farther" },
+    ],
+    caption: zh ? "这是规划，不是从经验试出来：转移和奖励模型已经给定。" : "This is planning, not trial-and-error learning: the transition and reward model is already known.",
+  },
+  "mc-and-td": {
+    kind: "compare",
+    title: zh ? "两个目标：等到结局，还是先借一个估计" : "Two targets: wait for the ending or borrow an estimate",
+    items: [
+      { label: "Monte Carlo", value: "G = 4 or 10", note: zh ? "回合结束后，用真正走完的完整回报。" : "After the episode, use the complete sampled return." },
+      { label: "TD(0)", value: "3 + 0.9×12 = 13.8", note: zh ? "一步后就更新，但借用了下一状态估值。" : "Update after one step, borrowing the next-state estimate." },
+    ],
+    caption: zh ? "MC 的等待换来较少自举偏差；TD 的自举换来更早、更频繁的更新。" : "MC waits and avoids bootstrapping; TD bootstraps and updates earlier and more often.",
+  },
+  control: {
+    kind: "compare",
+    title: zh ? "同一条转移，两种控制目标" : "One transition, two control targets",
+    items: [
+      { label: "SARSA", value: "2 + 0.9×3 = 4.7", note: zh ? "评价实际选到的下一动作。" : "Evaluate the next action actually selected." },
+      { label: "Q-learning", value: "2 + 0.9×6 = 7.4", note: zh ? "评价下一状态里的贪婪动作。" : "Evaluate the greedy action in the next state." },
+      { label: zh ? "更新结果" : "Updated Q", value: "4 + 0.5×(7.4−4) = 5.7", note: zh ? "α 在这里是学习率。" : "Here α is the learning rate." },
+    ],
+    caption: zh ? "差别不在“会不会探索”，而在目标里评价的是哪一条策略。" : "The distinction is not whether exploration happens, but which policy the target evaluates.",
+  },
+  "deep-value": {
+    kind: "pipeline",
+    title: zh ? "DQN 的稳定装置各管一件事" : "Each DQN stabilizer has a separate job",
+    items: [
+      { label: zh ? "回放池" : "Replay", value: zh ? "打乱经验" : "Mix experience", note: zh ? "降低相邻样本相关性" : "Reduce adjacent-sample correlation" },
+      { label: zh ? "在线网络" : "Online Q", value: "Qθ(s,a)=4", note: zh ? "正在学习的预测" : "The prediction being trained" },
+      { label: zh ? "目标网络" : "Target Q", value: "2 + 0.9×6 = 7.4", note: zh ? "暂时固定的目标" : "A temporarily fixed target" },
+      { label: zh ? "终止掩码" : "Terminal mask", value: "d=1 → target=2", note: zh ? "终止后不再自举" : "No bootstrap after termination" },
+    ],
+    caption: zh ? "回放和目标网络能减缓不稳定，但不能消除分布偏移、探索不足或致命三元组。" : "Replay and target networks reduce instability; they do not eliminate shift, poor exploration, or the deadly triad.",
+  },
+  "policy-learning": {
+    kind: "bars",
+    title: zh ? "优势改变概率的方向，不把动作直接删掉" : "Advantage changes probability direction; it does not delete an action",
+    items: [
+      { label: zh ? "更新前：左" : "Before: left", value: "0.60", note: zh ? "当前策略" : "Current policy", level: 60 },
+      { label: zh ? "正优势后：左" : "After positive advantage: left", value: "0.63", note: zh ? "概率小幅升高" : "Probability rises slightly", level: 63 },
+      { label: zh ? "更新后：右" : "After update: right", value: "0.37", note: zh ? "概率仍然存在" : "The alternative still exists", level: 37 },
+    ],
+    caption: zh ? "PPO 限制一次更新走得太远；它不是“永远安全”的保证。" : "PPO discourages one update from moving too far; it is not a guarantee of safety.",
+  },
+  "continuous-and-models": {
+    kind: "matrix",
+    title: zh ? "先看两个轴，再看算法名字" : "Use two axes before choosing an algorithm name",
+    items: [
+      { label: zh ? "离散动作 × 有模型" : "Discrete × model", value: zh ? "规划 / 搜索" : "Plan / search", note: "Value iteration · MCTS" },
+      { label: zh ? "连续动作 × 有模型" : "Continuous × model", value: zh ? "模型预测控制" : "Model predictive control", note: "MPC" },
+      { label: zh ? "离散动作 × 无模型" : "Discrete × no model", value: zh ? "价值控制" : "Value control", note: "Q-learning · DQN" },
+      { label: zh ? "连续动作 × 无模型" : "Continuous × no model", value: zh ? "Actor–Critic" : "Actor–Critic", note: "TD3 · SAC" },
+    ],
+    caption: zh ? "动作空间与模型可用性是两件事；不要把“连续”误当成“有模型”。" : "Action space and model availability are separate questions; continuous does not imply model-based.",
+  },
+  "llm-post-training": {
+    kind: "flow",
+    title: zh ? "一条回答就是一条词元轨迹" : "One response is a token trajectory",
+    items: [
+      { label: zh ? "提示" : "Prompt", value: "2 + 2 =", note: zh ? "初始状态" : "Initial state" },
+      { label: zh ? "词元 1" : "Token 1", value: "4", note: zh ? "动作" : "Action" },
+      { label: zh ? "词元 2" : "Token 2", value: ".", note: zh ? "前缀变长" : "Prefix grows" },
+      { label: zh ? "结束" : "End", value: "✓", note: zh ? "整段回答得到评分" : "The full response receives a score" },
+    ],
+    caption: zh ? "SFT 模仿给定词元；RL 先采样回答，再按结果改变产生这些词元的概率。" : "SFT imitates supplied tokens; RL samples a response, scores its outcome, then changes the probabilities that produced it.",
+  },
+  "llm-rlhf": {
+    kind: "pipeline",
+    title: zh ? "经典 RLHF 是四段管线，不是一个模型" : "Classic RLHF is a four-part pipeline, not one model",
+    items: [
+      { label: zh ? "人类比较" : "Human comparison", value: "A > B", note: zh ? "有限的偏好数据" : "Finite preference data" },
+      { label: zh ? "奖励模型" : "Reward model", value: "r(A)=2, r(B)=1", note: zh ? "学习推广这种排序" : "Generalize the ranking" },
+      { label: zh ? "当前策略" : "Current policy", value: zh ? "生成新回答" : "Generate responses", note: zh ? "数据分布会变化" : "The data distribution moves" },
+      { label: "PPO + KL", value: zh ? "更新但限制漂移" : "Update with a drift limit", note: zh ? "参考模型提供锚点" : "A reference model provides the anchor" },
+    ],
+    caption: zh ? "奖励模型分数是从有限比较学来的代理，不是“人类价值”本身。" : "A reward-model score is a proxy learned from finite comparisons, not human value itself.",
+  },
+  "llm-preference": {
+    kind: "compare",
+    title: zh ? "DPO 比较的是相对参考模型的变化" : "DPO compares change relative to a reference model",
+    items: [
+      { label: zh ? "偏好回答" : "Preferred", value: "−2.2 − (−3.0) = +0.8", note: zh ? "相对参考模型提高 0.8" : "Rises 0.8 relative to the reference" },
+      { label: zh ? "被拒回答" : "Rejected", value: "−2.3 − (−2.5) = +0.2", note: zh ? "相对参考模型提高 0.2" : "Rises 0.2 relative to the reference" },
+      { label: zh ? "相对差" : "Relative margin", value: "+0.8 − +0.2 = +0.6", note: zh ? "偏好回答领先更多" : "The preferred response gains more" },
+    ],
+    caption: zh ? "DPO 省掉在线 rollout 与奖励模型，但固定数据不会自动发现新策略的新失败。" : "DPO removes online rollouts and a separate reward model, but fixed data does not discover new policy failures.",
+  },
+  "llm-reasoning": {
+    kind: "bars",
+    title: zh ? "GRPO 在同一组样本里做相对比较" : "GRPO makes relative comparisons inside one sample group",
+    items: [
+      { label: zh ? "程序 A" : "Program A", value: "1 → +0.5", note: zh ? "通过测试，高于组均值" : "Passes; above the group mean", level: 100 },
+      { label: zh ? "程序 B" : "Program B", value: "1 → +0.5", note: zh ? "通过测试，高于组均值" : "Passes; above the group mean", level: 100 },
+      { label: zh ? "程序 C" : "Program C", value: "0 → −0.5", note: zh ? "失败，低于组均值" : "Fails; below the group mean", level: 15 },
+      { label: zh ? "程序 D" : "Program D", value: "0 → −0.5", note: zh ? "失败，低于组均值" : "Fails; below the group mean", level: 15 },
+    ],
+    caption: zh ? "组均值是 0.5。若测试覆盖有漏洞，优化器仍会认真地利用漏洞。" : "The group mean is 0.5. If the verifier has a loophole, the optimizer will faithfully exploit it.",
+  },
+  "real-world-practice": {
+    kind: "matrix",
+    title: zh ? "上线证据必须分开看，不能相加成一个分数" : "Deployment evidence must stay separate, not collapse into one score",
+    items: [
+      { label: zh ? "任务结果" : "Outcome", value: "40% solved", note: zh ? "真正的问题解决了吗？" : "Was the real problem solved?" },
+      { label: zh ? "代理回报" : "Proxy return", value: "90% closed", note: zh ? "高分可能来自提前结束对话。" : "The high score may come from ending chats early." },
+      { label: zh ? "稳健性" : "Robustness", value: "3+ conditions", note: zh ? "跨种子、环境与人群。" : "Across seeds, environments, and groups." },
+      { label: zh ? "安全与不确定性" : "Safety & uncertainty", value: zh ? "区间 + 人工复核" : "Intervals + review", note: zh ? "高影响决定保留停止条件。" : "Keep stop conditions for high-impact decisions." },
+    ],
+    caption: zh ? "教程能教你设计证据计划，但不能证明某个真实系统已经安全上线。" : "A tutorial can teach evidence planning; it cannot certify a real system as safe to deploy.",
+  },
+};
+
+const diagram = diagrams[lessonId];
+---
+
+<figure class={`knowledge-diagram diagram-${diagram.kind}`} aria-labelledby={`diagram-title-${lessonId}`}>
+  <header>
+    <p class="instrument-label">{zh ? "核心图解" : "Core diagram"}</p>
+    <h2 id={`diagram-title-${lessonId}`}>{diagram.title}</h2>
+  </header>
+  <ol class="diagram-items">
+    {diagram.items.map((item, index) => (
+      <li style={item.level ? `--level:${item.level}%` : undefined}>
+        <span class="diagram-index">{String(index + 1).padStart(2, "0")}</span>
+        <div class="diagram-copy"><strong>{item.label}</strong>{item.value ? <b>{item.value}</b> : null}<small>{item.note}</small></div>
+        {diagram.kind === "bars" ? <i aria-hidden="true"><span></span></i> : null}
+      </li>
+    ))}
+  </ol>
+  <figcaption>{diagram.caption}</figcaption>
+</figure>

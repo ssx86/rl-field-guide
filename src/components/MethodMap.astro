@@ -8,7 +8,7 @@ const t = language === "zh" ? {
 };
 ---
 
-<div class="method-map" role="img" aria-label={language === "zh" ? "强化学习方法选择地图" : "Reinforcement learning method selection map"}>
+<div class="method-map" aria-hidden="true">
   <div class="method-root">{t.root}</div>
   <div class="method-split">
     <div><span>{t.yes}</span><strong>{t.plan}</strong></div>
@@ -20,3 +20,11 @@ const t = language === "zh" ? {
     <div><small>{t.scale}</small><strong>{t.deep}</strong></div>
   </div>
 </div>
+<ol class="sr-only" aria-label={language === "zh" ? "强化学习方法选择地图" : "Reinforcement learning method selection map"}>
+  <li>{t.root}</li>
+  <li>{t.yes} → {t.plan}</li>
+  <li>{t.no} → {t.data}</li>
+  <li>{t.one} → {t.bandit}</li>
+  <li>{t.seq} → {t.learn}</li>
+  <li>{t.scale} → {t.deep}</li>
+</ol>

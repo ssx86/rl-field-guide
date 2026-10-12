@@ -1,8 +1,10 @@
 ---
 import katex from "katex";
 import GuideHeader from "@/components/GuideHeader.astro";
-import { EvidenceStepper } from "@/components/EvidenceStepper";
+import LessonDiagram from "@/components/LessonDiagram.astro";
+import StaticEvidence from "@/components/StaticEvidence.astro";
 import { COURSE, LANGUAGES, LESSON_IDS, type Language, type LessonId } from "@/content/bilingual-course";
+import { getLearningLab } from "@/content/learning-labs";
 import GuideLayout from "@/layouts/GuideLayout.astro";
 
 export function getStaticPaths() {
@@ -22,26 +24,33 @@ const homeHref = `${base}/${language}/`;
 const lessonHref = `${base}/${language}/learn/${lesson.id}/`;
 const previous = course.lessons[lessonIndex - 1];
 const next = course.lessons[lessonIndex + 1];
-const prerequisiteNames = lesson.prerequisites.map((id) => course.lessons.find((item) => item.id === id)?.title).filter(Boolean);
-const stepperLabels = language === "zh"
-  ? { step: "运行下一步", reset: "重置", result: "结论：" }
-  : { step: "Run the next step", reset: "Reset", result: "Result:" };
+const prerequisites = lesson.prerequisites.map((id) => course.lessons.find((item) => item.id === id)).filter(Boolean);
+const reading = getLearningLab(language, lesson.id);
 ---
 
-<GuideLayout title={`${lesson.title} · ${course.brand}`} description={lesson.outcome} language={language} canonicalPath={lessonHref}>
+<GuideLayout title={`${lesson.title} · ${course.brand}`} description={lesson.outcome} language={language} canonicalPath={lessonHref} alternatePath={`${base}/${alternateLanguage}/learn/${lesson.id}/`}>
   <GuideHeader language={language} brand={course.brand} homeHref={homeHref} alternateHref={`${base}/${alternateLanguage}/learn/${lesson.id}/`} alternateLabel={course.labels.language} themeLabel={course.labels.theme} />
 
-  <main class="lesson-shell">
+  <main id="main-content" class="lesson-shell" tabindex="-1">
     <aside class="lesson-rail" aria-label={course.routeLabel}>
       <a class="rail-home" href={homeHref}>← {course.labels.courseMap}</a>
       <p class="instrument-label">{course.routeLabel}</p>
-      <nav>
+      <nav class="lesson-rail-links">
         {course.lessons.map((item, index) => (
-          <a href={`${base}/${language}/learn/${item.id}/`} aria-current={item.id === lesson.id ? "page" : undefined}>
+          <a data-lesson-id={item.id} href={`${base}/${language}/learn/${item.id}/`} aria-current={item.id === lesson.id ? "page" : undefined}>
             <span>{String(index + 1).padStart(2, "0")}</span><em>{item.title}</em>
           </a>
         ))}
       </nav>
+      <div class="lesson-mobile-current">
+        {previous ? <a href={`${base}/${language}/learn/${previous.id}/`} aria-label={`${course.labels.previous}: ${previous.title}`}>←</a> : <span aria-hidden="true">·</span>}
+        <strong>{String(lessonIndex + 1).padStart(2, "0")} / {course.lessons.length}<small>{lesson.title}</small></strong>
+        {next ? <a href={`${base}/${language}/learn/${next.id}/`} aria-label={`${course.labels.next}: ${next.title}`}>→</a> : <span aria-hidden="true">·</span>}
+      </div>
+      <details class="lesson-mobile-menu">
+        <summary>{language === "zh" ? "展开全部课程" : "Open all lessons"}</summary>
+        <nav>{course.lessons.map((item, index) => <a href={`${base}/${language}/learn/${item.id}/`} aria-current={item.id === lesson.id ? "page" : undefined}><span>{String(index + 1).padStart(2, "0")}</span>{item.title}</a>)}</nav>
+      </details>
     </aside>
 
     <article class="lesson-article">
@@ -51,47 +60,37 @@ const stepperLabels = language === "zh"
         <p class="lesson-subtitle">{lesson.subtitle}</p>
         <blockquote>{lesson.openingQuestion}</blockquote>
         <dl class="lesson-contract">
-          <div><dt>{course.labels.prerequisites}</dt><dd>{prerequisiteNames.length ? prerequisiteNames.join(" · ") : course.labels.none}</dd></div>
+          <div><dt>{course.labels.prerequisites}</dt><dd>{prerequisites.length ? prerequisites.map((item, index) => <><a href={`${base}/${language}/learn/${item!.id}/`}>{item!.title}</a>{index < prerequisites.length - 1 ? " · " : ""}</>) : course.labels.none}</dd></div>
           <div><dt>{course.labels.outcome}</dt><dd>{lesson.outcome}</dd></div>
         </dl>
+        <div class="foundation-note"><div><strong>{language === "zh" ? "本课必须会" : "Required for this lesson"}</strong><p>{reading.foundation.required}</p></div><div><strong>{language === "zh" ? "可以先跳过" : "Safe to postpone"}</strong><p>{reading.foundation.optional}</p></div></div>
       </header>
 
-      <section class="lesson-section story-section" aria-labelledby="story-title">
+      <nav class="lesson-sections" aria-label={language === "zh" ? "本课章节" : "Lesson sections"}>
+        <a href="#scenario">{language === "zh" ? "情境" : "Scenario"}</a><a href="#diagram">{language === "zh" ? "图解" : "Diagram"}</a><a href="#example">{language === "zh" ? "例子" : "Example"}</a><a href="#ideas-title">{language === "zh" ? "概念" : "Ideas"}</a>{lesson.formulas.length > 0 ? <a href="#formula-title">{language === "zh" ? "公式" : "Equation"}</a> : null}<a href="#check-title">{language === "zh" ? "边界" : "Boundary"}</a>
+      </nav>
+
+      <section id="scenario" class="lesson-section story-section" aria-labelledby="story-title">
         <p class="instrument-label">01 · {course.labels.story}</p>
-        <h2 id="story-title">{lesson.openingQuestion}</h2>
+        <h2 id="story-title">{language === "zh" ? "先把问题放进一个能看见后果的场景" : "Put the question in a situation with visible consequences"}</h2>
         <p class="story-lead">{lesson.story}</p>
         <div class="causal-strip" aria-label={language === "zh" ? "因果学习链" : "Causal learning chain"}>
           {lesson.concepts.map((concept, index) => <div><span>{String(index + 1).padStart(2, "0")}</span><strong>{concept.title}</strong></div>)}
         </div>
       </section>
 
-      <section class="lesson-section" aria-labelledby="ideas-title">
-        <p class="instrument-label">02 · {course.labels.ideas}</p>
-        <h2 id="ideas-title">{language === "zh" ? "一次只增加一个概念" : "Add one idea at a time"}</h2>
-        <div class="concept-list">
-          {lesson.concepts.map((concept, index) => (
-            <article><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{concept.title}</h3><p>{concept.body}</p></div></article>
-          ))}
-        </div>
+      <section id="diagram" class="lesson-section diagram-section">
+        <LessonDiagram language={language} lessonId={lesson.id} />
       </section>
 
-      <section class="lesson-section" aria-labelledby="examples-title">
+      <section id="example" class="lesson-section" aria-labelledby="examples-title">
         <p class="instrument-label">03 · {course.labels.examples}</p>
-        <h2 id="examples-title">{language === "zh" ? "先让证据发生，再总结规律" : "Let the evidence happen before naming the pattern"}</h2>
-        <EvidenceStepper
-          client:load
-          title={lesson.examples[0].title}
-          setup={lesson.examples[0].setup}
-          steps={lesson.examples[0].steps}
-          result={lesson.examples[0].result}
-          stepLabel={stepperLabels.step}
-          resetLabel={stepperLabels.reset}
-          resultLabel={stepperLabels.result}
-        />
+        <h2 id="examples-title">{language === "zh" ? "用一组数字把图里的关系走一遍" : "Walk through the diagram with concrete numbers"}</h2>
+        <StaticEvidence language={language} reading={reading} />
         <div class="worked-grid">
-          {lesson.examples.map((example, exampleIndex) => (
+          {lesson.examples.slice(1).map((example, exampleIndex) => (
             <article class="worked-card">
-              <div class="worked-number">EX {String(exampleIndex + 1).padStart(2, "0")}</div>
+              <div class="worked-number">{language === "zh" ? "情境" : "SCENARIO"} {String(exampleIndex + 1).padStart(2, "0")}</div>
               <h3>{example.title}</h3>
               <p>{example.setup}</p>
               <ol>{example.steps.map((step) => <li>{step}</li>)}</ol>
@@ -101,9 +100,19 @@ const stepperLabels = language === "zh"
         </div>
       </section>
 
+      <section class="lesson-section" aria-labelledby="ideas-title">
+        <p class="instrument-label">04 · {course.labels.ideas}</p>
+        <h2 id="ideas-title">{language === "zh" ? "用刚才的证据给概念命名" : "Name the ideas you just used"}</h2>
+        <div class="concept-list">
+          {lesson.concepts.map((concept, index) => (
+            <article><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{concept.title}</h3><p>{concept.body}</p></div></article>
+          ))}
+        </div>
+      </section>
+
       {lesson.formulas.length > 0 ? (
         <section class="lesson-section" aria-labelledby="formula-title">
-          <p class="instrument-label">04 · {course.labels.formula}</p>
+          <p class="instrument-label">05 · {course.labels.formula}</p>
           <h2 id="formula-title">{language === "zh" ? "公式压缩的是你刚看过的因果步骤" : "The equation compresses the causal steps you just saw"}</h2>
           <div class="formula-list">
             {lesson.formulas.map((formula) => (
@@ -117,12 +126,8 @@ const stepperLabels = language === "zh"
         </section>
       ) : null}
 
-      <section class="boundary-grid" aria-label={language === "zh" ? "误区与迁移" : "Misconception and transfer"}>
-        <article class="trap-card"><p class="instrument-label">{course.labels.misconception}</p><h2>{language === "zh" ? "不要把相似的词当成同一件事" : "Do not collapse different ideas into one"}</h2><p>{lesson.misconception}</p></article>
-        <details class="transfer-card">
-          <summary><span class="instrument-label">{course.labels.transfer}</span><strong>{lesson.transfer.question}</strong><em>{course.labels.reveal} ↓</em></summary>
-          <p>{lesson.transfer.answer}</p>
-        </details>
+      <section id="check-title" class="boundary-grid single" aria-label={course.labels.misconception}>
+        <article class="trap-card"><p class="instrument-label">{course.labels.misconception}</p><h2>{lesson.title}: {language === "zh" ? "边界检查" : "boundary check"}</h2><p>{lesson.misconception}</p></article>
       </section>
 
       {lesson.references?.length ? (
@@ -139,4 +144,5 @@ const stepperLabels = language === "zh"
       </nav>
     </article>
   </main>
+  <script is:inline>document.querySelector('.lesson-rail-links [aria-current="page"]')?.scrollIntoView({ block: "center", inline: "nearest" });</script>
 </GuideLayout>
