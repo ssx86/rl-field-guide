@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { PART_ONE_ARTICLES } from "@/content/chapters/part-1";
 import { PART_TWO_ARTICLES } from "@/content/chapters/part-2";
 import { PART_THREE_ARTICLES } from "@/content/chapters/part-3";
+import { PART_FOUR_ARTICLES } from "@/content/chapters/part-4";
+import { PART_FIVE_ARTICLES } from "@/content/chapters/part-5";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
@@ -61,6 +63,26 @@ describe("Part III long-form chapter articles", () => {
     expect(PART_THREE_ARTICLES.map((chapter) => chapter.slug)).toEqual(expected);
 
     for (const chapter of PART_THREE_ARTICLES) {
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
+      expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
+      expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
+      expect(articleWords(chapter)).toBeGreaterThan(500);
+    }
+  });
+});
+
+describe.each([
+  ["memory", PART_FOUR_ARTICLES],
+  ["models", PART_FIVE_ARTICLES],
+] as const)("%s long-form chapter articles", (part, articles) => {
+  it("matches the curriculum and supplies complete teaching evidence", () => {
+    const expected = CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug);
+    expect(articles.map((chapter) => chapter.slug)).toEqual(expected);
+    for (const chapter of articles) {
       expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
