@@ -8,6 +8,7 @@ import { PART_FIVE_ARTICLES } from "@/content/chapters/part-5";
 import { PART_SIX_ARTICLES } from "@/content/chapters/part-6";
 import { PART_SEVEN_ARTICLES } from "@/content/chapters/part-7";
 import { PART_EIGHT_ARTICLES } from "@/content/chapters/part-8";
+import { PART_NINE_ARTICLES } from "@/content/chapters/part-9";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
@@ -102,6 +103,22 @@ describe("reliability long-form chapter articles", () => {
   it("covers objective, constraints, experiments, and systems in curriculum order", () => {
     expect(PART_EIGHT_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === "reliability").map((chapter) => chapter.slug));
     for (const chapter of PART_EIGHT_ARTICLES) {
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
+      expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
+      expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
+      expect(articleWords(chapter)).toBeGreaterThan(500);
+    }
+  });
+});
+
+describe("language-model long-form chapter articles", () => {
+  it("keeps RL, preference optimization, AI feedback, verification, and search distinct", () => {
+    expect(PART_NINE_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === "language").map((chapter) => chapter.slug));
+    for (const chapter of PART_NINE_ARTICLES) {
       expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
