@@ -1,3 +1,8 @@
+// Design-debt notice (2026-10-13 audit): this interactive SPA layer predates the
+// reading-first course and is NOT part of the shipped site — no .astro page mounts it
+// and verify-static.mjs forbids astro-islands in dist/. It stays test-covered only.
+// The live content lives in src/pages/ + src/content/curriculum.ts + chapters/part-*.ts.
+// Retiring or extracting this layer requires an explicit product decision.
 import { useState } from "react";
 import { BanditScreen } from "@/components/bandit-screen";
 import { ChapterScreen } from "@/components/chapter-screen";
