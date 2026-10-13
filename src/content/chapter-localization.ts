@@ -3,10 +3,14 @@ import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { CURRICULUM, type CurriculumChapter } from "@/content/curriculum";
 import type { Language } from "@/content/bilingual-course";
 import { PART_ONE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-1";
+import { PART_TWO_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-2";
+import { PART_THREE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-3";
 import { applyChineseManuscript } from "@/content/zh-manuscripts/types";
 
 const AUTHORED_MANUSCRIPTS = {
   ...PART_ONE_CHINESE_MANUSCRIPTS,
+  ...PART_TWO_CHINESE_MANUSCRIPTS,
+  ...PART_THREE_CHINESE_MANUSCRIPTS,
 } as const;
 
 export const AUTHORED_CHINESE_SLUGS = Object.keys(AUTHORED_MANUSCRIPTS);

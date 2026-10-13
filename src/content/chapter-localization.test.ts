@@ -43,4 +43,37 @@ describe("bilingual chapter corpus", () => {
       expect(copy).not.toContain("先固定信息边界");
     }
   });
+
+  it("uses authored Chinese manuscripts throughout the tabular foundations", () => {
+    const partTwo = [
+      "mdp-state-design",
+      "value-bellman",
+      "dynamic-programming",
+      "monte-carlo",
+      "td-traces",
+      "tabular-control",
+      "off-policy-deadly-triad",
+    ];
+    expect(AUTHORED_CHINESE_SLUGS).toEqual(expect.arrayContaining(partTwo));
+    for (const slug of partTwo) {
+      const copy = JSON.stringify(ZH_CHAPTER_ARTICLES.find((chapter) => chapter.slug === slug));
+      expect(copy).not.toContain("阅读时先不要急着记名词");
+      expect(copy).not.toContain("先独立复算这一行");
+      expect(copy).not.toContain("先固定信息边界");
+    }
+  });
+
+  it("uses authored Chinese manuscripts throughout deep value and policy learning", () => {
+    const slugs = [
+      "linear-approximation", "neural-approximation", "dqn", "dqn-family",
+      "reinforce-policy-gradient", "actor-critic-gae", "trpo-ppo",
+      "continuous-control", "distributed-rl",
+    ];
+    expect(AUTHORED_CHINESE_SLUGS).toEqual(expect.arrayContaining(slugs));
+    for (const slug of slugs) {
+      const copy = JSON.stringify(ZH_CHAPTER_ARTICLES.find((chapter) => chapter.slug === slug));
+      expect(copy).not.toContain("第 1 项展示");
+      expect(copy).not.toContain("公式 1：按时间下标");
+    }
+  });
 });
