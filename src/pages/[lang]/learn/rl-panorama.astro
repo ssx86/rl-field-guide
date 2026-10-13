@@ -81,14 +81,14 @@ const t = zh ? {
           <header>
             <span>{movement.number}</span>
             <div>
-              <p>{movement.turn}</p>
               <h2 id={`${movement.id}-title`}>{movement.title}</h2>
             </div>
           </header>
           <div class="panorama-prose">
+            <p class="panorama-turn">{movement.turn}</p>
             {movement.paragraphs.map((paragraph) => <PanoramaParagraph text={paragraph} base={base} language={language} />)}
+            <p class="panorama-coda">{movement.coda}</p>
           </div>
-          <p class="panorama-coda">{movement.coda}</p>
         </section>
       ))}
 

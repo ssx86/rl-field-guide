@@ -24,7 +24,7 @@ export interface ChapterArticle {
   readonly diagram: {
     readonly title: string;
     readonly caption: string;
-    readonly variant?: "flow" | "formula-compare";
+    readonly variant?: "flow" | "pipeline" | "formula-compare" | "compare" | "branch" | "matrix" | "layers";
     readonly items: readonly ArticleDiagramItem[];
   };
   readonly workedExample: {

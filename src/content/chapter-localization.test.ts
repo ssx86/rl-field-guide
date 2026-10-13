@@ -38,13 +38,67 @@ describe("bilingual chapter corpus", () => {
     expect(new Set(paragraphs).size).toBe(paragraphs.length);
   });
 
-  it("keeps formulas, worked calculations, and sources identical across languages", () => {
+  it("keeps mathematical notation and sources aligned while localizing explanatory calculations", () => {
     for (const [index, english] of CHAPTER_ARTICLES.entries()) {
       const chinese = ZH_CHAPTER_ARTICLES[index];
       expect(chinese.equations.map((item) => item.latex)).toEqual(english.equations.map((item) => item.latex));
       expect(chinese.diagram.items.map((item) => item.latex)).toEqual(english.diagram.items.map((item) => item.latex));
-      expect(chinese.workedExample.steps.map((item) => item.calculation)).toEqual(english.workedExample.steps.map((item) => item.calculation));
       expect(chinese.sources).toEqual(english.sources);
+    }
+  });
+
+  it("keeps Chinese equation readings attached to the equation they actually explain", () => {
+    const expectedAnchors: Readonly<Record<string, readonly [string, string]>> = {
+      "monte-carlo": ["完整回报", "增量更新"],
+      "neural-approximation": ["小批次平均损失", "更新数据比"],
+      "trpo-ppo": ["PPO", "TRPO"],
+      "distributed-rl": ["V-trace", "策略滞后"],
+      "long-horizon-credit": ["奖励重分配", "替代目标"],
+      "dyna-mpc": ["MPC", "真实转移与模型生成转移"],
+      "latent-world-models": ["后验隐状态", "MuZero"],
+      "decision-transformer": ["剩余回报", "负对数似然"],
+      "off-policy-evaluation": ["重要性估计", "FQE"],
+      "hierarchical-rl": ["持续 k 步", "三部分"],
+      "multi-agent-rl": ["QMIX", "MADDPG"],
+      "reward-design": ["势能", "塑形后的奖励"],
+      "safe-robust-risk": ["CMDP", "拉格朗日目标"],
+      "rl-systems": ["终止掩码", "实验的身份"],
+      "llm-as-rl": ["token", "SFT"],
+      "direct-preference": ["DPO", "SimPO"],
+      "rlaif-judges": ["评委一致率", "交换一致性"],
+      "test-time-compute": ["至少一次成功", "部署效用"],
+      "method-selection": ["性能、风险、数据与计算约束", "声明的强度"],
+    };
+
+    for (const [slug, anchors] of Object.entries(expectedAnchors)) {
+      const chapter = ZH_CHAPTER_ARTICLES.find((item) => item.slug === slug);
+      expect(chapter, slug).toBeDefined();
+      for (const [index, anchor] of anchors.entries()) {
+        expect(chapter?.equations[index].read, `${slug} equation ${index + 1}`).toContain(anchor);
+      }
+    }
+  });
+
+  it("does not leak English prose into Chinese worked examples", () => {
+    for (const [chapterIndex, chapter] of ZH_CHAPTER_ARTICLES.entries()) {
+      for (const [stepIndex, step] of chapter.workedExample.steps.entries()) {
+        const english = CHAPTER_ARTICLES[chapterIndex].workedExample.steps[stepIndex].calculation;
+        const wordTokens = english.match(/[A-Za-z]{3,}/g) ?? [];
+        const letterShare = (english.match(/[A-Za-z]/g)?.length ?? 0) / english.length;
+        const looksLikeFormula = /^[A-Z][(^=]/.test(english) || english.includes("=");
+        if (wordTokens.length >= 2 && letterShare >= 0.35 && !looksLikeFormula) {
+          expect(step.calculation, `${chapter.slug}: ${english}`).not.toBe(english);
+        }
+      }
+    }
+  });
+
+  it("keeps worked-example reasoning independent from the diagram legend", () => {
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      expect(
+        chapter.workedExample.steps.map((step) => step.label),
+        `${chapter.slug}: worked-example labels must not be reused diagram labels`,
+      ).not.toEqual(chapter.diagram.items.map((item) => item.label));
     }
   });
 
@@ -52,6 +106,18 @@ describe("bilingual chapter corpus", () => {
     for (const chapter of ZH_CHAPTER_ARTICLES) {
       const copy = [chapter.title, chapter.deck, chapter.openingQuestion, chapter.bridge, ...chapter.situation.paragraphs, ...chapter.boundary.paragraphs].join(" ");
       expect(copy.match(/[\p{Script=Han}]/gu)?.length ?? 0).toBeGreaterThan(80);
+    }
+  });
+
+  it("develops every Chinese mechanism as prose rather than a slide note", () => {
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      for (const section of chapter.mechanism.sections) {
+        const prose = section.paragraphs.join(" ");
+        const sentenceCount = prose.match(/[。！？]/g)?.length ?? 0;
+
+        expect(prose.length, `${chapter.slug}: ${section.title}`).toBeGreaterThanOrEqual(100);
+        expect(sentenceCount, `${chapter.slug}: ${section.title}`).toBeGreaterThanOrEqual(3);
+      }
     }
   });
 

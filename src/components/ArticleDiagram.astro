@@ -9,13 +9,32 @@ interface Props {
 }
 
 const { diagram, slug, label = "Core diagram" } = Astro.props;
-const variant = diagram.variant ?? "flow";
+const inferredVariants: Readonly<Record<string, NonNullable<ChapterArticle["diagram"]["variant"]>>> = {
+  "before-rl": "compare",
+  "return-horizon": "branch",
+  "probability-expectation": "branch",
+  "bandits-contextual-bandits": "compare",
+  "td-traces": "compare",
+  "dqn-family": "matrix",
+  "continuous-control": "compare",
+  "deep-exploration": "compare",
+  "long-horizon-credit": "compare",
+  "latent-world-models": "layers",
+  "inverse-rl-gail": "compare",
+  "off-policy-evaluation": "matrix",
+  "multi-agent-rl": "matrix",
+  "transfer-meta-generalization": "compare",
+  "safe-robust-risk": "matrix",
+  "evaluation-reproducibility": "matrix",
+  "direct-preference": "compare",
+};
+const variant = inferredVariants[slug] ?? diagram.variant ?? "flow";
 ---
 
 <figure class:list={["knowledge-diagram", `diagram-${variant}`]} aria-labelledby={`diagram-title-${slug}`}>
   <header>
     <div>
-      <p class="instrument-label">{label}</p>
+      <span class="sr-only">{label}</span>
       <h2 id={`diagram-title-${slug}`}>{diagram.title}</h2>
     </div>
   </header>

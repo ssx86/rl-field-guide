@@ -42,6 +42,8 @@ with sync_playwright() as p:
     assert page.locator(".panorama-movement").count() == 9
     assert page.locator(".panorama-deep-link").count() >= 20
     assert page.locator(".panorama-diagnostic li").count() == 7
+    assert page.locator(".panorama-prose > .panorama-turn").count() == 9
+    assert page.locator(".panorama-prose > .panorama-coda").count() == 9
     assert page.locator("main table").count() == 0
     assert page.get_by_role("link", name="中文").get_attribute("href").endswith("/zh/learn/rl-panorama/#models")
 
@@ -67,6 +69,11 @@ with sync_playwright() as p:
         assert page.locator("astro-island").count() == 0
         assert page.locator(".static-evidence-steps li").count() >= 3
         assert page.locator(".lesson-references a").count() >= 2
+        assert page.locator("#mechanism .mechanism-passage").count() == 4
+        assert page.locator("#mechanism h3, #mechanism .prose-marker, #mechanism .prose-subsection").count() == 0
+        assert page.locator(".lesson-transition").count() == 1
+        assert page.locator(".lesson-next span").count() == 0
+        assert page.get_by_text("What the example was really showing", exact=True).count() == 0
 
     for chapter_url in chinese_chapter_urls:
         page.goto(chapter_url, wait_until="networkidle")
@@ -78,6 +85,11 @@ with sync_playwright() as p:
         assert page.locator("astro-island").count() == 0
         assert page.locator(".static-evidence-steps li").count() >= 3
         assert page.locator(".lesson-references a").count() >= 2
+        assert page.locator("#mechanism .mechanism-passage").count() == 4
+        assert page.locator("#mechanism h3, #mechanism .prose-marker, #mechanism .prose-subsection").count() == 0
+        assert page.locator(".lesson-transition").count() == 1
+        assert page.locator(".lesson-next span").count() == 0
+        assert page.get_by_text("这个例子真正说明了什么", exact=True).count() == 0
 
     page.goto(f"{BASE}/en/learn/tabular-control/", wait_until="networkidle")
     assert page.locator(".diagram-formula-compare .diagram-items > li").count() == 4

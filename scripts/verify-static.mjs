@@ -53,8 +53,8 @@ for (const page of [...englishLessonPages, ...chineseLessonPages]) {
   assert(html.includes("knowledge-diagram"), `${name} is missing its semantic diagram`);
   assert(html.includes("static-evidence"), `${name} is missing its worked example`);
   assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
-  assert(html.includes("Original and official sources") || html.includes("原始与官方资料"), `${name} is missing source provenance`);
-  assert(html.includes("Do not carry the claim past this point") || html.includes("别把结论说过头"), `${name} is missing its failure boundary`);
+  assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
+  assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
   assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
   assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
   assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);

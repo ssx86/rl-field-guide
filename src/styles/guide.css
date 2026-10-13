@@ -209,7 +209,7 @@
 .lesson-meta span { border: 1px solid var(--border); border-radius: 999px; padding: 5px 9px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 800; text-transform: uppercase; }
 .lesson-intro h1 { max-width: 790px; margin: 24px 0 0; font-size: clamp(38px, 5vw, 58px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
 .lesson-subtitle { margin: 18px 0 0; color: var(--muted-foreground); font-size: 17px; line-height: 1.6; }
-.lesson-intro blockquote { margin: 44px 0 0; border-left: 3px solid var(--primary); padding: 4px 0 4px 22px; color: var(--foreground); font-size: clamp(20px, 3vw, 28px); font-weight: 700; line-height: 1.4; }
+.lesson-opening-question { max-width: 68ch; margin: 28px 0 0; color: var(--foreground); font-size: 18px; font-weight: 650; line-height: 1.72; text-wrap: pretty; }
 .lesson-contract { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 40px 0 0; border: 1px solid var(--border); border-radius: 12px; background: var(--border); overflow: hidden; }
 .lesson-contract div { padding: 18px; background: var(--card); }
 .lesson-contract dt { color: var(--primary); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
@@ -221,12 +221,10 @@
 .longform-prose p { margin: 0 0 1.25em; color: var(--muted-foreground); font-size: 16px; line-height: 1.88; text-wrap: pretty; }
 .longform-prose .chapter-bridge { color: var(--foreground); font-size: 18px; line-height: 1.75; }
 .section-lead { margin-top: 18px; }
-.prose-subsection { margin-top: 36px; border-top: 1px solid var(--border); padding-top: 28px; }
-.prose-marker { display: block; width: 28px; height: 3px; margin-bottom: 12px; border-radius: 999px; background: var(--primary); }
-.prose-subsection h3 { max-width: 34ch; margin: 8px 0 12px; font-size: 22px; line-height: 1.35; letter-spacing: -.02em; text-wrap: balance; }
-.prose-subsection p { margin-bottom: 16px; }
-.prose-subsection ol { margin: 18px 0 22px; padding-left: 24px; }
-.prose-subsection li { margin: 10px 0; color: var(--muted-foreground); font-size: 15px; line-height: 1.75; }
+.mechanism-prose { margin-top: 28px; }
+.mechanism-passage { display: contents; }
+.mechanism-passage p { margin-bottom: 1.35em; }
+.mechanism-passage strong { color: var(--foreground); font-weight: 720; }
 .prose-kicker { margin-bottom: 0 !important; color: var(--primary) !important; font-family: "Cascadia Code", Consolas, monospace; font-size: 10px !important; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .example-continuation { margin-top: 42px; }
 
@@ -266,6 +264,7 @@
 .transfer-card > p { margin: 18px 0 0; border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted-foreground); font-size: 13px; line-height: 1.75; }
 
 .lesson-next { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 72px; border-top: 1px solid var(--border); padding-top: 28px; }
+.lesson-transition { max-width: 68ch; margin: 64px 0 0; color: var(--foreground); font-size: 18px; font-weight: 600; line-height: 1.75; text-wrap: pretty; }
 .lesson-references { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 28px; }
 .lesson-references h2 { margin: 8px 0 0; font-size: 20px; }
 .lesson-references ul { display: grid; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
@@ -276,7 +275,6 @@
 .lesson-next a:hover { border-color: var(--amber-border); background: var(--accent); }
 .lesson-next small { color: var(--primary); font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .lesson-next strong { margin-top: 8px; font-size: 14px; line-height: 1.45; }
-.lesson-next span { margin-top: 10px; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
 .lesson-next .next-link { text-align: right; }
 
 @media (max-width: 1050px) {
@@ -426,7 +424,8 @@
   .roadmap-open { min-width: 36px; }
   .foundation-note { grid-template-columns: 1fr; }
   .foundation-note > div + div { border-top: 1px solid var(--border); border-left: 0; }
-  .lesson-sections { top: 58px; overflow-x: auto; }
+  .lesson-sections { top: 58px; overflow-x: auto; scrollbar-width: none; }
+  .lesson-sections::-webkit-scrollbar { display: none; }
   .lesson-sections a { min-width: 64px; }
   .evidence-stepper-head { align-items: start; }
   .lab-stage .inline-flex { width: 100%; }
@@ -482,6 +481,12 @@
 .diagram-matrix .diagram-items li:nth-child(1),
 .diagram-matrix .diagram-items li:nth-child(4) { border-color: var(--amber-border); }
 
+.diagram-layers .diagram-items { grid-template-columns: 1fr; max-width: 680px; }
+.diagram-layers .diagram-items li { display: grid; grid-template-columns: minmax(130px, .42fr) minmax(0, 1fr); gap: 24px; align-items: center; border-left: 3px solid color-mix(in srgb, var(--primary) 30%, var(--border)); }
+.diagram-layers .diagram-items li + li { margin-left: 28px; }
+.diagram-layers .diagram-items li + li + li { margin-left: 56px; }
+.diagram-layers .diagram-items li + li + li + li { margin-left: 84px; }
+
 .diagram-bars .diagram-items { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; }
 .diagram-bars .diagram-items li { display: grid; grid-template-rows: auto auto; min-height: 210px; }
 .diagram-bars .diagram-items i { position: relative; display: block; height: 72px; align-self: end; overflow: hidden; border: 1px solid var(--border); border-radius: 7px; background: var(--card); }
@@ -500,11 +505,12 @@
 .reading-transfer p b { color: var(--foreground); }
 .static-evidence-steps { margin: 24px 0 0; padding: 0; list-style: none; }
 .static-evidence-steps li { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 10px; border-top: 1px solid var(--border); padding: 16px 0; }
+.static-evidence-steps li > div { min-width: 0; }
 .static-evidence-steps li:last-child { border-bottom: 1px solid var(--border); }
 .static-evidence-steps span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 900; }
 .static-evidence-steps p { margin: 0; color: var(--foreground); font-size: 13px; line-height: 1.65; }
 .static-evidence-steps strong { display: block; font-size: 13px; line-height: 1.5; }
-.static-evidence-steps code { display: block; margin: 6px 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; line-height: 1.65; white-space: normal; }
+.static-evidence-steps code { display: block; margin: 6px 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; white-space: normal; }
 .worked-result { display: grid; gap: 8px; margin: 20px 0 0; border-left: 3px solid var(--primary); padding: 10px 0 10px 16px; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
 .worked-result strong { color: var(--foreground); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .static-result { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; margin: 18px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
@@ -520,11 +526,16 @@
   .diagram-formula-compare .diagram-items,
   .diagram-branch .diagram-items,
   .diagram-matrix .diagram-items,
+  .diagram-layers .diagram-items,
   .diagram-bars .diagram-items { grid-template-columns: 1fr; }
   .diagram-flow .diagram-items li:not(:last-child)::after,
   .diagram-pipeline .diagram-items li:not(:last-child)::after { top: auto; right: 50%; bottom: -23px; transform: translateX(50%) rotate(90deg); }
   .diagram-branch .diagram-items li:first-child { grid-column: auto; width: 100%; }
   .diagram-branch .diagram-items li:nth-child(n+2)::before { content: "↓"; top: -24px; }
+  .diagram-layers .diagram-items li,
+  .diagram-layers .diagram-items li + li,
+  .diagram-layers .diagram-items li + li + li,
+  .diagram-layers .diagram-items li + li + li + li { grid-template-columns: 1fr; margin-left: 0; }
   .diagram-bars .diagram-items li { min-height: 160px; }
   .diagram-formula-compare .diagram-items li,
   .diagram-formula-compare .diagram-copy { grid-template-columns: 1fr; gap: 14px; }
@@ -568,18 +579,19 @@
 .panorama-route li strong { display: block; padding: 0 4px; color: var(--muted-foreground); font-size: .66rem; font-weight: 600; line-height: 1.25; }
 
 .panorama-mobile-nav { display: none; }
-.panorama-movement { scroll-margin-top: 96px; border-bottom: 1px solid var(--border); padding: 88px 0; }
-.panorama-movement > header { display: grid; grid-template-columns: 72px 1fr; gap: 24px; margin-bottom: 40px; }
+.panorama-movement { scroll-margin-top: 96px; border-bottom: 1px solid var(--border); padding: 68px 0; }
+.panorama-movement > header { display: grid; grid-template-columns: 72px 1fr; gap: 24px; margin-bottom: 26px; }
 .panorama-movement > header > span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: clamp(1.8rem, 4vw, 3.2rem); font-weight: 700; line-height: 1; }
 .panorama-movement > header p { max-width: 620px; margin: 0 0 14px; color: var(--muted-foreground); line-height: 1.65; }
 .panorama-movement h2,
 .panorama-diagnostic h2,
-.panorama-next-actions h2 { margin: 0; color: var(--foreground); font-size: clamp(2rem, 4.6vw, 3.8rem); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
+.panorama-next-actions h2 { margin: 0; color: var(--foreground); font-size: clamp(1.9rem, 3.7vw, 3rem); line-height: 1.12; letter-spacing: -.035em; text-wrap: balance; }
 .panorama-prose { max-width: 700px; margin-left: 96px; }
+.panorama-turn { color: var(--foreground) !important; font-size: 1.08rem !important; font-weight: 650; line-height: 1.75 !important; }
 .panorama-deep-link { color: var(--foreground); text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .panorama-deep-link:hover,
 .panorama-deep-link:focus-visible { color: var(--primary); }
-.panorama-coda { max-width: 700px; margin: 40px 0 0 96px; border-top: 1px solid var(--border); border-left: 3px solid var(--primary); padding: 22px 0 0 24px; color: var(--foreground); font-size: 1.16rem; font-weight: 600; line-height: 1.65; }
+.panorama-coda { margin-top: 1.8em !important; color: var(--foreground) !important; font-size: 1.05rem !important; font-weight: 650; line-height: 1.75 !important; }
 
 .panorama-diagnostic { border-bottom: 1px solid var(--border); padding: 88px 0; }
 .panorama-diagnostic > p:not(.instrument-label) { max-width: 650px; margin: 24px 0 36px; color: var(--muted-foreground); font-size: 1.08rem; line-height: 1.7; }
@@ -618,9 +630,7 @@
   .panorama-movement > header { grid-template-columns: 1fr; gap: 18px; margin-bottom: 32px; }
   .panorama-movement h2,
   .panorama-diagnostic h2 { font-size: clamp(2rem, 11vw, 3rem); }
-  .panorama-prose,
-  .panorama-coda { margin-left: 0; }
-  .panorama-coda { padding-left: 18px; }
+  .panorama-prose { margin-left: 0; }
   .panorama-diagnostic { padding: 64px 0; }
   .panorama-diagnostic li { grid-template-columns: 36px 1fr; gap: 12px; }
   .panorama-closing { padding-top: 64px; }
