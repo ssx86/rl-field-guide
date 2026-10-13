@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
-import { ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
+import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
 
 describe("bilingual chapter corpus", () => {
@@ -23,6 +23,24 @@ describe("bilingual chapter corpus", () => {
     for (const chapter of ZH_CHAPTER_ARTICLES) {
       const copy = [chapter.title, chapter.deck, chapter.openingQuestion, chapter.bridge, ...chapter.situation.paragraphs, ...chapter.boundary.paragraphs].join(" ");
       expect(copy.match(/[\p{Script=Han}]/gu)?.length ?? 0).toBeGreaterThan(80);
+    }
+  });
+
+  it("has replaced the first part's generated template with authored manuscripts", () => {
+    expect(AUTHORED_CHINESE_SLUGS).toEqual(expect.arrayContaining([
+      "before-rl",
+      "interaction-loop",
+      "return-horizon",
+      "probability-expectation",
+      "bandits-contextual-bandits",
+    ]));
+
+    const authored = ZH_CHAPTER_ARTICLES.slice(0, 5).map((chapter) => JSON.stringify(chapter));
+    for (const copy of authored) {
+      expect(copy).not.toContain("阅读时先不要急着记名词");
+      expect(copy).not.toContain("第 1 项展示");
+      expect(copy).not.toContain("先独立复算这一行");
+      expect(copy).not.toContain("先固定信息边界");
     }
   });
 });

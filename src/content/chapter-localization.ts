@@ -2,6 +2,14 @@ import type { ChapterArticle } from "@/content/chapter-article";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { CURRICULUM, type CurriculumChapter } from "@/content/curriculum";
 import type { Language } from "@/content/bilingual-course";
+import { PART_ONE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-1";
+import { applyChineseManuscript } from "@/content/zh-manuscripts/types";
+
+const AUTHORED_MANUSCRIPTS = {
+  ...PART_ONE_CHINESE_MANUSCRIPTS,
+} as const;
+
+export const AUTHORED_CHINESE_SLUGS = Object.keys(AUTHORED_MANUSCRIPTS);
 
 interface ChineseChapterBrief {
   readonly title: string;
@@ -70,6 +78,9 @@ function localizeLabel(label: string): string {
 }
 
 function makeChineseArticle(article: ChapterArticle, route: CurriculumChapter): ChapterArticle {
+  const manuscript = AUTHORED_MANUSCRIPTS[article.slug as keyof typeof AUTHORED_MANUSCRIPTS];
+  if (manuscript) return applyChineseManuscript(article, manuscript);
+
   const brief = ZH_BRIEFS[article.slug];
   if (!brief) throw new Error(`Missing Chinese chapter brief: ${article.slug}`);
 
