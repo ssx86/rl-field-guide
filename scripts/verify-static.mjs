@@ -17,17 +17,22 @@ function assert(condition, message) {
 }
 
 const pages = collect(rootPath, "index.html");
-assert(pages.length === 48, `Expected 48 prerendered pages, found ${pages.length}`);
-assert(!existsSync(join(rootPath, "zh")), "The English-only product must not generate a Chinese route");
+assert(pages.length === 95, `Expected 95 prerendered pages, found ${pages.length}`);
+assert(existsSync(join(rootPath, "zh")), "The bilingual product must generate a Chinese route");
 
 const requiredPages = [
-  ["index.html", "Open the complete English course", "46 CHAPTERS"],
+  ["index.html", "Open English course", "打开中文课程"],
   ["en/index.html", "A field guide to reinforcement learning", "Nine connected parts"],
+  ["zh/index.html", "一套沿着决策与证据链展开的强化学习指南", "九个相连部分"],
   ["en/learn/before-rl/index.html", "decide whether learning from consequences is needed", "No prior RL vocabulary required"],
   ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
   ["en/learn/rlvr-grpo/index.html", "RLVR, process rewards, and GRPO", "group-relative"],
   ["en/learn/method-selection/index.html", "deployment evidence is still missing", "claim strength"],
+  ["zh/learn/before-rl/index.html", "先别急着用 RL", "无需任何 RL 前置术语"],
+  ["zh/learn/tabular-control/index.html", "Expected SARSA", "katex-display"],
+  ["zh/learn/rlvr-grpo/index.html", "RLVR", "程序化验证器"],
+  ["zh/learn/method-selection/index.html", "选择 RL 方法", "部署证据"],
 ];
 
 for (const [page, ...needles] of requiredPages) {
@@ -35,17 +40,19 @@ for (const [page, ...needles] of requiredPages) {
   for (const needle of needles) assert(html.includes(needle), `${page} is missing prerendered content: ${needle}`);
 }
 
-const lessonPages = collect(join(rootPath, "en", "learn"), "index.html");
-assert(lessonPages.length === 46, `Expected 46 English chapter pages, found ${lessonPages.length}`);
+const englishLessonPages = collect(join(rootPath, "en", "learn"), "index.html");
+const chineseLessonPages = collect(join(rootPath, "zh", "learn"), "index.html");
+assert(englishLessonPages.length === 46, `Expected 46 English chapter pages, found ${englishLessonPages.length}`);
+assert(chineseLessonPages.length === 46, `Expected 46 Chinese chapter pages, found ${chineseLessonPages.length}`);
 
-for (const page of lessonPages) {
+for (const page of [...englishLessonPages, ...chineseLessonPages]) {
   const html = readFileSync(page, "utf8");
   const name = relative(rootPath, page);
   assert(html.includes("knowledge-diagram"), `${name} is missing its semantic diagram`);
   assert(html.includes("static-evidence"), `${name} is missing its worked example`);
   assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
-  assert(html.includes("Original and official sources"), `${name} is missing source provenance`);
-  assert(html.includes("Where it stops working"), `${name} is missing its failure boundary`);
+  assert(html.includes("Original and official sources") || html.includes("原始与官方资料"), `${name} is missing source provenance`);
+  assert(html.includes("Where it stops working") || html.includes("结论在哪里停止"), `${name} is missing its failure boundary`);
   assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
   assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
   assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
@@ -64,4 +71,4 @@ for (const page of pages) {
 }
 
 assert(brokenLinks.length === 0, `Broken generated links:\n${brokenLinks.join("\n")}`);
-stdout.write(`Verified ${pages.length} prerendered pages and all ${lessonPages.length} English long-form chapters.\n`);
+stdout.write(`Verified ${pages.length} prerendered pages and 46 matched chapter pairs in English and Chinese.\n`);

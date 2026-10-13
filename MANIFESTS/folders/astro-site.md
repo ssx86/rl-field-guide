@@ -7,19 +7,17 @@
 - lastRead: d6f85b0 (2026-10-13)
 
 ### src/pages/index.astro
-- 职责: 站点根——语言门卡片把访客导入英文课程（单一"Open the complete English course"链到 /en/）；~18 行。
-- 坑/价值: 布局 Language 类型里的 zh 路由在此不提供。
+- 职责: 站点根——中英平权语言门，分别进入 `/en/` 与 `/zh/`。
 - lastRead: d6f85b0 (2026-10-13)
 
 ### src/pages/[lang]/index.astro
 - 职责: 课程主页——hero、五步阅读法、九部完整路线图章节卡。
-- 关键: getStaticPaths 只出 [{lang:"en"}]；CURRICULUM/PARTS；~89 行。
-- 坑/价值: partRows 按 part id 过滤派生；章节链硬编 "en" 段——加语言要动 getStaticPaths 与所有硬编码。
+- 关键: getStaticPaths 同时输出 en/zh；按语言读取本地化 CURRICULUM/PARTS；语言切换保留同一路线。
 - lastRead: d6f85b0 (2026-10-13)
 
 ### src/pages/[lang]/learn/[lesson].astro
 - 职责: 静态章节阅读页——分部导航轨、导语契约、情境散文、图、算例步进、机制节、KaTeX 方程、边界、来源、前后翻页。
-- 关键: getStaticPaths 映射 CURRICULUM；katex.renderToString 服务端渲染（set:html、throwOnError false）；~154 行。
+- 关键: getStaticPaths 映射 46×2 路线；katex.renderToString 服务端严格渲染（set:html、throwOnError true）；语言切换保留 slug 与锚点。
 - 坑/价值: 路由查找对 CURRICULUM.find 非空断言——slug 必须与 getChapterArticle 双向同步；前置过滤 .filter(Boolean) 后仍 item! 解引用；内联脚本滚动导航轨当前链入视。
 - lastRead: d6f85b0 (2026-10-13)
 

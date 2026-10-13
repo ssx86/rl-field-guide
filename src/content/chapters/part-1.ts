@@ -174,7 +174,7 @@ export const PART_ONE_ARTICLES = [
     },
     equations: [
       { latex: "G_t = R_{t+1} + \\gamma R_{t+2} + \\gamma^2 R_{t+3} + \\cdots", read: "Return at time t is the next reward plus gamma times the following reward, plus gamma squared times the reward after that, and so on.", meaning: "Each power records temporal distance from the decision being evaluated. The equation compresses the visible reward timeline; it does not explain whether the chosen reward signal faithfully represents the real objective." },
-      { latex: "y_t = R_{t+1} + \\gamma (1-d_t)V(S_{t+1})", read: "A one-step target is the next reward plus discounted next-state value unless the transition truly terminates the task.", meaning: "Here d is a termination indicator, not a generic episode-ended flag. A separate truncation flag should normally leave the bootstrap term intact because value continues beyond the recorded window." },
+      { latex: "y_t = R_{t+1} + \\gamma (1-D_{t+1})V(S_{t+1})", read: "A one-step target is the next reward plus discounted next-state value unless the transition truly terminates the task.", meaning: "Here D at t plus one is the termination indicator returned with this transition, not a generic episode-ended flag. A separate truncation flag should normally leave the bootstrap term intact because value continues beyond the recorded window." },
     ],
     boundary: {
       title: "Discounting cannot repair a bad reward or a broken episode definition",

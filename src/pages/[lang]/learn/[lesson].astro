@@ -2,19 +2,23 @@
 import katex from "katex";
 import ArticleDiagram from "@/components/ArticleDiagram.astro";
 import GuideHeader from "@/components/GuideHeader.astro";
-import { getChapterArticle } from "@/content/chapter-articles";
-import { CURRICULUM, PARTS } from "@/content/curriculum";
+import type { Language } from "@/content/bilingual-course";
+import { getLocalizedChapterArticle } from "@/content/chapter-localization";
+import { getLocalizedCurriculum, getLocalizedParts } from "@/content/localized-curriculum";
 import GuideLayout from "@/layouts/GuideLayout.astro";
 
 export function getStaticPaths() {
-  return CURRICULUM.map((chapter) => ({
-    params: { lang: "en", lesson: chapter.slug },
-    props: { slug: chapter.slug },
-  }));
+  return (["en", "zh"] as const).flatMap((language) => getLocalizedCurriculum(language).map((chapter) => ({
+    params: { lang: language, lesson: chapter.slug },
+    props: { slug: chapter.slug, language },
+  })));
 }
 
-const { slug } = Astro.props as { slug: string };
-const chapter = getChapterArticle(slug);
+const { slug, language } = Astro.props as { slug: string; language: Language };
+const zh = language === "zh";
+const CURRICULUM = getLocalizedCurriculum(language);
+const PARTS = getLocalizedParts(language);
+const chapter = getLocalizedChapterArticle(language, slug);
 const route = CURRICULUM.find((item) => item.slug === slug)!;
 const chapterIndex = CURRICULUM.findIndex((item) => item.slug === slug);
 const previous = CURRICULUM[chapterIndex - 1];
@@ -24,53 +28,61 @@ const part = PARTS[partIndex];
 const partChapters = CURRICULUM.filter((item) => item.part === route.part);
 const prerequisites = route.prerequisites.map((item) => CURRICULUM.find((candidate) => candidate.slug === item)).filter(Boolean);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const homeHref = `${base}/en/`;
-const lessonHref = `${base}/en/learn/${slug}/`;
+const homeHref = `${base}/${language}/`;
+const lessonHref = `${base}/${language}/learn/${slug}/`;
+const alternateHref = `${base}/${zh ? "en" : "zh"}/learn/${slug}/`;
+const t = zh ? {
+  brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English", map: "完整课程地图", part: "部分", chapter: "第", openPart: "打开本部分", noPrior: "无需任何 RL 前置术语", builds: "前置基础", why: "为什么此处学习", sections: "章节目录",
+  nav: ["情境", "图解", "算例", "机制", "公式", "边界"], situation: "01 · 为什么接着问这个问题", diagram: "02 · 核心图解", example: "03 · 复算证据", pause: "计算前暂停", result: "结果", mechanism: "04 · 给机制命名", mechanismTitle: "算例背后的关系", equations: "05 · 压缩关系", equationsTitle: "等每个量都有工作后再看公式", equationLead: "下面的符号不会开启一个新故事。每个符号都指回上面的情境、图解或计算。", boundary: "06 · 结论在哪里停止", sources: "原始与官方资料", sourcesTitle: "继续查阅原始资料", previous: "上一章", next: "下一章", returnMap: "返回课程地图", revisit: "选择一条路线重新学习",
+} : {
+  brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文", map: "Complete field map", part: "Part", chapter: "Chapter", openPart: "Open this part", noPrior: "No prior RL vocabulary required", builds: "Builds on", why: "Why it is here", sections: "Chapter sections",
+  nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], situation: "01 · Why this question comes next", diagram: "02 · Core diagram", example: "03 · Work the evidence", pause: "Pause before calculating", result: "Result", mechanism: "04 · Name the mechanism", mechanismTitle: "The relationships behind the example", equations: "05 · Compress the relationships", equationsTitle: "Equations after the quantities have jobs", equationLead: "The notation below does not start a new story. Each symbol points back to the situation, diagram, or worked calculation above.", boundary: "06 · Where it stops working", sources: "Original and official sources", sourcesTitle: "Continue beyond the field guide", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
+};
 ---
 
-<GuideLayout title={`${chapter.title} · RL Field Guide`} description={chapter.deck} language="en" canonicalPath={lessonHref}>
-  <GuideHeader language="en" brand="RL FIELD GUIDE" homeHref={homeHref} themeLabel="Switch color theme" />
+<GuideLayout title={`${chapter.title} · ${t.brand}`} description={chapter.deck} language={language} canonicalPath={lessonHref} alternatePath={alternateHref}>
+  <GuideHeader language={language} brand={t.brand} homeHref={homeHref} themeLabel={t.theme} alternateHref={alternateHref} alternateLabel={t.alternate} />
 
   <main id="main-content" class="lesson-shell" tabindex="-1">
     <aside class="lesson-rail" aria-label={`${part.title} chapters`}>
-      <a class="rail-home" href={homeHref}>← Complete field map</a>
-      <p class="instrument-label">Part {partIndex + 1} · {part.title}</p>
+      <a class="rail-home" href={homeHref}>← {t.map}</a>
+      <p class="instrument-label">{t.part} {partIndex + 1} · {part.title}</p>
       <nav class="lesson-rail-links">
         {partChapters.map((item) => (
-          <a data-lesson-id={item.slug} href={`${base}/en/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}>
+          <a data-lesson-id={item.slug} href={`${base}/${language}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}>
             <span>{String(item.order).padStart(2, "0")}</span><em>{item.title}</em>
           </a>
         ))}
       </nav>
       <div class="lesson-mobile-current">
-        {previous ? <a href={`${base}/en/learn/${previous.slug}/`} aria-label={`Previous: ${previous.title}`}>←</a> : <span aria-hidden="true">·</span>}
+        {previous ? <a href={`${base}/${language}/learn/${previous.slug}/`} aria-label={`${t.previous}: ${previous.title}`}>←</a> : <span aria-hidden="true">·</span>}
         <strong>{String(route.order).padStart(2, "0")} / {CURRICULUM.length}<small>{chapter.title}</small></strong>
-        {next ? <a href={`${base}/en/learn/${next.slug}/`} aria-label={`Next: ${next.title}`}>→</a> : <span aria-hidden="true">·</span>}
+        {next ? <a href={`${base}/${language}/learn/${next.slug}/`} aria-label={`${t.next}: ${next.title}`}>→</a> : <span aria-hidden="true">·</span>}
       </div>
       <details class="lesson-mobile-menu">
-        <summary>Open this part</summary>
-        <nav>{partChapters.map((item) => <a href={`${base}/en/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}><span>{String(item.order).padStart(2, "0")}</span>{item.title}</a>)}</nav>
+        <summary>{t.openPart}</summary>
+        <nav>{partChapters.map((item) => <a href={`${base}/${language}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}><span>{String(item.order).padStart(2, "0")}</span>{item.title}</a>)}</nav>
       </details>
     </aside>
 
     <article class="lesson-article">
       <header class="lesson-intro">
-        <div class="lesson-meta"><span>Part {partIndex + 1} · {part.title}</span><span>Chapter {String(route.order).padStart(2, "0")} / {CURRICULUM.length}</span></div>
+        <div class="lesson-meta"><span>{t.part} {partIndex + 1} · {part.title}</span><span>{t.chapter} {String(route.order).padStart(2, "0")} / {CURRICULUM.length}</span></div>
         <h1>{chapter.title}</h1>
         <p class="lesson-subtitle">{chapter.deck}</p>
         <blockquote>{chapter.openingQuestion}</blockquote>
         <dl class="lesson-contract">
-          <div><dt>Builds on</dt><dd>{prerequisites.length ? prerequisites.map((item, index) => <><a href={`${base}/en/learn/${item!.slug}/`}>{item!.title}</a>{index < prerequisites.length - 1 ? " · " : ""}</>) : "No prior RL vocabulary required"}</dd></div>
-          <div><dt>Why it is here</dt><dd>{route.purpose}</dd></div>
+          <div><dt>{t.builds}</dt><dd>{prerequisites.length ? prerequisites.map((item, index) => <><a href={`${base}/${language}/learn/${item!.slug}/`}>{item!.title}</a>{index < prerequisites.length - 1 ? " · " : ""}</>) : t.noPrior}</dd></div>
+          <div><dt>{t.why}</dt><dd>{route.purpose}</dd></div>
         </dl>
       </header>
 
-      <nav class="lesson-sections" aria-label="Chapter sections">
-        <a href="#situation">Situation</a><a href="#diagram">Diagram</a><a href="#example">Example</a><a href="#mechanism">Mechanism</a>{chapter.equations.length ? <a href="#equations">Equations</a> : null}<a href="#boundary">Boundary</a>
+      <nav class="lesson-sections" aria-label={t.sections}>
+        <a href="#situation">{t.nav[0]}</a><a href="#diagram">{t.nav[1]}</a><a href="#example">{t.nav[2]}</a><a href="#mechanism">{t.nav[3]}</a>{chapter.equations.length ? <a href="#equations">{t.nav[4]}</a> : null}<a href="#boundary">{t.nav[5]}</a>
       </nav>
 
       <section id="situation" class="lesson-section" aria-labelledby="situation-title">
-        <p class="instrument-label">01 · Why this question comes next</p>
+        <p class="instrument-label">{t.situation}</p>
         <h2 id="situation-title">{chapter.situation.title}</h2>
         <div class="longform-prose">
           <p class="chapter-bridge">{chapter.bridge}</p>
@@ -79,16 +91,16 @@ const lessonHref = `${base}/en/learn/${slug}/`;
       </section>
 
       <section id="diagram" class="lesson-section diagram-section">
-        <ArticleDiagram diagram={chapter.diagram} slug={slug} />
+        <ArticleDiagram diagram={chapter.diagram} slug={slug} label={t.diagram} />
       </section>
 
       <section id="example" class="lesson-section" aria-labelledby="example-title">
-        <p class="instrument-label">03 · Work the evidence</p>
+        <p class="instrument-label">{t.example}</p>
         <h2 id="example-title">{chapter.workedExample.title}</h2>
         <div class="longform-prose section-lead"><p>{chapter.workedExample.setup}</p></div>
         <article class="static-evidence">
           <header>
-            <p class="instrument-label">Pause before calculating</p>
+            <p class="instrument-label">{t.pause}</p>
             <h3>{chapter.workedExample.prediction}</h3>
           </header>
           <ol class="static-evidence-steps">
@@ -96,13 +108,13 @@ const lessonHref = `${base}/en/learn/${slug}/`;
               <li><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.label}</strong><code>{step.calculation}</code><p>{step.explanation}</p></div></li>
             ))}
           </ol>
-          <p class="worked-result"><strong>Result</strong>{chapter.workedExample.result}</p>
+          <p class="worked-result"><strong>{t.result}</strong>{chapter.workedExample.result}</p>
         </article>
       </section>
 
       <section id="mechanism" class="lesson-section" aria-labelledby="mechanism-title">
-        <p class="instrument-label">04 · Name the mechanism</p>
-        <h2 id="mechanism-title">The relationships behind the example</h2>
+        <p class="instrument-label">{t.mechanism}</p>
+        <h2 id="mechanism-title">{t.mechanismTitle}</h2>
         <div class="longform-prose">
           <p>{chapter.mechanism.introduction}</p>
           {chapter.mechanism.sections.map((section, index) => (
@@ -117,9 +129,9 @@ const lessonHref = `${base}/en/learn/${slug}/`;
 
       {chapter.equations.length ? (
         <section id="equations" class="lesson-section" aria-labelledby="equations-title">
-          <p class="instrument-label">05 · Compress the relationships</p>
-          <h2 id="equations-title">Equations after the quantities have jobs</h2>
-          <div class="longform-prose section-lead"><p>The notation below does not start a new story. Each symbol points back to the situation, diagram, or worked calculation above.</p></div>
+          <p class="instrument-label">{t.equations}</p>
+          <h2 id="equations-title">{t.equationsTitle}</h2>
+          <div class="longform-prose section-lead"><p>{t.equationLead}</p></div>
           <div class="formula-list">
             {chapter.equations.map((equation) => (
               <article>
@@ -133,20 +145,20 @@ const lessonHref = `${base}/en/learn/${slug}/`;
       ) : null}
 
       <section id="boundary" class="lesson-section boundary-section" aria-labelledby="boundary-title">
-        <p class="instrument-label">06 · Where it stops working</p>
+        <p class="instrument-label">{t.boundary}</p>
         <h2 id="boundary-title">{chapter.boundary.title}</h2>
         <div class="longform-prose">{chapter.boundary.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
       </section>
 
       <section class="lesson-references" aria-labelledby="sources-title">
-        <p class="instrument-label">Original and official sources</p>
-        <h2 id="sources-title">Continue beyond the field guide</h2>
+        <p class="instrument-label">{t.sources}</p>
+        <h2 id="sources-title">{t.sourcesTitle}</h2>
         <ul>{chapter.sources.map((source) => <li><a href={source.url} target="_blank" rel="noreferrer"><span>{source.label}<small>{source.kind}</small></span><span aria-hidden="true">↗</span></a></li>)}</ul>
       </section>
 
       <nav class="lesson-next" aria-label="Chapter pagination">
-        {previous ? <a href={`${base}/en/learn/${previous.slug}/`}><small>← Previous</small><strong>{previous.title}</strong></a> : <a href={homeHref}><small>← Complete field map</small><strong>RL Field Guide</strong></a>}
-        {next ? <a class="next-link" href={`${base}/en/learn/${next.slug}/`}><small>Next →</small><strong>{next.title}</strong><span>{chapter.nextBridge}</span></a> : <a class="next-link" href={homeHref}><small>Return to field map →</small><strong>Choose a route to revisit</strong><span>{chapter.nextBridge}</span></a>}
+        {previous ? <a href={`${base}/${language}/learn/${previous.slug}/`}><small>← {t.previous}</small><strong>{previous.title}</strong></a> : <a href={homeHref}><small>← {t.map}</small><strong>{t.brand}</strong></a>}
+        {next ? <a class="next-link" href={`${base}/${language}/learn/${next.slug}/`}><small>{t.next} →</small><strong>{next.title}</strong><span>{chapter.nextBridge}</span></a> : <a class="next-link" href={homeHref}><small>{t.returnMap} →</small><strong>{t.revisit}</strong><span>{chapter.nextBridge}</span></a>}
       </nav>
     </article>
   </main>

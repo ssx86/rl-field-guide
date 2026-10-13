@@ -5,8 +5,8 @@ Legislated 2026-10-14 by repo-cartographer from the workspace audit reports
 
 ## Project Focus
 
-- 本项目只做: publishing the **English-only, reading-first RL Field Guide** — a
-  46-chapter / 9-part reading course built as a static Astro site
+- 本项目只做: publishing the **bilingual, reading-first RL Field Guide** — a
+  matched English/Chinese 46-chapter / 9-part reading course built as a static Astro site
   (https://ssx86.github.io/rl-field-guide). Shipped product = `src/pages/` +
   `src/content/curriculum.ts` + `src/content/chapters/part-1..9.ts`, deployed from
   `dist/` by CI with `verify:static` + `audit-browser.py` gates.
@@ -20,9 +20,9 @@ Legislated 2026-10-14 by repo-cartographer from the workspace audit reports
     reading-first: lesson pages carry zero interactive controls / zero
     astro-islands (enforced by `scripts/verify-static.mjs`). Runnable experiments
     belong in the sibling `qlearning` repo.
-  - Chinese locale output — English-only is a deliberate product decision
-    (no `/zh/` route; CJK is test-banned in shipped content). zh material exists
-    only inside the legacy layer below.
+  - Locale drift — `/en/` and `/zh/` must keep identical route order, formula
+    LaTeX, worked calculations, and source URLs. Chinese teaching copy may be
+    adapted for clarity, but it must not silently change the mathematical claim.
   - Chapter content that bypasses `CURRICULUM` / `CHAPTER_ARTICLES` — the 46-count,
     ordering, and depth contracts are enforced by `curriculum.test.ts` /
     `chapter-article.test.ts`; change them consciously, never accidentally.
@@ -65,8 +65,8 @@ From the 2026-10-13 audit findings — these are "do it right at creation time" 
   generated dirs (`dist/`, `.astro/`) are gitignored the moment they exist.
 - **分支指针同步**: after publishing a feature branch to `origin/main`,
   fast-forward the local `main` pointer in the same session (finding F5).
-- **英文-only 内容法**: shipped content stays CJK-free (tests enforce); any zh
-  material lives only in the legacy layer pending the SPA decision.
+- **双语同构内容法**: English and Chinese ship together. Tests enforce matched
+  slugs plus identical formula LaTeX, calculations, and source provenance.
 - **无游离文件**: every new file is committed or gitignored within its working
   session. (Finding F4: the founding prototype floated at the workspace root
   outside any repo until archived into `docs/`.)

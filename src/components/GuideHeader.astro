@@ -16,12 +16,12 @@ const lightLabel = language === "zh" ? "切换到亮色" : "Switch to light";
 ---
 
 <header class="guide-header">
-  <a class="guide-brand" href={homeHref} aria-label={`${brand} home`}>
+  <a class="guide-brand" href={homeHref} aria-label={language === "zh" ? `${brand} 首页` : `${brand} home`}>
     <span class="guide-brand-mark" aria-hidden="true">RL</span>
     <span>{brand}</span>
   </a>
   <div class="guide-header-actions">
-    {alternateHref && alternateLabel ? <a class="guide-control" href={alternateHref}>{alternateLabel}</a> : null}
+    {alternateHref && alternateLabel ? <a class="guide-control" href={alternateHref} data-language-toggle>{alternateLabel}</a> : null}
     <button class="guide-control theme-control" type="button" data-theme-toggle data-dark-label={darkLabel} data-light-label={lightLabel} aria-label={themeLabel} aria-pressed="false">{darkLabel}</button>
   </div>
 </header>

@@ -5,16 +5,17 @@ import type { ChapterArticle } from "@/content/chapter-article";
 interface Props {
   diagram: ChapterArticle["diagram"];
   slug: string;
+  label?: string;
 }
 
-const { diagram, slug } = Astro.props;
+const { diagram, slug, label = "Core diagram" } = Astro.props;
 const variant = diagram.variant ?? "flow";
 ---
 
 <figure class:list={["knowledge-diagram", `diagram-${variant}`]} aria-labelledby={`diagram-title-${slug}`}>
   <header>
     <div>
-      <p class="instrument-label">Core diagram</p>
+      <p class="instrument-label">{label}</p>
       <h2 id={`diagram-title-${slug}`}>{diagram.title}</h2>
     </div>
   </header>

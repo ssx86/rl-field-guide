@@ -1,6 +1,6 @@
-# rl-guide/ src/content（17 + chapters/ 9 = 26 文件）——课程内容层
+# rl-guide/ src/content（双语线上课程 + 遗留 SPA 内容）——课程内容层
 
-> 混合状态：`curriculum.ts` + `chapters/part-1..9.ts` + `chapter-articles.ts` 是**线上 46 章课程的权威内容源**（经 [lang]/learn/[lesson].astro 渲染）；
+> 混合状态：`curriculum.ts` + `chapters/part-1..9.ts` + `chapter-articles.ts` 是**英文 46 章权威内容源**；`chapter-localization.ts` + `localized-curriculum.ts` 生成同构中文路线，并由 parity tests 锁定公式、算例与来源；
 > `chapters.ts`（旧 10 章库）、`course.ts`（12 课旧轨道）、`bilingual-course.ts`（16 课双语）、`learning-labs.ts`、`foundational-extensions.ts`、`planning-lesson.ts`、`mechanics-labs.ts` 服务于已停用的交互 SPA 层（有测试守护）。
 
 ### src/content/curriculum.ts 【线上权威】

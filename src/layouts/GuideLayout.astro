@@ -45,6 +45,9 @@ const alternateLang = language === "zh" ? "en" : "zh-CN";
     <a class="skip-link" href="#main-content">{language === "zh" ? "跳到主要内容" : "Skip to main content"}</a>
     <slot />
     <script is:inline>
+      document.querySelectorAll("[data-language-toggle]").forEach((link) => {
+        if (link instanceof HTMLAnchorElement && location.hash) link.href += location.hash;
+      });
       document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
         button.addEventListener("click", () => {
           const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";

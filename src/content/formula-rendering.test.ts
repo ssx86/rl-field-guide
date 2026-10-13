@@ -2,10 +2,11 @@ import katex from "katex";
 import { describe, expect, it } from "vitest";
 
 import { CHAPTER_ARTICLES, getChapterArticle } from "@/content/chapter-articles";
+import { ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 
 describe("formula rendering contracts", () => {
   it("renders every chapter equation with strict KaTeX parsing", () => {
-    for (const chapter of CHAPTER_ARTICLES) {
+    for (const chapter of [...CHAPTER_ARTICLES, ...ZH_CHAPTER_ARTICLES]) {
       for (const equation of chapter.equations) {
         expect(() => katex.renderToString(equation.latex, { displayMode: true, throwOnError: true }), `${chapter.slug}: ${equation.latex}`).not.toThrow();
       }
@@ -32,12 +33,19 @@ describe("formula rendering contracts", () => {
   });
 
   it("strictly renders every diagram value explicitly marked as mathematics", () => {
-    for (const chapter of CHAPTER_ARTICLES) {
+    for (const chapter of [...CHAPTER_ARTICLES, ...ZH_CHAPTER_ARTICLES]) {
       for (const item of chapter.diagram.items as readonly (typeof chapter.diagram.items[number] & { latex?: string })[]) {
         const latex = item.latex;
         if (!latex) continue;
         expect(() => katex.renderToString(latex, { displayMode: true, throwOnError: true }), `${chapter.slug}: ${item.label}`).not.toThrow();
       }
     }
+  });
+
+  it("locks the audited indexing and expectation scopes", () => {
+    expect(getChapterArticle("return-horizon").equations[1].latex).toContain("D_{t+1}");
+    expect(getChapterArticle("off-policy-deadly-triad").equations[1].latex).toContain("A\\sim b(\\cdot\\mid s)");
+    expect(getChapterArticle("continuous-control").equations[1].latex).toContain("\\gamma^t");
+    expect(getChapterArticle("rlvr-grpo").equations[1].latex).toContain("\\max_\\theta\\;J_{\\mathrm{GRPO}}");
   });
 });

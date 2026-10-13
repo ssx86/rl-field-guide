@@ -3,15 +3,16 @@ import GuideLayout from "@/layouts/GuideLayout.astro";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
-<GuideLayout title="RL Field Guide" description="A complete, example-first reinforcement learning reading course in English." language="en" canonicalPath={`${base}/`}>
+<GuideLayout title="RL Field Guide · 强化学习指南" description="A complete, example-first bilingual reinforcement learning reading course. 一套以例子和证据为先的中英双语强化学习课程。" language="en" canonicalPath={`${base}/`}>
   <main id="main-content" class="language-gate" tabindex="-1">
     <div class="language-gate-card">
       <span class="guide-brand-mark" aria-hidden="true">RL</span>
-      <p class="instrument-label">RL FIELD GUIDE · 46 CHAPTERS · 9 PARTS</p>
-      <h1>Learn reinforcement learning as a chain of decisions and evidence.</h1>
-      <p>The course begins before algorithms, works through visible examples and equations, and ends with modern language-model post-training and deployment evidence.</p>
-      <div class="language-gate-actions single-action">
-        <a class="primary-link" href={`${base}/en/`}>Open the complete English course <span>→</span></a>
+      <p class="instrument-label">RL FIELD GUIDE · 强化学习指南 · 46 CHAPTERS · 9 PARTS</p>
+      <h1>Learn reinforcement learning as a chain of decisions and evidence.<br /><span lang="zh-CN">沿着决策与证据链学习强化学习。</span></h1>
+      <p>Choose one language. Both routes contain the same 46 chapters, calculations, formulas, and sources.<br /><span lang="zh-CN">请选择语言。两条路线共享相同的 46 章结构、算例、公式与原始资料。</span></p>
+      <div class="language-gate-actions">
+        <a class="primary-link" href={`${base}/en/`}>Open English course <span>→</span></a>
+        <a class="primary-link" href={`${base}/zh/`} lang="zh-CN">打开中文课程 <span>→</span></a>
       </div>
     </div>
   </main>

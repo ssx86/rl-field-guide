@@ -1,4 +1,7 @@
-# rl-guide/ .github · docs/audit-2026-10-12 · docs/RL_GUIDE_PROTOTYPE.md · scripts（8 文件）
+# rl-guide/ .github · docs · scripts——部署、审计与验证层
+
+### docs/formula-audit-2026-10-14.md
+- 职责: 记录 46 章双语公式的记号约定、语义修正、严格渲染范围与证据边界。
 
 ### docs/RL_GUIDE_PROTOTYPE.md 【历史原型，2026-10-13 自工作区根归档入库】
 - 职责: rl-guide 的创建原型（"prototype for review. No production frontend code has been generated yet"）——本库立项前的设计文档。
@@ -36,13 +39,12 @@
 - lastRead: d6f85b0 (2026-10-13)
 
 ### scripts/verify-static.mjs
-- 职责: CI 静态校验（npm run verify:static）——校验 dist/ 页数、英文-only 规则、必要内容针、逐章结构标记、内链完整性。
-- 关键: 恰 48 页、无 dist/zh、46 课页；逐页必要针（"46 CHAPTERS"等 7 页）；逐课须含 knowledge-diagram/static-evidence/longform-prose/"Original and official sources"/"Where it stops working"，禁止 causal-strip/concept-list/worked-grid/astro-island；扫描 /rl-field-guide/ 前缀内链；~67 行。
-- 坑/价值: 计数（48/46）与禁类名硬编码——增删章节须同步改脚本；只查该前缀内链。
+- 职责: CI 静态校验——校验 95 个产物页、46 对中英章节、必要内容针、逐章结构标记与内链完整性。
+- 关键: en/zh 各 46 章；逐课须含 knowledge-diagram/static-evidence/longform-prose/来源/边界，禁止旧卡片结构与 astro-island。
 - lastRead: d6f85b0 (2026-10-13)
 
 ### scripts/audit-browser.py
-- 职责: Playwright 无头浏览器行为审计——路由结构、章节解剖、主题切换、锚点偏移、响应式、键盘、控制台洁净。
-- 关键: 默认 http://127.0.0.1:5180/rl-field-guide；断言 9 .route-stage、46 .roadmap-link、无"中文"链接；逐章恰 1 知识图/1 静态证据/≥2 长文段/零交互控件/零 astro-island/≥3 证据步/≥2 参考链；320–768px 无文档级横溢；Tab 首焦点为跳链；控制台错误即失败；~59 行。
+- 职责: Playwright 无头浏览器行为审计——中英路线结构、92 章解剖、严格公式矩阵、语言锚点、主题、响应式、键盘与控制台洁净。
+- 关键: en/zh 各 46 链；逐章恰 1 知识图/1 静态证据/零课内控件/零 astro-island；320–768px 无文档级横溢；公式区允许局部滚动但页面不溢出。
 - 坑/价值: 需先 build+preview+Playwright；硬编码选择器（.route-stage 等）与特定章节路径——标记约定变更会静默失配。test-results/ 的浏览器 profile 即其运行残留。
 - lastRead: d6f85b0 (2026-10-13)

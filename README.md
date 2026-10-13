@@ -1,6 +1,6 @@
 # RL Field Guide
 
-An English-only, zero-start reading course that covers reinforcement learning from problem framing through modern language-model post-training. It is built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components, and runs independently on port `5180`.
+A bilingual English/Chinese, zero-start reading course that covers reinforcement learning from problem framing through modern language-model post-training. It is built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components, and runs independently on port `5180`.
 
 The published route contains 46 chapters in nine connected parts. Every chapter is prerendered as complete HTML and follows one evidence-first sequence:
 
@@ -27,7 +27,7 @@ npm run verify:static
 python scripts/audit-browser.py
 ```
 
-The build produces 48 static pages: the root redirect, the English course map, and 46 chapters. The verification scripts enforce route order, long-form depth, major terminology coverage, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, theme behavior, and document-level overflow checks at four responsive widths.
+The build produces 95 static pages: one bilingual language gate, two localized course maps, and 46 matched chapter pairs. The verification scripts enforce route order, formula/calculation/source parity, strict KaTeX rendering, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, language-preserving anchors, theme behavior, and document-level overflow checks at four responsive widths.
 
 ## Evidence boundary
 

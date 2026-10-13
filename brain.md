@@ -1,6 +1,6 @@
 # Beginner-brain cognitive ledger
 
-Audience model: an adult who reads plain English, can follow everyday arithmetic and a timeline, but does not yet know reinforcement learning, probability notation, calculus, neural networks, or language-model post-training.
+Audience model: an adult who reads plain English or Chinese, can follow everyday arithmetic and a timeline, but does not yet know reinforcement learning, probability notation, calculus, neural networks, or language-model post-training.
 
 Input state is always `daily knowledge ∪ facts taught on earlier pages`. A chapter may introduce notation only after a visible situation has given every quantity a job. The reader is never required to click, guess correctly, or remember an unexplained acronym to reach the explanation.
 
