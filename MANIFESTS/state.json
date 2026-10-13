@@ -1,11 +1,11 @@
 {
- "generatedAt": "2026-10-13T15:39:23.053Z",
- "head": "1507ef0c69e14a8e2c99286cfb6e8e61a42004cc",
+ "generatedAt": "2026-10-13T16:06:53.176Z",
+ "head": "2303f56ba64b986f2d855d8d501ecb4f8582aed7",
  "root": "D:\\workspace\\reinforcement-learning\\rl-guide",
- "fileCount": 109,
+ "fileCount": 110,
  "countsByTopDir": {
   ".github": 1,
-  "(root)": 14,
+  "(root)": 15,
   "artifacts": 1,
   "docs": 5,
   "public": 1,
@@ -39,6 +39,18 @@
    "lastReadHash": "f81e33d836cc867ced4b4ffd029a406b8c3c16c3f145b3041417157d6a861165",
    "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
    "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "AGENTS.md": {
+   "size": 4980,
+   "mtime": 1791907580382,
+   "sha": "b16789500b14d557a0737b1bcb55550705da00c9fd20b014dd7041631b93b5b4",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "b16789500b14d557a0737b1bcb55550705da00c9fd20b014dd7041631b93b5b4",
+   "lastReadCommit": "2303f56ba64b986f2d855d8d501ecb4f8582aed7",
+   "lastReadAt": "2026-10-13T16:06:53.176Z",
+   "lastReadSize": 4980,
+   "lastReadMtime": 1791907580382
   },
   "AUDIT.md": {
    "size": 5100,

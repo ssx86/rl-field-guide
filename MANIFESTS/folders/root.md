@@ -1,4 +1,9 @@
-# rl-guide/ 根目录文件（14 + artifacts/public 各 1 二进制）
+# rl-guide/ 根目录文件（15 + artifacts/public 各 1 二进制）
+
+### AGENTS.md
+- 职责: 代理立法文件——四件套（Project Focus / Structure Contract / File Hygiene Rules / Last Audit）。
+- 关键: 焦点=英文-only 阅读优先课程站；焦点违例挂牌=遗留 SPA 层三选一（pending user decision）；卫生法对应审计类别（换路必清旧路=F1、未提交不悬空=F2、浏览器审计产物即产即清=F6、分支指针同步=F5、无游离文件=F4）；Last Audit 记 2 项待用户决策；~90 行。
+- lastRead: 2303f56 (2026-10-14)
 
 ### .gitignore
 - 职责: Astro/Node 标准忽略——node_modules、dist、.astro、coverage、test-results、.env、*.log、*.tsbuildinfo、vite.config 编译产物；~12 行。
