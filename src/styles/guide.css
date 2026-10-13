@@ -445,11 +445,15 @@
 .knowledge-diagram header h2 { max-width: 680px; margin: 8px 0 0; font-size: clamp(24px, 4vw, 38px); line-height: 1.12; letter-spacing: -.04em; }
 .diagram-items { display: grid; gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; }
 .diagram-items li { position: relative; min-width: 0; border: 1px solid var(--border); border-radius: 10px; padding: 18px; background: var(--surface-subtle); }
+.diagram-method { display: grid; align-content: start; gap: 14px; }
 .diagram-index { display: block; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 900; }
+.diagram-method strong { font-size: 13px; line-height: 1.4; }
 .diagram-copy { display: grid; align-content: start; gap: 7px; margin-top: 18px; }
-.diagram-copy strong { font-size: 13px; line-height: 1.4; }
 .diagram-copy b { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: clamp(15px, 2vw, 20px); line-height: 1.35; overflow-wrap: anywhere; }
 .diagram-copy small { color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
+.diagram-formula { min-width: 0; overflow-x: auto; overflow-y: hidden; color: var(--primary); scrollbar-width: thin; }
+.diagram-formula .katex-display { margin: 0; text-align: left; }
+.diagram-formula .katex-display > .katex { display: inline-block; min-width: max-content; font-size: clamp(16px, 1.45vw, 21px); text-align: left; }
 .knowledge-diagram figcaption { margin-top: 24px; border-left: 3px solid var(--primary); padding: 10px 0 10px 16px; color: var(--muted-foreground); font-size: 12px; line-height: 1.7; }
 
 .diagram-flow .diagram-items,
@@ -457,6 +461,11 @@
 .diagram-flow .diagram-items li:not(:last-child)::after,
 .diagram-pipeline .diagram-items li:not(:last-child)::after { content: "→"; position: absolute; z-index: 2; top: 50%; right: -20px; width: 26px; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 18px; font-weight: 900; text-align: center; transform: translateY(-50%); }
 .diagram-pipeline .diagram-items li { border-top: 3px solid var(--primary); }
+
+.diagram-formula-compare .diagram-items { grid-template-columns: 1fr; }
+.diagram-formula-compare .diagram-items li { display: grid; grid-template-columns: minmax(130px, 160px) minmax(0, 1fr); gap: 10px 28px; align-items: center; min-height: 126px; }
+.diagram-formula-compare .diagram-copy { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 0; }
+.diagram-formula-compare .diagram-copy small { font-size: 12px; }
 
 .diagram-compare .diagram-items { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .diagram-compare .diagram-items li:first-child { border-color: var(--amber-border); background: var(--accent); }
@@ -507,6 +516,7 @@
   .knowledge-diagram header { display: block; }
   .diagram-flow .diagram-items,
   .diagram-pipeline .diagram-items,
+  .diagram-formula-compare .diagram-items,
   .diagram-branch .diagram-items,
   .diagram-matrix .diagram-items,
   .diagram-bars .diagram-items { grid-template-columns: 1fr; }
@@ -515,5 +525,13 @@
   .diagram-branch .diagram-items li:first-child { grid-column: auto; width: 100%; }
   .diagram-branch .diagram-items li:nth-child(n+2)::before { content: "↓"; top: -24px; }
   .diagram-bars .diagram-items li { min-height: 160px; }
+  .diagram-formula-compare .diagram-items li,
+  .diagram-formula-compare .diagram-copy { grid-template-columns: 1fr; gap: 14px; }
+  .diagram-formula-compare .diagram-copy { margin-top: 4px; }
+  .diagram-formula-compare .diagram-formula { margin-inline: -2px; padding-bottom: 5px; }
   .static-result { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 721px) and (max-width: 1040px) {
+  .diagram-formula-compare .diagram-items li { grid-template-columns: 140px minmax(0, 1fr); }
 }

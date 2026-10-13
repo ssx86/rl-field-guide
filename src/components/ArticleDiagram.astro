@@ -1,4 +1,5 @@
 ---
+import katex from "katex";
 import type { ChapterArticle } from "@/content/chapter-article";
 
 interface Props {
@@ -7,9 +8,10 @@ interface Props {
 }
 
 const { diagram, slug } = Astro.props;
+const variant = diagram.variant ?? "flow";
 ---
 
-<figure class="knowledge-diagram diagram-flow" aria-labelledby={`diagram-title-${slug}`}>
+<figure class:list={["knowledge-diagram", `diagram-${variant}`]} aria-labelledby={`diagram-title-${slug}`}>
   <header>
     <div>
       <p class="instrument-label">Core diagram</p>
@@ -19,10 +21,16 @@ const { diagram, slug } = Astro.props;
   <ol class="diagram-items">
     {diagram.items.map((item, index) => (
       <li>
-        <span class="diagram-index">{String(index + 1).padStart(2, "0")}</span>
-        <div class="diagram-copy">
+        <div class="diagram-method">
+          <span class="diagram-index">{String(index + 1).padStart(2, "0")}</span>
           <strong>{item.label}</strong>
-          <b>{item.value}</b>
+        </div>
+        <div class="diagram-copy">
+          {item.latex ? (
+            <div class="diagram-formula" aria-label={item.value}>
+              <span aria-hidden="true" set:html={katex.renderToString(item.latex, { displayMode: true, throwOnError: true })} />
+            </div>
+          ) : <b>{item.value}</b>}
           <small>{item.note}</small>
         </div>
       </li>

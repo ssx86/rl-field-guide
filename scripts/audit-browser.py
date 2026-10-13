@@ -41,6 +41,25 @@ with sync_playwright() as p:
         assert page.locator(".static-evidence-steps li").count() >= 3
         assert page.locator(".lesson-references a").count() >= 2
 
+    page.goto(f"{BASE}/en/learn/tabular-control/", wait_until="networkidle")
+    assert page.locator(".diagram-formula-compare .diagram-items > li").count() == 4
+    assert page.locator(".diagram-formula-compare .katex-display").count() == 4
+    assert page.locator(".diagram-formula-compare .katex-error").count() == 0
+    formula_layout = page.evaluate("""(() => {
+        const figure = document.querySelector('.diagram-formula-compare');
+        const rows = [...document.querySelectorAll('.diagram-formula-compare .diagram-items > li')];
+        return {
+            pageClient: document.documentElement.clientWidth,
+            pageScroll: document.documentElement.scrollWidth,
+            figureClient: figure?.clientWidth ?? 0,
+            figureScroll: figure?.scrollWidth ?? 0,
+            rowWidths: rows.map(row => row.getBoundingClientRect().width),
+        };
+    })()""")
+    assert formula_layout["pageClient"] == formula_layout["pageScroll"], formula_layout
+    assert formula_layout["figureClient"] == formula_layout["figureScroll"], formula_layout
+    assert min(formula_layout["rowWidths"]) > 700, formula_layout
+
     page.goto(f"{BASE}/en/learn/continuous-control/", wait_until="networkidle")
     page.get_by_role("link", name="Mechanism", exact=True).click()
     anchor_metrics = page.evaluate("({top: document.querySelector('#mechanism').getBoundingClientRect().top, navBottom: document.querySelector('.lesson-sections').getBoundingClientRect().bottom})")
@@ -48,6 +67,7 @@ with sync_playwright() as p:
 
     for viewport in (320, 375, 390, 768):
         assert_no_overflow(page, f"{BASE}/en/learn/method-selection/", viewport)
+        assert_no_overflow(page, f"{BASE}/en/learn/tabular-control/", viewport)
 
     page.set_viewport_size({"width": 1280, "height": 900})
     page.goto(f"{BASE}/en/", wait_until="networkidle")
@@ -55,5 +75,5 @@ with sync_playwright() as p:
     assert page.get_by_role("link", name="Skip to main content").evaluate("el => el === document.activeElement")
 
     assert not console_errors, console_errors
-    print("Browser audit passed: 46 English chapters, 46 diagrams and examples, 9 route parts, theme, anchors, keyboard, and 4 responsive viewports.")
+    print("Browser audit passed: 46 English chapters, strict tabular-control formula matrix, 46 diagrams and examples, 9 route parts, theme, anchors, keyboard, and 4 responsive viewports.")
     browser.close()

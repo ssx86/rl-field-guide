@@ -1,6 +1,7 @@
 export interface ArticleDiagramItem {
   readonly label: string;
   readonly value: string;
+  readonly latex?: string;
   readonly note: string;
 }
 
@@ -23,6 +24,7 @@ export interface ChapterArticle {
   readonly diagram: {
     readonly title: string;
     readonly caption: string;
+    readonly variant?: "flow" | "formula-compare";
     readonly items: readonly ArticleDiagramItem[];
   };
   readonly workedExample: {

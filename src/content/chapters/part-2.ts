@@ -282,11 +282,12 @@ export const PART_TWO_ARTICLES = [
     },
     diagram: {
       title: "One transition supports three continuation questions", caption: "The reward is shared. The algorithms diverge only in how they value the next state, and that choice defines the target policy.",
+      variant: "formula-compare",
       items: [
-        { label: "SARSA", value: "Q(S′,A′ sampled)", note: "Evaluate the next action behavior actually selects." },
-        { label: "Expected SARSA", value: "Σaπ(a|S′)Q(S′,a)", note: "Average over the target policy's next actions." },
-        { label: "Q-learning", value: "maxa Q(S′,a)", note: "Evaluate the greedy target regardless of exploratory behavior." },
-        { label: "Double Q", value: "select with one, evaluate with the other", note: "Decouple the noisy maximization roles." },
+        { label: "SARSA", value: "Q of the sampled next state–action pair", latex: "Q(S_{t+1},A_{t+1}),\\quad A_{t+1}\\sim\\pi(\\cdot\\mid S_{t+1})", note: "Evaluate the next action sampled from the behavior policy." },
+        { label: "Expected SARSA", value: "Policy-weighted sum of next-state action values", latex: "\\sum_{a\\in\\mathcal{A}(S_{t+1})}\\pi(a\\mid S_{t+1})Q(S_{t+1},a)", note: "Average over every available next action under the stated target policy." },
+        { label: "Q-learning", value: "Maximum next-state action value", latex: "\\max_{a\\in\\mathcal{A}(S_{t+1})}Q(S_{t+1},a)", note: "Evaluate a greedy target even when the behavior policy explores." },
+        { label: "Double Q-learning", value: "Select with table A and evaluate with table B", latex: "a^*=\\arg\\max_a Q^A(S_{t+1},a),\\quad Q^B(S_{t+1},a^*)", note: "When updating Qᴬ, select with Qᴬ and evaluate with Qᴮ; the other update is symmetric." },
       ],
     },
     workedExample: {

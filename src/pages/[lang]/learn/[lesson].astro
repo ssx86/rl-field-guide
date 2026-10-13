@@ -123,7 +123,7 @@ const lessonHref = `${base}/en/learn/${slug}/`;
           <div class="formula-list">
             {chapter.equations.map((equation) => (
               <article>
-                <div class="formula-render" set:html={katex.renderToString(equation.latex, { displayMode: true, throwOnError: false })} />
+                <div class="formula-render" set:html={katex.renderToString(equation.latex, { displayMode: true, throwOnError: true })} />
                 <p><strong>{equation.read}</strong></p>
                 <p>{equation.meaning}</p>
               </article>
