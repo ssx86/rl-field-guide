@@ -3,6 +3,13 @@ import { describe, expect, it } from "vitest";
 import { PANORAMA_ARTICLES, getPanoramaArticle } from "@/content/panorama-article";
 import { CURRICULUM } from "@/content/curriculum";
 
+function collectStrings(value: unknown): string[] {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(collectStrings);
+  if (value && typeof value === "object") return Object.values(value).flatMap(collectStrings);
+  return [];
+}
+
 describe("the read-first RL panorama", () => {
   it("offers an independently authored article in both languages", () => {
     expect(PANORAMA_ARTICLES.en.movements).toHaveLength(9);
@@ -11,9 +18,10 @@ describe("the read-first RL panorama", () => {
     expect(getPanoramaArticle("en")).toBe(PANORAMA_ARTICLES.en);
   });
 
-  it("links every deep-reading marker to an existing chapter", () => {
+  it("links every deep chapter in both languages", () => {
     const slugs = new Set(CURRICULUM.map((chapter) => chapter.slug));
     const marker = /\[\[[^\]|]+\|([^\]]+)\]\]/g;
+    const linkedByLanguage = new Map<string, Set<string>>();
 
     for (const article of Object.values(PANORAMA_ARTICLES)) {
       const text = article.movements.flatMap((movement) => [
@@ -22,9 +30,35 @@ describe("the read-first RL panorama", () => {
         movement.coda,
       ]).join("\n");
       const linkedSlugs = [...text.matchAll(marker)].map((match) => match[1]);
-      expect(linkedSlugs.length).toBeGreaterThan(20);
+      expect(new Set(linkedSlugs)).toEqual(slugs);
       expect(linkedSlugs.every((slug) => slugs.has(slug))).toBe(true);
+      linkedByLanguage.set(article.language, new Set(linkedSlugs));
     }
+
+    expect(linkedByLanguage.get("en")).toEqual(linkedByLanguage.get("zh"));
+  });
+
+  it("keeps the read-first essay free of high-signal AI scaffolding", () => {
+    const banned = [
+      /here(?:'|’)s the thing/i,
+      /it(?:'|’)s worth noting/i,
+      /at the end of the day/i,
+      /let that sink in/i,
+      /not only .+ but also/i,
+      /值得注意/,
+      /综上所述/,
+      /归根结底/,
+      /这不仅仅是.+更是/,
+      /真正的.+不是.+而是/,
+    ];
+
+    for (const article of Object.values(PANORAMA_ARTICLES)) {
+      for (const segment of collectStrings(article)) {
+        for (const pattern of banned) expect(segment).not.toMatch(pattern);
+      }
+    }
+
+    expect(JSON.stringify(PANORAMA_ARTICLES.en)).not.toContain("—");
   });
 
   it("keeps the overview as an essay rather than a comparison table", () => {

@@ -29,3 +29,25 @@ The reader knows ordinary cause and effect, averages, probability as “how ofte
 ## Post-rewrite result
 
 No critical prerequisite gap remains in the intended reading order. Readers who jump directly into a later chapter receive a short bridge plus prerequisite links; they are not promised that one isolated page replaces the cumulative route.
+
+## Second pass after the writing-skill audit
+
+The simulated reader is unchanged: an adult who understands routes, repeated choices, averages, and ordinary cause and effect, but has no RL vocabulary. The second pass checks the new read-first route one movement at a time instead of assuming that a complete curriculum automatically supplies a complete overview.
+
+| Stop | What the reader can now say in ordinary language | Next question earned rather than announced |
+|---|---|---|
+| Opening | An action produces both a result and the next learning situation. | Do we need learning from consequences at all? |
+| 01 · One choice | Shortest paths, supervised prediction, and bandits solve different evidence problems; probability makes noisy averages meaningful. | What changes when one choice alters the next choice? |
+| 02 · Future | State, action, reward, policy, trajectory, and return describe one timed loop; Bellman value keeps an account of later consequences. | What evidence is available when the map is known or missing? |
+| 03 · Values | DP uses a known model; MC waits for sampled endings; TD bootstraps; SARSA and Q-learning disagree about whose next action is valued. | How can experience transfer when the state table explodes? |
+| 04 · Scale | Approximation shares updates; DQN, policy gradients, actor–critic, PPO, continuous control, and distributed RL repair different scaling pressures. | Is failure caused by missing information, missing visits, or delayed credit? |
+| 05 · Hidden causes | Memory, exploration, and credit assignment address three different breaks in the evidence chain. | Can imagined experience replace expensive real interaction? |
+| 06 · Models | Search, learned dynamics, latent models, and planning trade interaction for assumptions; a planner can exploit model error. | What if new interaction is unsafe or forbidden? |
+| 07 · Logged world | Demonstrations, inverse methods, offline RL, sequence conditioning, and OPE remain bounded by data support. | Can temporal or social structure make the task manageable? |
+| 08 · Structure | Options, teams, and transfer change the unit of action, the source of non-stationarity, or the task distribution. | What if the score itself is the wrong target? |
+| 09 · Measurement | Reward design, constraints, evaluation, RLHF, direct preferences, judges, verifiers, and search are distinct evidence systems. | Which constraints eliminate method families before ranking algorithms? |
+| Closing diagnostic | Seven questions locate a new RL problem without starting from an acronym. | Open the matching deep chapter and inspect its mechanism and boundary. |
+
+Two missing handoffs were found and repaired in both languages: the article now links the initial diagnosis to `before-rl`, and noisy comparisons to `probability-expectation`. The resulting link set equals all 46 curriculum slugs in English and Chinese. Repeated links to bandits and tabular control are intentional callbacks, not missing pages.
+
+The chapter-by-chapter cognitive check remains the 47-row table in `AUDIT.md` (Chapter 00 plus Chapters 01–46). On this second pass, every row was checked against the cumulative snapshots above. No chapter requires a concept that first appears later in the prescribed route; direct-entry readers receive a bridge and prerequisite links rather than a false promise of zero prerequisites.

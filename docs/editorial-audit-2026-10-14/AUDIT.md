@@ -73,3 +73,31 @@ This audit separates four claims: authored copy, automated consistency, browser 
 ## Evidence still required at release time
 
 The final release record must add: full test output, static build count, browser widths checked, public GitHub Pages workflow result, and a fresh public-site read-back. Until those checks run, this file records manuscript review—not publication.
+
+## Second editorial pass: tutorial craft and plain-language review
+
+### Skill selection and limits
+
+- `writing-for-humans` was installed and used for reader contract, mental-model progression, narrative turns, and evidence-bearing examples. Its bundled blanket bans on adverbs and passive voice were not applied mechanically because technical prose sometimes needs them.
+- `unslop` was installed and used with its expert/minimal-repair contract. Formulae, numbers, algorithm names, and domain-valid terms such as “robust” were protected. Its story preset was rejected because invented scenes or quotations would weaken a technical tutorial.
+- `shuorenhua` supplied the public-writing scene, protected-span rules, two-pass reread, and checks for narrator scaffolding, slogan stacks, binary overstatement, and monotonous rhythm.
+- `beginner-brain-audit` supplied the cumulative reader model and the prerequisite/analogy checks recorded in `brain.md` and the page-by-page table above.
+- Interactive fiction-oriented skills and Diataxis procedural-tutorial skills were reviewed but not used: they either require repeated author choices or deliberately avoid the explanatory essay the reader requested.
+
+### Findings and dispositions
+
+| Finding | Severity | Disposition |
+|---|---:|---|
+| Chapter 00 reached only 44 of the 46 deep-reading routes. | Required | Added natural narrative handoffs to `before-rl` and `probability-expectation` in both languages; added an exact curriculum-set regression test. |
+| One TRPO/PPO deck used a stock “not only … but also” frame without needing it. | Minor | Recast as a direct two-factor statement without changing the claim. |
+| English Chapter 00 used several long-dash pivots and narrator labels. | Minor | Rewrote the affected sentences and headings as direct causal prose. |
+| Scanner flagged “robust” throughout the corpus. | Protected technical term | Kept it where it names robust RL or robust estimation; no lexical substitution. |
+| Scanner flagged a domain-valid “not only … but also” sentence explaining that an action changes both reward and the next decision. | Protected explanatory contrast | Kept it because both halves add necessary information; the regression guard does not ban all grammatical contrasts. |
+| Chinese em dashes appeared in `智能体—环境` and `状态—动作`. | Protected technical compound | Kept them; the English stylistic dash check is language-specific. |
+| The delivery robot returns throughout Chapter 00 and the ending recalls the opening. | Intentional narrative architecture | Kept it as the article's organizing image, not a generic redemption arc or recap loop. |
+
+### Round-two editorial verdict
+
+No Critical or Required editorial finding remains open. The article still introduces concepts by making the previous solution fail, while the 46 deep chapters retain their repeatable evidence architecture: situation, worked example, mechanism, boundary, and next bridge. Repeatable architecture is intentional; paragraph text remains independently authored. Formula strings, worked calculations, symbol case, primes, subscripts, sums, maxima, terminal masks, and source lists were not rewritten during this prose pass.
+
+Release evidence remains pending until the full automated suite, static build, responsive browser audit, GitHub Pages workflow, and fresh public read-back all pass.

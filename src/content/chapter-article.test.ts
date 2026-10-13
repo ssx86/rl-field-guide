@@ -10,9 +10,17 @@ import { PART_SEVEN_ARTICLES } from "@/content/chapters/part-7";
 import { PART_EIGHT_ARTICLES } from "@/content/chapters/part-8";
 import { PART_NINE_ARTICLES } from "@/content/chapters/part-9";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
+import { ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
 
 const articleWords = (value: unknown) => JSON.stringify(value).split(/\s+/).filter(Boolean).length;
+
+function collectStrings(value: unknown): string[] {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(collectStrings);
+  if (value && typeof value === "object") return Object.values(value).flatMap(collectStrings);
+  return [];
+}
 
 describe("Part I long-form chapter articles", () => {
   it("implements the first curriculum part in order", () => {
@@ -161,6 +169,31 @@ describe("complete article collection", () => {
     ];
 
     for (const term of requiredTerms) expect(corpus, `missing ${term}`).toContain(term);
+  });
+
+  it("keeps all deep chapters free of high-signal AI scaffolding", () => {
+    const englishPatterns = [
+      /here(?:'|’)s the thing/i,
+      /it(?:'|’)s worth noting/i,
+      /at the end of the day/i,
+      /let that sink in/i,
+      /stands? as a testament/i,
+      /in today(?:'|’)s rapidly .+ landscape/i,
+      /game[- ]changer/i,
+    ];
+    const chinesePatterns = [
+      /值得注意的是/,
+      /综上所述/,
+      /归根结底/,
+      /稳稳兜住/,
+    ];
+
+    for (const segment of collectStrings(CHAPTER_ARTICLES)) {
+      for (const pattern of englishPatterns) expect(segment).not.toMatch(pattern);
+    }
+    for (const segment of collectStrings(ZH_CHAPTER_ARTICLES)) {
+      for (const pattern of chinesePatterns) expect(segment).not.toMatch(pattern);
+    }
   });
 });
 

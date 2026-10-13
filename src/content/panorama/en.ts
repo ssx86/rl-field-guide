@@ -8,7 +8,7 @@ export const PANORAMA_EN: PanoramaArticle = {
   opening: [
     "Put a delivery robot at the entrance to a university campus. It knows almost nothing. Two paths lead to the library. The left path is short but sometimes floods; the right path is longer and usually clear. Nobody hands the robot a sheet of correct turns. It chooses, travels, and eventually learns how long the trip took.",
     "That small scene contains the seed of reinforcement learning. An action must be chosen before its consequences are fully known. The result arrives later. Worse, the choice changes what can happen next: after turning left, the robot cannot instantly test the right-hand path from the same moment. Learning and acting are entangled.",
-    "We will keep this robot for the whole chapter. Each time its job becomes harder, a familiar solution will stop being enough. The failure will introduce the next idea. By the end, the names—Q-learning, PPO, world models, offline RL, RLHF—should feel less like items in a catalog and more like answers to particular pressures.",
+    "We will keep this robot for the whole chapter. Each time its job becomes harder, a familiar solution will stop being enough. The failure will introduce the next idea. Q-learning, PPO, world models, offline RL, and RLHF will then have reasons for being here, rather than appearing as a catalog of names.",
   ],
   movements: [
     {
@@ -17,10 +17,11 @@ export const PANORAMA_EN: PanoramaArticle = {
       title: "The first uncertainty: which choice is worth trying?",
       turn: "For one afternoon, suppose every delivery ends where it began. The next parcel resets the world. There is no lasting route, only a repeated choice between two uncertain paths.",
       paragraphs: [
+        "First check whether learning from consequences is needed at all. Fixed, known travel times call for a shortest-path algorithm. Historical road delays with correct labels may call for supervised prediction followed by planning. [[The decision before RL|before-rl]] is a diagnosis: do repeated choices need to improve from feedback? Only then do the methods below earn their place.",
         "The robot could keep using the route with the best average time so far. That is exploitation: spend the next trip on the option that currently looks best. It could also try the less familiar route. That is exploration: accept some immediate risk to learn something that may improve later choices. The tension appears even before we have states, trajectories, or Bellman equations.",
         "This stripped-down problem is a [[multi-armed bandit|bandits-contextual-bandits]]. An ε-greedy rule explores at random. Upper Confidence Bound adds an optimism bonus to uncertain choices, so an option becomes attractive either because it has done well or because it has not been tried enough. Thompson sampling represents uncertainty with a posterior distribution and samples a plausible world before choosing. These methods differ in how they account for ignorance, not in the basic problem they solve.",
-        "Regret gives the comparison a time axis. It asks how much reward was lost because the learner did not always choose the best arm. Low regret does not mean every choice was correct; it means the cost of learning grows slowly relative to the number of decisions. That is a better standard than judging the robot for one unlucky wet afternoon.",
-        "Now give each parcel some context: rain forecast, destination, time of day. The better route may depend on that information. A [[contextual bandit|bandits-contextual-bandits]] learns a choice conditioned on the current context, but it still treats one round as independent of the next. Advertising, notification timing, and one-shot recommendations often fit this shape—provided today’s choice does not materially alter tomorrow’s situation.",
+        "Regret gives the comparison a time axis. It asks how much reward was lost because the learner did not always choose the best arm. [[Probability and expectation|probability-expectation]] keep that comparison meaningful when travel times vary from trip to trip. Low regret does not mean every choice was correct; it means the cost of learning grows slowly relative to the number of decisions. That is a better standard than judging the robot for one unlucky wet afternoon.",
+        "Now give each parcel some context: rain forecast, destination, time of day. The better route may depend on that information. A [[contextual bandit|bandits-contextual-bandits]] learns a choice conditioned on the current context, but it still treats one round as independent of the next. Advertising, notification timing, and one-shot recommendations often fit this shape when today’s choice does not materially alter tomorrow’s situation.",
         "The limitation matters. If taking the short route leaves the robot near a charging station while the long route leaves it across campus, the rounds no longer reset. The value of the first turn depends on the future it creates. A bandit can remember which option paid, but it has no language for a chain of consequences.",
       ],
       coda: "So the next question is forced on us: how should the robot judge an action whose real cost includes everything that becomes possible afterward?",
@@ -31,18 +32,18 @@ export const PANORAMA_EN: PanoramaArticle = {
       title: "A choice opens one future and closes another",
       turn: "We remove the reset. The robot must deliver several parcels on one battery charge. Its location, charge, and the weather left by earlier decisions now shape every later choice.",
       paragraphs: [
-        "We need a vocabulary for the loop. The information available for deciding is the state—or, when the robot sees only part of the world, an observation. The choice is an action. The world answers with a reward and new information. A policy is the rule, learned or fixed, that maps what the robot knows to what it does. The ordered record is a trajectory. The sum of rewards along it is the return. [[The agent–environment interface|interaction-loop]] is not decoration: it tells us which facts were available when each choice was made.",
+        "We need a vocabulary for the loop. The information available for deciding is the state, or, when the robot sees only part of the world, an observation. The choice is an action. The world answers with a reward and new information. A policy is the rule, learned or fixed, that maps what the robot knows to what it does. The ordered record is a trajectory. The sum of rewards along it is the return. [[The agent–environment interface|interaction-loop]] records which facts were available when each choice was made.",
         "A good state must remember enough. If two screen images look identical but the robot is moving at different speeds, the same turn can have different consequences. Calling the image a state does not make it sufficient. [[State design|mdp-state-design]] asks whether the present representation contains everything needed to predict the next outcome once the action is known. When it does, the problem has the Markov property and can be described as a Markov decision process, or MDP.",
         "The robot cannot compare actions by immediate reward alone. A detour may cost two minutes now and save ten later. We therefore evaluate a trajectory through return. A discount factor can make distant rewards count less, either because the future is uncertain, because the task continues indefinitely, or because the objective genuinely prefers earlier outcomes. [[Return and horizon|return-horizon]] also force an easy-to-miss distinction: a task that truly ends is not the same as a logging system that stopped after a time limit.",
-        "Here is the central compression. The value of being in a situation equals what tends to happen immediately plus the value of the situations that follow. That recursive bookkeeping is the [[Bellman idea|value-bellman]]. A state value asks how good a situation is under a policy. An action value asks how good it is to take one action there and then continue. Advantage asks how much better an action is than the state’s usual baseline.",
-        "This is also where reward reveals both its power and its danger. Reward is the signal the learner optimizes; it is not automatically the real goal. If we pay the robot only for fast arrivals, it may cut through a crowded walkway. The mathematics will faithfully optimize the number we supplied. It cannot rescue a careless objective.",
+        "The [[Bellman idea|value-bellman]] compresses the future into a recurring account: the value of being in a situation equals what tends to happen immediately plus the value of the situations that follow. A state value asks how good a situation is under a policy. An action value asks how good it is to take one action there and then continue. Advantage asks how much better an action is than the state’s usual baseline.",
+        "Reward brings both power and danger. It is the signal the learner optimizes, and it may be a poor stand-in for the real goal. If we pay the robot only for fast arrivals, it may cut through a crowded walkway. The mathematics will faithfully optimize the number we supplied. It cannot rescue a careless objective.",
       ],
       coda: "We can now describe the problem. But description is not yet learning. What if the campus map and every transition probability are already known?",
     },
     {
       id: "learn-values",
       number: "03",
-      title: "When the map is known—and when experience must replace it",
+      title: "A known map, then experience without one",
       turn: "First give the robot a perfect simulator: every path, travel time, charging station, and weather-dependent transition is known. Then take that simulator away.",
       paragraphs: [
         "With a complete model, the robot can plan without learning from trial and error. [[Dynamic programming|dynamic-programming]] repeatedly applies Bellman backups: evaluate the current policy, improve it by choosing better actions, and continue until the two processes settle. Policy iteration separates evaluation from improvement. Value iteration folds them together. These are foundational RL methods, yet their evidence comes from a known model rather than sampled experience.",
@@ -88,7 +89,7 @@ export const PANORAMA_EN: PanoramaArticle = {
     {
       id: "models",
       number: "06",
-      title: "Learning to imagine—without believing every dream",
+      title: "Learning to imagine without believing every dream",
       turn: "Suppose the robot can rehearse routes in a campus model. We must ask three separate questions: does it have a model, did it learn that model, and how does it use the model to choose?",
       paragraphs: [
         "Search is not the same as learning. If the rules are known, minimax or Monte Carlo Tree Search can look ahead. [[MCTS and AlphaZero|mcts-alphazero]] focus computation on promising branches; AlphaZero learns policy and value guidance from self-play while still using the true game rules for transitions. Its celebrated learning system therefore contains a model-based planner with a known simulator.",
@@ -112,7 +113,7 @@ export const PANORAMA_EN: PanoramaArticle = {
         "Before deployment, [[off-policy evaluation|off-policy-evaluation]] tries to estimate a new policy from old data. Importance sampling, fitted Q evaluation, model-based estimates, and doubly robust combinations make different compromises. All need overlap. If the hospital log never used a risky shortcut, the absence of disasters on that shortcut is not evidence of safety.",
         "Fixed data changes the meaning of progress. A higher validation score may show better prediction on the log, not better behavior under the new policy’s state distribution. Dataset composition, collection policy, missing actions, effective sample size, and uncertainty intervals belong beside every claimed result.",
       ],
-      coda: "A single robot can still be overwhelmed by a long job. Some problems become manageable only after behavior is organized across time—or across several decision-makers.",
+      coda: "A single robot can still be overwhelmed by a long job. Some problems become manageable only after behavior is organized across time or shared among several decision-makers.",
     },
     {
       id: "structure",
@@ -131,7 +132,7 @@ export const PANORAMA_EN: PanoramaArticle = {
     {
       id: "measurement",
       number: "09",
-      title: "When the score lies—and when actions become words",
+      title: "When the score lies and actions become words",
       turn: "The delivery robot receives a point for every completed job. It learns to mark parcels ‘delivered’ before handing them over. The optimization worked. The specification did not.",
       paragraphs: [
         "[[Reward design|reward-design]] is measurement design under pressure from an optimizer. Dense shaping can accelerate learning; potential-based shaping can preserve an optimal policy under specific conditions. Proxies can also be gamed. The cure is not merely a longer reward formula. Inspect trajectories, separate hard constraints from preferences, test counterexamples, and keep real outcome measures outside the training objective.",
@@ -151,7 +152,7 @@ export const PANORAMA_EN: PanoramaArticle = {
   diagnosticTitle: "Seven questions that locate almost any RL problem",
   diagnosticIntro: "When a new paper, product, or benchmark appears, resist the urge to begin with its acronym. Draw the decision process and ask:",
   diagnosticQuestions: [
-    "What information exists at decision time, and is it sufficient—or only an observation of a hidden state?",
+    "What information exists at decision time, and is it sufficient, or is it only an observation of a hidden state?",
     "How does the current action change later situations, data, and opportunities?",
     "Where does the learning evidence come from: online interaction, a known model, demonstrations, fixed logs, preferences, or verifiers?",
     "What must be estimated: a value, a policy, a world model, a reward, a belief state, or an evaluator?",

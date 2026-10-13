@@ -307,7 +307,7 @@ export const PART_THREE_ARTICLES = [
   {
     slug: "trpo-ppo",
     title: "Control policy-update size with natural gradients, TRPO, and PPO",
-    deck: "Policy improvement depends not only on gradient direction but also on how far the new action distribution moves from the data-generating policy.",
+    deck: "Policy improvement depends on the gradient direction and on how far the new action distribution moves from the data-generating policy.",
     openingQuestion: "Why can a gradient step that improves a sampled objective destroy the behavior that produced those samples?",
     bridge: "Actor–critic estimates advantages using data from the current policy. Large parameter changes can make the new policy assign very different probabilities, invalidating those advantages and collapsing performance. Trust-region methods measure movement in distribution space rather than assuming a Euclidean parameter step has consistent behavioral meaning.",
     situation: {
