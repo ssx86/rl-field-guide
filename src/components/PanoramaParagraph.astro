@@ -1,0 +1,26 @@
+---
+interface Props {
+  text: string;
+  base: string;
+  language: "en" | "zh";
+}
+
+const { text, base, language } = Astro.props;
+const marker = /\[\[([^\]|]+)\|([^\]]+)\]\]/g;
+const segments: Array<{ text: string; slug?: string }> = [];
+let cursor = 0;
+
+for (const match of text.matchAll(marker)) {
+  const index = match.index ?? 0;
+  if (index > cursor) segments.push({ text: text.slice(cursor, index) });
+  segments.push({ text: match[1], slug: match[2] });
+  cursor = index + match[0].length;
+}
+if (cursor < text.length) segments.push({ text: text.slice(cursor) });
+---
+
+<p>
+  {segments.map((segment) => segment.slug
+    ? <a class="panorama-deep-link" href={`${base}/${language}/learn/${segment.slug}/`}>{segment.text}</a>
+    : segment.text)}
+</p>

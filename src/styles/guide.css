@@ -535,3 +535,93 @@
 @media (min-width: 721px) and (max-width: 1040px) {
   .diagram-formula-compare .diagram-items li { grid-template-columns: 140px minmax(0, 1fr); }
 }
+
+/* Chapter 00 is a continuous essay, deliberately distinct from the lesson template. */
+.panorama-shell { width: min(1320px, calc(100% - 48px)); margin: 0 auto; display: grid; grid-template-columns: 236px minmax(0, 800px); justify-content: center; gap: 72px; padding: 48px 0 112px; }
+.panorama-rail { position: sticky; top: 84px; align-self: start; max-height: calc(100vh - 108px); overflow: auto; border-right: 1px solid var(--border); padding: 4px 16px 20px 0; }
+.panorama-rail .instrument-label { margin: 28px 0 12px; }
+.panorama-rail nav { display: grid; }
+.panorama-rail nav a { display: grid; grid-template-columns: 28px 1fr; gap: 8px; border-top: 1px solid var(--border); padding: 9px 8px; color: var(--muted-foreground); text-decoration: none; }
+.panorama-rail nav a:last-child { border-bottom: 1px solid var(--border); }
+.panorama-rail nav a:hover,
+.panorama-rail nav a:focus-visible { color: var(--foreground); background: var(--accent); }
+.panorama-rail nav span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: .72rem; font-weight: 700; line-height: 1.5; }
+.panorama-rail nav em { font-size: .78rem; font-style: normal; line-height: 1.35; }
+
+.panorama-article { min-width: 0; }
+.panorama-intro { border-bottom: 1px solid var(--border); padding: 56px 0 64px; }
+.panorama-intro h1 { max-width: 760px; margin: 14px 0 20px; font-size: clamp(3rem, 7vw, 6.6rem); line-height: .95; letter-spacing: -.065em; }
+.panorama-deck { max-width: 700px; margin: 0; color: var(--muted-foreground); font-size: clamp(1.1rem, 2vw, 1.42rem); line-height: 1.55; }
+.panorama-opening { max-width: 700px; margin-top: 56px; }
+.panorama-opening p,
+.panorama-prose p,
+.panorama-closing > p { margin: 0 0 1.25em; color: var(--foreground); font-size: clamp(1.02rem, 1.2vw, 1.14rem); line-height: 1.85; text-wrap: pretty; }
+.panorama-opening p:first-child::first-letter { float: left; margin: .08em .14em 0 0; color: var(--primary); font-size: 4.2em; font-weight: 700; line-height: .78; }
+
+.panorama-route { margin: 64px 0 0; border: 1px solid var(--border); border-radius: 12px; padding: 24px; background: var(--card); }
+.panorama-route figcaption { margin-bottom: 20px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: .72rem; font-weight: 700; letter-spacing: .08em; line-height: 1; text-transform: uppercase; }
+.panorama-route ol { position: relative; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; }
+.panorama-route ol::before { content: ""; position: absolute; top: 14px; right: 2.8%; left: 2.8%; height: 1px; background: var(--border); }
+.panorama-route li { position: relative; min-width: 0; text-align: center; }
+.panorama-route li span { position: relative; z-index: 1; display: grid; width: 28px; height: 28px; margin: 0 auto 12px; place-items: center; border: 1px solid var(--primary); border-radius: 50%; background: var(--card); color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: .64rem; font-weight: 700; line-height: 1; }
+.panorama-route li strong { display: block; padding: 0 4px; color: var(--muted-foreground); font-size: .66rem; font-weight: 600; line-height: 1.25; }
+
+.panorama-mobile-nav { display: none; }
+.panorama-movement { scroll-margin-top: 96px; border-bottom: 1px solid var(--border); padding: 88px 0; }
+.panorama-movement > header { display: grid; grid-template-columns: 72px 1fr; gap: 24px; margin-bottom: 40px; }
+.panorama-movement > header > span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: clamp(1.8rem, 4vw, 3.2rem); font-weight: 700; line-height: 1; }
+.panorama-movement > header p { max-width: 620px; margin: 0 0 14px; color: var(--muted-foreground); line-height: 1.65; }
+.panorama-movement h2,
+.panorama-diagnostic h2,
+.panorama-next-actions h2 { margin: 0; color: var(--foreground); font-size: clamp(2rem, 4.6vw, 3.8rem); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
+.panorama-prose { max-width: 700px; margin-left: 96px; }
+.panorama-deep-link { color: var(--foreground); text-decoration-color: var(--primary); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.panorama-deep-link:hover,
+.panorama-deep-link:focus-visible { color: var(--primary); }
+.panorama-coda { max-width: 700px; margin: 40px 0 0 96px; border-top: 1px solid var(--border); border-left: 3px solid var(--primary); padding: 22px 0 0 24px; color: var(--foreground); font-size: 1.16rem; font-weight: 600; line-height: 1.65; }
+
+.panorama-diagnostic { border-bottom: 1px solid var(--border); padding: 88px 0; }
+.panorama-diagnostic > p:not(.instrument-label) { max-width: 650px; margin: 24px 0 36px; color: var(--muted-foreground); font-size: 1.08rem; line-height: 1.7; }
+.panorama-diagnostic ol { margin: 0; border-top: 1px solid var(--border); padding: 0; list-style: none; }
+.panorama-diagnostic li { display: grid; grid-template-columns: 56px 1fr; gap: 20px; border-bottom: 1px solid var(--border); padding: 20px 0; }
+.panorama-diagnostic li span { color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: .75rem; font-weight: 700; line-height: 1.6; }
+.panorama-diagnostic li p { max-width: 650px; margin: 0; color: var(--foreground); font-size: 1.04rem; line-height: 1.6; }
+
+.panorama-closing { padding: 88px 0 0; }
+.panorama-next-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 40px; align-items: end; margin-top: 64px; border: 1px solid var(--border); border-radius: 12px; padding: 32px; background: var(--card); }
+.panorama-next-actions h2 { font-size: clamp(1.7rem, 3vw, 2.6rem); }
+.panorama-next-actions > div:first-child > p:last-child { max-width: 560px; margin: 16px 0 0; color: var(--muted-foreground); line-height: 1.65; }
+.panorama-next-actions > div:last-child { display: grid; gap: 12px; min-width: 188px; }
+
+@media (max-width: 1040px) {
+  .panorama-shell { width: min(820px, calc(100% - 40px)); grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .panorama-rail { display: none; }
+  .panorama-mobile-nav { position: sticky; z-index: 5; top: 64px; display: block; margin: 0 0 24px; border-bottom: 1px solid var(--border); background: var(--background); }
+  .panorama-mobile-nav summary { padding: 14px 0; color: var(--foreground); cursor: pointer; font-family: "Cascadia Code", Consolas, monospace; font-size: .76rem; font-weight: 700; letter-spacing: .06em; line-height: 1; text-transform: uppercase; }
+  .panorama-mobile-nav nav { display: grid; padding-bottom: 16px; }
+  .panorama-mobile-nav a { padding: 8px 0; color: var(--muted-foreground); font-size: .84rem; text-decoration: none; }
+}
+
+@media (max-width: 720px) {
+  .panorama-shell { width: min(calc(100% - 28px), 800px); padding-top: 16px; }
+  .panorama-intro { padding: 40px 0 48px; }
+  .panorama-intro h1 { font-size: clamp(2.75rem, 16vw, 4.8rem); }
+  .panorama-opening { margin-top: 40px; }
+  .panorama-route { padding: 20px; }
+  .panorama-route ol { grid-template-columns: 1fr; gap: 0; }
+  .panorama-route ol::before { top: 12px; right: auto; bottom: 12px; left: 13px; width: 1px; height: auto; }
+  .panorama-route li { display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: center; text-align: left; }
+  .panorama-route li span { margin: 0; }
+  .panorama-route li strong { padding: 12px 0; font-size: .78rem; }
+  .panorama-movement { padding: 64px 0; }
+  .panorama-movement > header { grid-template-columns: 1fr; gap: 18px; margin-bottom: 32px; }
+  .panorama-movement h2,
+  .panorama-diagnostic h2 { font-size: clamp(2rem, 11vw, 3rem); }
+  .panorama-prose,
+  .panorama-coda { margin-left: 0; }
+  .panorama-coda { padding-left: 18px; }
+  .panorama-diagnostic { padding: 64px 0; }
+  .panorama-diagnostic li { grid-template-columns: 36px 1fr; gap: 12px; }
+  .panorama-closing { padding-top: 64px; }
+  .panorama-next-actions { grid-template-columns: 1fr; padding: 24px; }
+}

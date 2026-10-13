@@ -17,20 +17,20 @@ const zh = language === "zh";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const homeHref = `${base}/${language}/`;
 const alternateHref = `${base}/${zh ? "en" : "zh"}/`;
-const startHref = `${base}/${language}/learn/${CURRICULUM[0].slug}/`;
+const startHref = `${base}/${language}/learn/rl-panorama/`;
 const partRows = PARTS.map((part) => ({ ...part, chapters: CURRICULUM.filter((chapter) => chapter.part === part.id) }));
 const t = zh ? {
-  title: "强化学习指南 · 完整阅读课程", description: "46 章、9 部分、以例子和证据为先的强化学习中文阅读课程。", brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English",
-  eyebrow: "零基础 · 46 章 · 9 部分", hero: "一套沿着决策与证据链展开的强化学习指南", strapline: "先看决策，再追踪证据；只有当方法的工作已经可见时，才给它命名。",
-  intro: "这是一门连续阅读课程，不是幻灯片堆叠，也不是缩写目录。每章承接上一章的问题，从具体情境和可复算例子出发，在量的工作清楚后引入符号，最后指出结论在哪里停止成立。",
-  start: "从问题开始", map: "查看完整路线", contract: "阅读约定", promises: ["术语之前先有连续解释", "每章一张语义图和一个完整算例", "公式必须回到可见的量", "包含反例、边界与原始资料"],
+  title: "强化学习指南 · 完整阅读课程", description: "第 00 章全景文章，加上 46 章深入讲解的中英双语强化学习课程。", brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English",
+  eyebrow: "第 00 章全景导读 · 46 章深入讲解 · 9 部分", hero: "一套沿着决策与证据链展开的强化学习指南", strapline: "先用一篇文章看见整片森林，再逐章走进每一种机制。",
+  intro: "第 00 章用一台送货机器人串起强化学习的主要问题与方法。后面的章节放慢速度，从情境、算例和公式中追踪证据，也会明确每种结论的适用边界。",
+  start: "先读全景文章", map: "查看完整路线", contract: "阅读约定", promises: ["先理解问题，再记算法名称", "每章一张语义图和一个完整算例", "公式必须回到可见的量", "包含反例、边界与原始资料"],
   how: "01 · 怎么读", methodTitle: "每章都使用同一条证据循环", methods: [["预测", "在解释让答案显得显然之前，先写下自己的判断。"], ["追踪", "沿一个具体案例追踪状态、动作、反馈与下一后果。"], ["计算", "复算数值目标或程序判断，不跳过中间步骤。"], ["命名", "机制已有意义后，再附上术语和符号。"], ["拆解", "用反例、缺失假设或未覆盖状态检验边界。"]],
   curriculum: "02 · 完整课程", routeTitle: "九个相连部分，而不是四十六个孤立主题", routeIntro: "每部分先关闭一个未回答的问题，再打开下一个。路线覆盖主要问题设定、方法家族、训练信号、评估工具、系统问题和语言模型后训练边界。", chapters: "章", part: "部分", diagram: "核心图解", example: "完整算例", formula: "公式与边界",
 } : {
-  title: "RL Field Guide · A complete reading course", description: "A 46-chapter, example-first field guide to reinforcement learning from sequential decisions through modern language-model post-training.", brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文",
-  eyebrow: "Zero-start · 46 chapters · 9 parts", hero: "A field guide to reinforcement learning", strapline: "Begin with the decision. Watch the evidence move. Name the method only after its job is visible.",
-  intro: "This is a reading course, not a stack of slides and not a catalog of acronyms. Every chapter connects to the previous question, begins with a concrete situation, works through numbers or procedure, introduces notation after its quantities have jobs, and ends by showing where the conclusion stops working.",
-  start: "Start with the problem", map: "See the complete field map", contract: "Reading contract", promises: ["Continuous prose before terminology", "One semantic diagram and one worked example per chapter", "Equations tied back to visible quantities", "Counterexamples, boundaries, and original sources"],
+  title: "RL Field Guide · A complete reading course", description: "A read-first panorama plus 46 deep chapters covering reinforcement learning from sequential decisions through language-model post-training.", brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文",
+  eyebrow: "Chapter 00 panorama · 46 deep chapters · 9 parts", hero: "A field guide to reinforcement learning", strapline: "See the whole landscape in one essay, then walk into each mechanism.",
+  intro: "Chapter 00 follows one delivery robot through the problems that created the major families of RL methods. The chapters that follow slow the journey down, trace evidence through examples and equations, and mark the boundary of every claim.",
+  start: "Read the panorama first", map: "See the complete field map", contract: "Reading contract", promises: ["Understand the problem before naming the algorithm", "One semantic diagram and one worked example per chapter", "Equations tied back to visible quantities", "Counterexamples, boundaries, and original sources"],
   how: "01 · How to read", methodTitle: "Use the same evidence loop in every chapter", methods: [["Predict", "Commit to what you expect before the explanation makes the answer feel obvious."], ["Trace", "Follow the state, action, feedback, and next consequence through one concrete case."], ["Calculate", "Reproduce the numeric target or procedural decision with every intermediate step visible."], ["Name", "Attach terminology and notation only after the mechanism already has meaning."], ["Break", "Test the boundary with a counterexample, missing assumption, or unsupported state."]],
   curriculum: "02 · Complete curriculum", routeTitle: "Nine connected parts, not forty-six isolated topics", routeIntro: "Each part closes one unanswered question before opening the next. The route covers the major problem settings, method families, training signals, evaluation tools, system concerns, and language-model post-training boundaries.", chapters: "chapters", part: "Part", diagram: "Core diagram", example: "Worked example", formula: "Formula + boundary",
 };

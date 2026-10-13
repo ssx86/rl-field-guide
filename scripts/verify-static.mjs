@@ -17,13 +17,15 @@ function assert(condition, message) {
 }
 
 const pages = collect(rootPath, "index.html");
-assert(pages.length === 95, `Expected 95 prerendered pages, found ${pages.length}`);
+assert(pages.length === 97, `Expected 97 prerendered pages, found ${pages.length}`);
 assert(existsSync(join(rootPath, "zh")), "The bilingual product must generate a Chinese route");
 
 const requiredPages = [
   ["index.html", "Open English course", "打开中文课程"],
   ["en/index.html", "A field guide to reinforcement learning", "Nine connected parts"],
   ["zh/index.html", "一套沿着决策与证据链展开的强化学习指南", "九个相连部分"],
+  ["en/learn/rl-panorama/index.html", "How a Machine Learns to Choose", "Seven questions that locate almost any RL problem"],
+  ["zh/learn/rl-panorama/index.html", "一台机器怎样学会做决定", "用七个问题给任何 RL 项目定位"],
   ["en/learn/before-rl/index.html", "decide whether learning from consequences is needed", "No prior RL vocabulary required"],
   ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
@@ -40,8 +42,8 @@ for (const [page, ...needles] of requiredPages) {
   for (const needle of needles) assert(html.includes(needle), `${page} is missing prerendered content: ${needle}`);
 }
 
-const englishLessonPages = collect(join(rootPath, "en", "learn"), "index.html");
-const chineseLessonPages = collect(join(rootPath, "zh", "learn"), "index.html");
+const englishLessonPages = collect(join(rootPath, "en", "learn"), "index.html").filter((page) => !page.includes("rl-panorama"));
+const chineseLessonPages = collect(join(rootPath, "zh", "learn"), "index.html").filter((page) => !page.includes("rl-panorama"));
 assert(englishLessonPages.length === 46, `Expected 46 English chapter pages, found ${englishLessonPages.length}`);
 assert(chineseLessonPages.length === 46, `Expected 46 Chinese chapter pages, found ${chineseLessonPages.length}`);
 
@@ -71,4 +73,4 @@ for (const page of pages) {
 }
 
 assert(brokenLinks.length === 0, `Broken generated links:\n${brokenLinks.join("\n")}`);
-stdout.write(`Verified ${pages.length} prerendered pages and 46 matched chapter pairs in English and Chinese.\n`);
+stdout.write(`Verified ${pages.length} prerendered pages, the bilingual Chapter 00 panorama, and 46 matched deep-chapter pairs.\n`);

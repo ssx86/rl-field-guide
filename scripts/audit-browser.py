@@ -28,6 +28,7 @@ with sync_playwright() as p:
     chapter_urls = page.locator(".roadmap-link").evaluate_all("links => links.map(link => link.href)")
     assert len(chapter_urls) == 46
     assert page.get_by_role("link", name="中文").count() == 1
+    assert page.get_by_role("link", name="Read the panorama first").get_attribute("href").endswith("/en/learn/rl-panorama/")
 
     page.goto(f"{BASE}/zh/", wait_until="networkidle")
     assert page.locator("html").get_attribute("lang") == "zh-CN"
@@ -35,6 +36,19 @@ with sync_playwright() as p:
     chinese_chapter_urls = page.locator(".roadmap-link").evaluate_all("links => links.map(link => link.href)")
     assert len(chinese_chapter_urls) == 46
     assert page.get_by_role("link", name="English").count() == 1
+    assert page.get_by_role("link", name="先读全景文章").get_attribute("href").endswith("/zh/learn/rl-panorama/")
+
+    page.goto(f"{BASE}/en/learn/rl-panorama/#models", wait_until="networkidle")
+    assert page.locator(".panorama-movement").count() == 9
+    assert page.locator(".panorama-deep-link").count() >= 20
+    assert page.locator(".panorama-diagnostic li").count() == 7
+    assert page.locator("main table").count() == 0
+    assert page.get_by_role("link", name="中文").get_attribute("href").endswith("/zh/learn/rl-panorama/#models")
+
+    page.goto(f"{BASE}/zh/learn/rl-panorama/", wait_until="networkidle")
+    assert page.locator("html").get_attribute("lang") == "zh-CN"
+    assert page.locator(".panorama-movement").count() == 9
+    assert page.locator(".panorama-diagnostic li").count() == 7
 
     page.goto(f"{BASE}/en/", wait_until="networkidle")
 
@@ -100,6 +114,8 @@ with sync_playwright() as p:
     assert anchor_metrics["top"] >= anchor_metrics["navBottom"], anchor_metrics
 
     for viewport in (320, 375, 390, 768):
+        assert_no_overflow(page, f"{BASE}/en/learn/rl-panorama/", viewport)
+        assert_no_overflow(page, f"{BASE}/zh/learn/rl-panorama/", viewport)
         assert_no_overflow(page, f"{BASE}/en/learn/method-selection/", viewport)
         assert_no_overflow(page, f"{BASE}/en/learn/tabular-control/", viewport)
         assert_no_overflow(page, f"{BASE}/zh/learn/method-selection/", viewport)
@@ -111,5 +127,5 @@ with sync_playwright() as p:
     assert page.get_by_role("link", name="Skip to main content").evaluate("el => el === document.activeElement")
 
     assert not console_errors, console_errors
-    print("Browser audit passed: 46 matched English/Chinese chapters, strict bilingual tabular-control formula matrix, 92 diagrams and examples, language-preserving anchors, theme, keyboard, and 4 responsive viewports.")
+    print("Browser audit passed: bilingual Chapter 00 panorama, 46 matched deep chapters, strict bilingual tabular-control formula matrix, language-preserving anchors, theme, keyboard, and 4 responsive viewports.")
     browser.close()

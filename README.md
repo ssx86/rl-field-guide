@@ -2,7 +2,7 @@
 
 A bilingual English/Chinese, zero-start reading course that covers reinforcement learning from problem framing through modern language-model post-training. It is built with Astro, React, TypeScript, Tailwind CSS, and customized shadcn/ui components, and runs independently on port `5180`.
 
-The published route contains 46 chapters in nine connected parts. Every chapter is prerendered as complete HTML and follows one evidence-first sequence:
+The published route starts with a bilingual Chapter 00 panorama, followed by 46 deep chapters in nine connected parts. Every page is prerendered as complete HTML. The panorama connects the field through one evolving decision problem; the deep chapters then slow down for evidence, equations, and limits.
 
 `situation → semantic diagram → worked evidence → mechanism → equation when useful → validity boundary → next question`
 
@@ -27,7 +27,7 @@ npm run verify:static
 python scripts/audit-browser.py
 ```
 
-The build produces 95 static pages: one bilingual language gate, two localized course maps, and 46 matched chapter pairs. The verification scripts enforce route order, formula/calculation/source parity, strict KaTeX rendering, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, language-preserving anchors, theme behavior, and document-level overflow checks at four responsive widths.
+The build produces 97 static pages: one bilingual language gate, two localized course maps, one matched Chapter 00 pair, and 46 matched deep-chapter pairs. The verification scripts enforce route order, formula/calculation/source parity, strict KaTeX rendering, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, language-preserving anchors, theme behavior, and document-level overflow checks at four responsive widths.
 
 ## Evidence boundary
 

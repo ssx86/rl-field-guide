@@ -1,0 +1,122 @@
+---
+import GuideHeader from "@/components/GuideHeader.astro";
+import PanoramaParagraph from "@/components/PanoramaParagraph.astro";
+import PanoramaRoute from "@/components/PanoramaRoute.astro";
+import type { Language } from "@/content/bilingual-course";
+import { getPanoramaArticle } from "@/content/panorama-article";
+import { getLocalizedCurriculum } from "@/content/localized-curriculum";
+import GuideLayout from "@/layouts/GuideLayout.astro";
+
+export function getStaticPaths() {
+  return (["en", "zh"] as const).map((language) => ({ params: { lang: language }, props: { language } }));
+}
+
+const { language } = Astro.props as { language: Language };
+const article = getPanoramaArticle(language);
+const zh = language === "zh";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const homeHref = `${base}/${language}/`;
+const canonicalPath = `${base}/${language}/learn/rl-panorama/`;
+const alternatePath = `${base}/${zh ? "en" : "zh"}/learn/rl-panorama/`;
+const firstChapter = getLocalizedCurriculum(language)[0];
+const t = zh ? {
+  brand: "RL 学习指南",
+  theme: "切换颜色主题",
+  alternate: "English",
+  route: "同一个机器人，九次问题升级",
+  contents: "本文的九次转折",
+  diagnosis: "读完后的定位工具",
+  continue: "继续深入",
+  continueTitle: "现在开始逐章拆解",
+  continueCopy: "全景文章负责把问题连成一条线。后面的章节会把每一种机制放回算例、公式、失败边界与原始资料中。",
+  start: "进入第 01 章",
+  map: "返回课程地图",
+} : {
+  brand: "RL FIELD GUIDE",
+  theme: "Switch color theme",
+  alternate: "中文",
+  route: "One robot, nine changes of the problem",
+  contents: "The nine turns in this essay",
+  diagnosis: "A diagnostic tool to keep",
+  continue: "Continue the course",
+  continueTitle: "Now slow the journey down",
+  continueCopy: "This essay connects the questions. The deep chapters put each mechanism back into worked evidence, equations, failure boundaries, and original sources.",
+  start: "Open Chapter 01",
+  map: "Return to the field map",
+};
+---
+
+<GuideLayout title={`${article.title} · ${t.brand}`} description={article.deck} language={language} canonicalPath={canonicalPath} alternatePath={alternatePath}>
+  <GuideHeader language={language} brand={t.brand} homeHref={homeHref} themeLabel={t.theme} alternateHref={alternatePath} alternateLabel={t.alternate} />
+
+  <main id="main-content" class="panorama-shell" tabindex="-1">
+    <aside class="panorama-rail" aria-label={t.contents}>
+      <a class="rail-home" href={homeHref}>← {t.map}</a>
+      <p class="instrument-label">{t.contents}</p>
+      <nav>
+        {article.movements.map((movement) => (
+          <a href={`#${movement.id}`}><span>{movement.number}</span><em>{movement.title}</em></a>
+        ))}
+      </nav>
+    </aside>
+
+    <article class="panorama-article">
+      <header class="panorama-intro">
+        <p class="instrument-label">{article.eyebrow}</p>
+        <h1>{article.title}</h1>
+        <p class="panorama-deck">{article.deck}</p>
+        <div class="panorama-opening">
+          {article.opening.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <PanoramaRoute movements={article.movements} label={t.route} />
+      </header>
+
+      <details class="panorama-mobile-nav">
+        <summary>{t.contents}</summary>
+        <nav>{article.movements.map((movement) => <a href={`#${movement.id}`}>{movement.number} · {movement.title}</a>)}</nav>
+      </details>
+
+      {article.movements.map((movement) => (
+        <section id={movement.id} class="panorama-movement" aria-labelledby={`${movement.id}-title`}>
+          <header>
+            <span>{movement.number}</span>
+            <div>
+              <p>{movement.turn}</p>
+              <h2 id={`${movement.id}-title`}>{movement.title}</h2>
+            </div>
+          </header>
+          <div class="panorama-prose">
+            {movement.paragraphs.map((paragraph) => <PanoramaParagraph text={paragraph} base={base} language={language} />)}
+          </div>
+          <p class="panorama-coda">{movement.coda}</p>
+        </section>
+      ))}
+
+      <section class="panorama-diagnostic" aria-labelledby="diagnostic-title">
+        <p class="instrument-label">{t.diagnosis}</p>
+        <h2 id="diagnostic-title">{article.diagnosticTitle}</h2>
+        <p>{article.diagnosticIntro}</p>
+        <ol>{article.diagnosticQuestions.map((question) => <li><span>{String(article.diagnosticQuestions.indexOf(question) + 1).padStart(2, "0")}</span><p>{question}</p></li>)}</ol>
+      </section>
+
+      <footer class="panorama-closing">
+        {article.closing.map((paragraph) => <p>{paragraph}</p>)}
+        <div class="panorama-next-actions">
+          <div><p class="instrument-label">{t.continue}</p><h2>{t.continueTitle}</h2><p>{t.continueCopy}</p></div>
+          <div><a class="primary-link" href={`${base}/${language}/learn/${firstChapter.slug}/`}>{t.start}<span>→</span></a><a class="text-link" href={homeHref}>{t.map}<span>↑</span></a></div>
+        </div>
+      </footer>
+    </article>
+  </main>
+  <script is:inline>
+    document.querySelectorAll('a[href*="/learn/rl-panorama/"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const anchor = event.currentTarget;
+        if (!(anchor instanceof HTMLAnchorElement) || !location.hash) return;
+        const target = new URL(anchor.href);
+        target.hash = location.hash;
+        anchor.href = target.toString();
+      });
+    });
+  </script>
+</GuideLayout>
