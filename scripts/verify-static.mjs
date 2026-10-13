@@ -31,10 +31,10 @@ const requiredPages = [
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
   ["en/learn/rlvr-grpo/index.html", "RLVR, process rewards, and GRPO", "group-relative"],
   ["en/learn/method-selection/index.html", "deployment evidence is still missing", "claim strength"],
-  ["zh/learn/before-rl/index.html", "先别急着用 RL", "无需任何 RL 前置术语"],
+  ["zh/learn/before-rl/index.html", "先判断问题，再决定要不要用强化学习", "无需任何 RL 前置术语"],
   ["zh/learn/tabular-control/index.html", "Expected SARSA", "katex-display"],
-  ["zh/learn/rlvr-grpo/index.html", "RLVR", "程序化验证器"],
-  ["zh/learn/method-selection/index.html", "选择 RL 方法", "部署证据"],
+  ["zh/learn/rlvr-grpo/index.html", "RLVR", "答案可验证时"],
+  ["zh/learn/method-selection/index.html", "哪个算法最强", "缺失证据清单"],
 ];
 
 for (const [page, ...needles] of requiredPages) {
@@ -54,7 +54,7 @@ for (const page of [...englishLessonPages, ...chineseLessonPages]) {
   assert(html.includes("static-evidence"), `${name} is missing its worked example`);
   assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
   assert(html.includes("Original and official sources") || html.includes("原始与官方资料"), `${name} is missing source provenance`);
-  assert(html.includes("Where it stops working") || html.includes("结论在哪里停止"), `${name} is missing its failure boundary`);
+  assert(html.includes("Do not carry the claim past this point") || html.includes("别把结论说过头"), `${name} is missing its failure boundary`);
   assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
   assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
   assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);

@@ -9,6 +9,35 @@ describe("bilingual chapter corpus", () => {
     expect(ZH_CHAPTER_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.map((chapter) => chapter.slug));
   });
 
+  it("requires an individually authored Chinese manuscript for every chapter", () => {
+    expect(AUTHORED_CHINESE_SLUGS).toHaveLength(46);
+    expect(new Set(AUTHORED_CHINESE_SLUGS)).toEqual(new Set(CURRICULUM.map((chapter) => chapter.slug)));
+  });
+
+  it("contains no legacy generator scaffolding or duplicated teaching paragraphs", () => {
+    const legacyPhrases = [
+      "阅读时先不要急着记名词",
+      "先独立复算这一行",
+      "先固定信息边界",
+      "再追踪目标与数据",
+      "最后验证结论范围",
+      "按时间下标、条件符号和求和或最大化范围逐项读取",
+    ];
+    const paragraphs: string[] = [];
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      const copy = JSON.stringify(chapter);
+      for (const phrase of legacyPhrases) expect(copy).not.toContain(phrase);
+      paragraphs.push(
+        chapter.bridge,
+        ...chapter.situation.paragraphs,
+        ...chapter.mechanism.sections.flatMap((section) => section.paragraphs),
+        ...chapter.boundary.paragraphs,
+        chapter.nextBridge,
+      );
+    }
+    expect(new Set(paragraphs).size).toBe(paragraphs.length);
+  });
+
   it("keeps formulas, worked calculations, and sources identical across languages", () => {
     for (const [index, english] of CHAPTER_ARTICLES.entries()) {
       const chinese = ZH_CHAPTER_ARTICLES[index];

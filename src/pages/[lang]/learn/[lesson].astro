@@ -33,10 +33,10 @@ const lessonHref = `${base}/${language}/learn/${slug}/`;
 const alternateHref = `${base}/${zh ? "en" : "zh"}/learn/${slug}/`;
 const t = zh ? {
   brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English", map: "完整课程地图", part: "部分", chapter: "第", openPart: "打开本部分", noPrior: "无需任何 RL 前置术语", builds: "前置基础", why: "为什么此处学习", sections: "章节目录",
-  nav: ["情境", "图解", "算例", "机制", "公式", "边界"], situation: "01 · 为什么接着问这个问题", diagram: "02 · 核心图解", example: "03 · 复算证据", pause: "计算前暂停", result: "结果", mechanism: "04 · 给机制命名", mechanismTitle: "算例背后的关系", equations: "05 · 压缩关系", equationsTitle: "等每个量都有工作后再看公式", equationLead: "下面的符号不会开启一个新故事。每个符号都指回上面的情境、图解或计算。", boundary: "06 · 结论在哪里停止", sources: "原始与官方资料", sourcesTitle: "继续查阅原始资料", previous: "上一章", next: "下一章", returnMap: "返回课程地图", revisit: "选择一条路线重新学习",
+  nav: ["情境", "图解", "算例", "机制", "公式", "边界"], situation: "问题从这里生长", diagram: "把关系摊开", example: "跟着数字走一遍", pause: "先别往下看：你会怎样算？", result: "算完以后", mechanism: "现在给它一个名字", mechanismTitle: "这个例子真正说明了什么", equations: "符号，是对关系的压缩", equationsTitle: "等每个量都有工作，再读公式", equationLead: "这些符号不是另一套故事。它们只是把刚才已经看见的关系压缩到一行里。", boundary: "别把结论说过头", sources: "原始与官方资料", sourcesTitle: "沿着原始资料继续追", previous: "上一章", next: "下一章", returnMap: "返回课程地图", revisit: "选择一条路线重新学习",
 } : {
   brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文", map: "Complete field map", part: "Part", chapter: "Chapter", openPart: "Open this part", noPrior: "No prior RL vocabulary required", builds: "Builds on", why: "Why it is here", sections: "Chapter sections",
-  nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], situation: "01 · Why this question comes next", diagram: "02 · Core diagram", example: "03 · Work the evidence", pause: "Pause before calculating", result: "Result", mechanism: "04 · Name the mechanism", mechanismTitle: "The relationships behind the example", equations: "05 · Compress the relationships", equationsTitle: "Equations after the quantities have jobs", equationLead: "The notation below does not start a new story. Each symbol points back to the situation, diagram, or worked calculation above.", boundary: "06 · Where it stops working", sources: "Original and official sources", sourcesTitle: "Continue beyond the field guide", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
+  nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], situation: "Where the question begins", diagram: "Lay the relationship out", example: "Follow the numbers", pause: "Stop here: what would you calculate?", result: "After the calculation", mechanism: "Now give it a name", mechanismTitle: "What the example was really showing", equations: "Notation as compression", equationsTitle: "Read the equation after every quantity has a job", equationLead: "The notation below is not a second story. It compresses the relationships you have already seen into one line.", boundary: "Do not carry the claim past this point", sources: "Original and official sources", sourcesTitle: "Follow the argument into the primary sources", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
 };
 ---
 
@@ -117,9 +117,9 @@ const t = zh ? {
         <h2 id="mechanism-title">{t.mechanismTitle}</h2>
         <div class="longform-prose">
           <p>{chapter.mechanism.introduction}</p>
-          {chapter.mechanism.sections.map((section, index) => (
+          {chapter.mechanism.sections.map((section) => (
             <section class="prose-subsection">
-              <p class="prose-kicker">{String(index + 1).padStart(2, "0")}</p>
+              <span class="prose-marker" aria-hidden="true"></span>
               <h3>{section.title}</h3>
               {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
             </section>
