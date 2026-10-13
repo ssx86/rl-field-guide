@@ -1,0 +1,1114 @@
+{
+ "generatedAt": "2026-10-13T15:39:23.053Z",
+ "head": "1507ef0c69e14a8e2c99286cfb6e8e61a42004cc",
+ "root": "D:\\workspace\\reinforcement-learning\\rl-guide",
+ "fileCount": 109,
+ "countsByTopDir": {
+  ".github": 1,
+  "(root)": 14,
+  "artifacts": 1,
+  "docs": 5,
+  "public": 1,
+  "scripts": 2,
+  "src": 85
+ },
+ "ignoredTopLevel": [
+  ".astro",
+  "dist",
+  "node_modules",
+  "tsconfig.app.tsbuildinfo",
+  "tsconfig.node.tsbuildinfo"
+ ],
+ "entries": {
+  ".github/workflows/deploy-pages.yml": {
+   "size": 1251,
+   "mtime": 1791786139306,
+   "sha": "116ba427174e4ab87d87ac71e68f167a30a95cce738c8f16823b58277fb84651",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "116ba427174e4ab87d87ac71e68f167a30a95cce738c8f16823b58277fb84651",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  ".gitignore": {
+   "size": 130,
+   "mtime": 1791785390655,
+   "sha": "f81e33d836cc867ced4b4ffd029a406b8c3c16c3f145b3041417157d6a861165",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": "f81e33d836cc867ced4b4ffd029a406b8c3c16c3f145b3041417157d6a861165",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "AUDIT.md": {
+   "size": 5100,
+   "mtime": 1791805058071,
+   "sha": "cf8cf0d74ff532a00dece2426d99e935157a7b0cb1f134eda38ad3776f817342",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "cf8cf0d74ff532a00dece2426d99e935157a7b0cb1f134eda38ad3776f817342",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "README.md": {
+   "size": 1858,
+   "mtime": 1791805058068,
+   "sha": "4d30ef67d5d6bd14f5144a90ae9b40ca074dd273a4a1f761f76352bf05841815",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "4d30ef67d5d6bd14f5144a90ae9b40ca074dd273a4a1f761f76352bf05841815",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "artifacts/rl-field-guide-home.png": {
+   "size": 109356,
+   "mtime": 1791708693075,
+   "sha": "8ef1c9d843171c0171d0fd36fcd52bcf1f42a9943dc54b2f28530891d1ab12d6",
+   "tracked": true,
+   "class": "binary",
+   "lastReadHash": "8ef1c9d843171c0171d0fd36fcd52bcf1f42a9943dc54b2f28530891d1ab12d6",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "astro.config.mjs": {
+   "size": 342,
+   "mtime": 1791785451437,
+   "sha": "39a438c705ee0858d104c17abf16cc4e27db418b05e9db8f8f8f1497bd0d4994",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "39a438c705ee0858d104c17abf16cc4e27db418b05e9db8f8f8f1497bd0d4994",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "brain.md": {
+   "size": 15747,
+   "mtime": 1791805318220,
+   "sha": "5bc3c8965597d600e1a10b8e0e18999a9338f9fa1efe79f6c3ba0ca8ce7b708a",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "5bc3c8965597d600e1a10b8e0e18999a9338f9fa1efe79f6c3ba0ca8ce7b708a",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "components.json": {
+   "size": 349,
+   "mtime": 1791706967089,
+   "sha": "c353cf35f4387ab1ea1ccedc21a06adc7a2e18c2c9e98c932852a7612dcdc285",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c353cf35f4387ab1ea1ccedc21a06adc7a2e18c2c9e98c932852a7612dcdc285",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "docs/RL_GUIDE_PROTOTYPE.md": {
+   "size": 18507,
+   "mtime": 1791706839325,
+   "sha": "8904c50fdcf3415bffa04a3dbf95fe7e153fb4d9bcc23f83b7b623544716cc9b",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "8904c50fdcf3415bffa04a3dbf95fe7e153fb4d9bcc23f83b7b623544716cc9b",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:38:52.242Z"
+  },
+  "docs/audit-2026-10-12/blind-questions-v1.md": {
+   "size": 10710,
+   "mtime": 1791794586332,
+   "sha": "4487a7deec650ee22fc930f63e3ed4d7e73918a254477c61a960f3fef97bd85f",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "4487a7deec650ee22fc930f63e3ed4d7e73918a254477c61a960f3fef97bd85f",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "docs/audit-2026-10-12/comprehensive-coverage-plan.md": {
+   "size": 5567,
+   "mtime": 1791800791526,
+   "sha": "9e0cd39d4965fa18a8a8fe00835d571e889430678db9fa83f49c4eea6de026a2",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "9e0cd39d4965fa18a8a8fe00835d571e889430678db9fa83f49c4eea6de026a2",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "docs/audit-2026-10-12/feature-brief.md": {
+   "size": 795,
+   "mtime": 1791795485469,
+   "sha": "129a67a24a39693b5ab149b729c00d34b65c65b2ece79b9459241fa86e2c1113",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "129a67a24a39693b5ab149b729c00d34b65c65b2ece79b9459241fa86e2c1113",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "docs/audit-2026-10-12/verification.md": {
+   "size": 3216,
+   "mtime": 1791805058074,
+   "sha": "fc483bca90963eaef6945388ec92e6b17656e2ed8444e752bc831d8485093ad5",
+   "tracked": true,
+   "class": "doc",
+   "lastReadHash": "fc483bca90963eaef6945388ec92e6b17656e2ed8444e752bc831d8485093ad5",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "eslint.config.js": {
+   "size": 668,
+   "mtime": 1791785451435,
+   "sha": "1f2c48886e4663cc1eba82e57534c86df3130a9c6d3e5b96f786427d6e0228bf",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "1f2c48886e4663cc1eba82e57534c86df3130a9c6d3e5b96f786427d6e0228bf",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "index.html": {
+   "size": 412,
+   "mtime": 1791706967087,
+   "sha": "b5c805f783aa5ac6960fd0a63500e5248b952adc4a6127f3c990be0a2f8f19ff",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b5c805f783aa5ac6960fd0a63500e5248b952adc4a6127f3c990be0a2f8f19ff",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "package-lock.json": {
+   "size": 318762,
+   "mtime": 1791784470826,
+   "sha": "9ecdb31c9d1d6520d1f98b469f0be8980b7154a384b7523be16c470e3f539f81",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "9ecdb31c9d1d6520d1f98b469f0be8980b7154a384b7523be16c470e3f539f81",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "package.json": {
+   "size": 1536,
+   "mtime": 1791786139303,
+   "sha": "dd410d29c40e46fd1511f3b3a965720806e88a0eb3e0ea300ea980a2782bae1a",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "dd410d29c40e46fd1511f3b3a965720806e88a0eb3e0ea300ea980a2782bae1a",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "public/favicon.svg": {
+   "size": 246,
+   "mtime": 1791784570462,
+   "sha": "4bc6c5181943c3beeeee507aea9e59b85addb5d111ab6d979a9cd0a6c74b1231",
+   "tracked": true,
+   "class": "binary",
+   "lastReadHash": "4bc6c5181943c3beeeee507aea9e59b85addb5d111ab6d979a9cd0a6c74b1231",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "scripts/audit-browser.py": {
+   "size": 3028,
+   "mtime": 1791803655871,
+   "sha": "f3717c0ccbd5f20c062dadf4fa50a68cf7ff1d0f41bd6774c91732cf68c3b928",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "f3717c0ccbd5f20c062dadf4fa50a68cf7ff1d0f41bd6774c91732cf68c3b928",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "scripts/verify-static.mjs": {
+   "size": 3575,
+   "mtime": 1791803635061,
+   "sha": "8c779262ecad1aab6fb5642083a495f6747dc0f7dd56f154631a6c79ef03dc4e",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "8c779262ecad1aab6fb5642083a495f6747dc0f7dd56f154631a6c79ef03dc4e",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/App.test.tsx": {
+   "size": 8763,
+   "mtime": 1791719941007,
+   "sha": "d8251cecbe43deb30dd5b7cf145c1b2607f2707b611c5f9b4dbd51574f235b26",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "d8251cecbe43deb30dd5b7cf145c1b2607f2707b611c5f9b4dbd51574f235b26",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/App.tsx": {
+   "size": 2423,
+   "mtime": 1791905893930,
+   "sha": "914a5f9db653cff7355a8383c862630cc08ab4d06bf119f4db6edb0573dd67e3",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "914a5f9db653cff7355a8383c862630cc08ab4d06bf119f4db6edb0573dd67e3",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:38:52.242Z"
+  },
+  "src/components/ArticleDiagram.astro": {
+   "size": 836,
+   "mtime": 1791803440814,
+   "sha": "c9d38f1e2f878ea218a6850d1149caec32bf087245d79a3fed99a2c5342e80ed",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/GuideHeader.astro": {
+   "size": 1044,
+   "mtime": 1791803449565,
+   "sha": "ef58a2a27bb64d843812a43e40d3f48884ee8cd2f509ce9669eefea0d49a4bcf",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/LearningLoopVisual.astro": {
+   "size": 930,
+   "mtime": 1791784527935,
+   "sha": "c847be87b1730373276f6e13fddc48d32785f55b9eef906ae82ad1a11be75e94",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/LessonDiagram.astro": {
+   "size": 15754,
+   "mtime": 1791795297822,
+   "sha": "6f6432e3851bb4e288e0189f2788da3368bbff77cda81d6eef6be290121cbabf",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/MethodMap.astro": {
+   "size": 1464,
+   "mtime": 1791793859608,
+   "sha": "9e290909c69c461c1f470984d2d111e81969f20423d56d749bde516740b406d3",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/StaticEvidence.astro": {
+   "size": 1378,
+   "mtime": 1791795325560,
+   "sha": "52215162799df02a6e25f9ef9f7e53a806621e2f1fcb3d80dda9f0d146dfdde2",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/app-header.tsx": {
+   "size": 1696,
+   "mtime": 1791709732838,
+   "sha": "0e09a26fd03c64f9535cb32470a6a5847f686578fef876bfc7360eb5b0ca0b12",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-board.tsx": {
+   "size": 4629,
+   "mtime": 1791712512587,
+   "sha": "7132b9ad292216f33bde486a935f7b95742995e94c0c9678bbd8556e6ca91867",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "7132b9ad292216f33bde486a935f7b95742995e94c0c9678bbd8556e6ca91867",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/components/bandit-checkpoints.tsx": {
+   "size": 3896,
+   "mtime": 1791712432591,
+   "sha": "9cde4d91d926bc2022898e4452f8dd8c1e262cdb3940747b13cbdbdeeb27db30",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-evidence.tsx": {
+   "size": 2676,
+   "mtime": 1791711078397,
+   "sha": "2d0077b2376b6e7d31c9b8f9b6a0d546ae2c5163168c33d7a6070e742937b4a2",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-explanation.tsx": {
+   "size": 2714,
+   "mtime": 1791711024948,
+   "sha": "12f2ac6f06e3c22d959496a9c9b26181d5caa4e7ccdfcdeac5551ec8ca91740a",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-prediction.tsx": {
+   "size": 1827,
+   "mtime": 1791711078395,
+   "sha": "30342224096ccab86e83571e99b040054b3a5f6a936ff4ce868d500607109643",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-route.tsx": {
+   "size": 1721,
+   "mtime": 1791711078400,
+   "sha": "383c183a435d54219fa11b79199786f6917539e7e52b12d967c9b004ffcc105b",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/bandit-screen.tsx": {
+   "size": 4401,
+   "mtime": 1791719746070,
+   "sha": "1030a41e52cbd2579aae7b1dd3d303a09da0c16e77989b81bad59737382e6acc",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/chapter-checkpoint.tsx": {
+   "size": 2259,
+   "mtime": 1791718169454,
+   "sha": "88d5323c3cc2e56fb7573c491cff82cc1c01be623b5243809809c86bd1dbe7db",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/chapter-content.tsx": {
+   "size": 4480,
+   "mtime": 1791718169451,
+   "sha": "d00fd415e53b5f1a384daba7d459f427f5f88d4806f1243c0975dc7561454310",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/chapter-prediction.tsx": {
+   "size": 2114,
+   "mtime": 1791718169449,
+   "sha": "9cf8156e8ab4014bf7730f44a63a0af31539bb841d663363a7b219e20ac6d89d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/chapter-screen.tsx": {
+   "size": 4574,
+   "mtime": 1791719439076,
+   "sha": "00d895a77d8870e4c531cfa6e975605933766e7c0e362fed6b981e40472054fa",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "00d895a77d8870e4c531cfa6e975605933766e7c0e362fed6b981e40472054fa",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/components/chapter-sidebar.tsx": {
+   "size": 2153,
+   "mtime": 1791718188674,
+   "sha": "e756d1ae86281a5ece6f3d955c9d2247d37f00a76c434023285231337a443d01",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/control-update-lab.tsx": {
+   "size": 3161,
+   "mtime": 1791719088979,
+   "sha": "64988e76f9d9021cda271db1c717421c714688ff91a51d6d41f64c0b084a9c45",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/corridor-experiment.tsx": {
+   "size": 2578,
+   "mtime": 1791709811450,
+   "sha": "1af56e41220a6e42aae2487a325c85513a3e1ca97b05e858d6aab3e9e11b27fb",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/evidence-panel.tsx": {
+   "size": 2552,
+   "mtime": 1791707684817,
+   "sha": "1073fb202d1e1cb91307f45e8ab6d45e1ac35e2f4632db9259ae7faf8895c11f",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/explanation-lens.tsx": {
+   "size": 2968,
+   "mtime": 1791709811455,
+   "sha": "d202a4fb516ed49de342612d68c4d42ac0efbc63bc427b95a7b8658c7e59cea7",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/formula.tsx": {
+   "size": 496,
+   "mtime": 1791707869469,
+   "sha": "059f07ad94e7b00f1ebc081f12fe435087e2440e2cacad9318269998357a8e2d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/foundational-extensions.tsx": {
+   "size": 1117,
+   "mtime": 1791719724094,
+   "sha": "3598f16121b798fa0577bc19c157fe49a52012baf5f07813a4ae13c6f79f92ed",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/home-screen.tsx": {
+   "size": 10945,
+   "mtime": 1791718670823,
+   "sha": "9f86893fa91ff7a400fc1cec6588e1b9bdc17916f48834096c29b195db0150ca",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/lesson-route.tsx": {
+   "size": 1326,
+   "mtime": 1791707709575,
+   "sha": "1aa53eac0b0d11ae7bfd2a528d964dac0b57883aecaebb7e2aae89935e4edb41",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/lesson-screen.tsx": {
+   "size": 7122,
+   "mtime": 1791719955459,
+   "sha": "c8105824ec267713d4d65a61648d02a5636f98e5891ffebeb121a80ae21f62ee",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/mechanics-workbench.tsx": {
+   "size": 2231,
+   "mtime": 1791719379007,
+   "sha": "3d3cc72634edcb69d44e772229dda27481776ba2063d8b2dbcb7d224bee69ea3",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/method-tabs.tsx": {
+   "size": 1392,
+   "mtime": 1791709941032,
+   "sha": "898bb6dafac08d91946aea345d2b22454f1298dba5c4361e8ff49709c2d3d47f",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "898bb6dafac08d91946aea345d2b22454f1298dba5c4361e8ff49709c2d3d47f",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/components/planning-checkpoint.tsx": {
+   "size": 2721,
+   "mtime": 1791719955458,
+   "sha": "d0b96194f2f1f9413fe8e32b2682d8c6feb777bb7d4e2c12ffb16a6367f5f302",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/prediction-panel.tsx": {
+   "size": 2114,
+   "mtime": 1791707684812,
+   "sha": "d75536e866a8460cafa7e9f449c384375ea7d3c3f881063e4056359b9d3ee87e",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/return-lab.tsx": {
+   "size": 4801,
+   "mtime": 1791719088976,
+   "sha": "fcb00c9557451f825036d2f3c175ffb375e7620b85a3089213b223c8bcc79389",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": null,
+   "lastReadCommit": null,
+   "lastReadAt": null
+  },
+  "src/components/ui/button.tsx": {
+   "size": 1511,
+   "mtime": 1791707290100,
+   "sha": "c8070039d5312f54f8d7659b3312de552c045c9fd4db4c59ded3a61fb748b5fc",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c8070039d5312f54f8d7659b3312de552c045c9fd4db4c59ded3a61fb748b5fc",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/bilingual-course.test.ts": {
+   "size": 2789,
+   "mtime": 1791784894474,
+   "sha": "86370517a8de10c3da667ab8013d14e52fc1d1e8b32a435c697218b68797e1fd",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "86370517a8de10c3da667ab8013d14e52fc1d1e8b32a435c697218b68797e1fd",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/bilingual-course.ts": {
+   "size": 104128,
+   "mtime": 1791795347363,
+   "sha": "82fb45577b010bdb1f1d7dd4ec87d4bb4f10ddf677096e4b2ed10aa22dac14e6",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "82fb45577b010bdb1f1d7dd4ec87d4bb4f10ddf677096e4b2ed10aa22dac14e6",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapter-article.test.ts": {
+   "size": 10010,
+   "mtime": 1791804954644,
+   "sha": "7f69961b622970cfc22de6f7542caa7cb7bb255a0fb9a4686a205145b8d03b11",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "7f69961b622970cfc22de6f7542caa7cb7bb255a0fb9a4686a205145b8d03b11",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapter-article.ts": {
+   "size": 1416,
+   "mtime": 1791801676558,
+   "sha": "604689f5b58d9523a5972f20e1c79c8522849196c11c0d619aff3d33d34038bd",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "604689f5b58d9523a5972f20e1c79c8522849196c11c0d619aff3d33d34038bd",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapter-articles.ts": {
+   "size": 1208,
+   "mtime": 1791803431946,
+   "sha": "187b39660f668bd24fd31eabe28bfbb05f97d5848af5617d598f679a272751dc",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "187b39660f668bd24fd31eabe28bfbb05f97d5848af5617d598f679a272751dc",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapter-types.ts": {
+   "size": 1503,
+   "mtime": 1791717821192,
+   "sha": "f803740c8673517d36cbda252e3693cf7ed0fbdeb8e1e8099a663fa485b91e8d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "f803740c8673517d36cbda252e3693cf7ed0fbdeb8e1e8099a663fa485b91e8d",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters.test.ts": {
+   "size": 996,
+   "mtime": 1791785355782,
+   "sha": "c8382e01779d613fa8e293ecd1e750ca2fec2c9d2592e09095fec6231775c314",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c8382e01779d613fa8e293ecd1e750ca2fec2c9d2592e09095fec6231775c314",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters.ts": {
+   "size": 56503,
+   "mtime": 1791720661358,
+   "sha": "ca48ec2893b032b42a5bd385da5ff691fa616cd18d37493b6de7d6c09c2a6084",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "ca48ec2893b032b42a5bd385da5ff691fa616cd18d37493b6de7d6c09c2a6084",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-1.ts": {
+   "size": 42718,
+   "mtime": 1791801820745,
+   "sha": "09add8fa08aa498f61585fe6a39489507d0960bfadc49f2001a1f7e78134274b",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "09add8fa08aa498f61585fe6a39489507d0960bfadc49f2001a1f7e78134274b",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-2.ts": {
+   "size": 52963,
+   "mtime": 1791802067360,
+   "sha": "bbb12be2c203d4ca11d4deadbadcd301f0b0e6c232c87c04a71561d0eb32d6ed",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "bbb12be2c203d4ca11d4deadbadcd301f0b0e6c232c87c04a71561d0eb32d6ed",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-3.ts": {
+   "size": 65619,
+   "mtime": 1791802342247,
+   "sha": "e4c230c923c6cb8dafa94696d2db27e8f462ea6e48256d8369a54c8630eed48d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "e4c230c923c6cb8dafa94696d2db27e8f462ea6e48256d8369a54c8630eed48d",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-4.ts": {
+   "size": 22513,
+   "mtime": 1791802469001,
+   "sha": "088414ab20e445b2994078a52a8bde813dcfee3c170f70a4f263d764e3047d7b",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "088414ab20e445b2994078a52a8bde813dcfee3c170f70a4f263d764e3047d7b",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-5.ts": {
+   "size": 22691,
+   "mtime": 1791802583106,
+   "sha": "eceafdadd9bc3a748ba717e264e6212025bcfd124259574deb61ce86ef0e34e5",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "eceafdadd9bc3a748ba717e264e6212025bcfd124259574deb61ce86ef0e34e5",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-6.ts": {
+   "size": 37768,
+   "mtime": 1791802800076,
+   "sha": "3088c51ecb488d4f763d64d820c59e7b94e39a1e20a9b7781b71ce9f1187ed51",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "3088c51ecb488d4f763d64d820c59e7b94e39a1e20a9b7781b71ce9f1187ed51",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-7.ts": {
+   "size": 22134,
+   "mtime": 1791802897716,
+   "sha": "7c74eadefe53bc7ee01b5faead47d3f301d31dce40e38689185fa9459a594eb6",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "7c74eadefe53bc7ee01b5faead47d3f301d31dce40e38689185fa9459a594eb6",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-8.ts": {
+   "size": 28778,
+   "mtime": 1791803064144,
+   "sha": "b3767a3dc0a22a70b2c18fe3edfbcc7e77226aad4519a452cb45cef4b5deb76e",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b3767a3dc0a22a70b2c18fe3edfbcc7e77226aad4519a452cb45cef4b5deb76e",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/chapters/part-9.ts": {
+   "size": 52102,
+   "mtime": 1791803347068,
+   "sha": "c03ab33bb969dc7f508a33a7856530e7691f00ec778d7d8afd0e08a26351c195",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c03ab33bb969dc7f508a33a7856530e7691f00ec778d7d8afd0e08a26351c195",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/course.ts": {
+   "size": 1990,
+   "mtime": 1791718132376,
+   "sha": "b3b5d0e6f678ddb9f09da463c6d8b5b4568afd6413b0db5ad71bf1bcb8a78990",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b3b5d0e6f678ddb9f09da463c6d8b5b4568afd6413b0db5ad71bf1bcb8a78990",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/curriculum.test.ts": {
+   "size": 1974,
+   "mtime": 1791800791530,
+   "sha": "f02dfe749cad34f470c06072a918e59694e2e8f5f3915f0e9770b775fa192f43",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "f02dfe749cad34f470c06072a918e59694e2e8f5f3915f0e9770b775fa192f43",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/curriculum.ts": {
+   "size": 29470,
+   "mtime": 1791800908848,
+   "sha": "61a0e6b402619565ad67349f675867b1edca34ad7098560fbe19792deae99e17",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "61a0e6b402619565ad67349f675867b1edca34ad7098560fbe19792deae99e17",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/foundational-extensions.ts": {
+   "size": 3291,
+   "mtime": 1791719724093,
+   "sha": "60fd6399412218adeaa7be24bbd89556c0e1b27cae2aeda743c646ce7b8296ee",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "60fd6399412218adeaa7be24bbd89556c0e1b27cae2aeda743c646ce7b8296ee",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/learning-labs.test.ts": {
+   "size": 1654,
+   "mtime": 1791795413087,
+   "sha": "7698b6ca42722dccfc3a28bfc3d6260465edcf84d949ccdaf4133a78fac953b9",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "7698b6ca42722dccfc3a28bfc3d6260465edcf84d949ccdaf4133a78fac953b9",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/learning-labs.ts": {
+   "size": 43575,
+   "mtime": 1791794802873,
+   "sha": "5e50ba774a10d4772d8f8f6b0a1c33398686b8dcba878fe851c28c72c0738177",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "5e50ba774a10d4772d8f8f6b0a1c33398686b8dcba878fe851c28c72c0738177",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/mechanics-labs.test.ts": {
+   "size": 1017,
+   "mtime": 1791719306525,
+   "sha": "b1b8da274f34c587470fe5ee6158049aea327ea95cfad9f842a20fb24217f701",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b1b8da274f34c587470fe5ee6158049aea327ea95cfad9f842a20fb24217f701",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/mechanics-labs.ts": {
+   "size": 12896,
+   "mtime": 1791719551122,
+   "sha": "d95f6753c4198264bfa6369ef262d681134e046082bca1897aae4ff3e58f4322",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "d95f6753c4198264bfa6369ef262d681134e046082bca1897aae4ff3e58f4322",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/content/planning-lesson.ts": {
+   "size": 462,
+   "mtime": 1791709941031,
+   "sha": "b724f9c7586fb872f5d164148ebe8f14eba1a1e318a3056dfd24f652199ea68a",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b724f9c7586fb872f5d164148ebe8f14eba1a1e318a3056dfd24f652199ea68a",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/bandits.test.ts": {
+   "size": 1560,
+   "mtime": 1791712496650,
+   "sha": "80aa0ff6c3f2e8b3c701923e42ade942d12ed4058dda7f7e96c61039a258b370",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "80aa0ff6c3f2e8b3c701923e42ade942d12ed4058dda7f7e96c61039a258b370",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/bandits.ts": {
+   "size": 4683,
+   "mtime": 1791712512587,
+   "sha": "dc3394b2c6b647018d36de46aeaa295a3d2aaee854330f289d650be58aa96147",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "dc3394b2c6b647018d36de46aeaa295a3d2aaee854330f289d650be58aa96147",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/course-progress.test.ts": {
+   "size": 1110,
+   "mtime": 1791710753410,
+   "sha": "9b77130953c6af74ae892e56c991cb24b86ce5b84674ba099b986f62f2e6b392",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "9b77130953c6af74ae892e56c991cb24b86ce5b84674ba099b986f62f2e6b392",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/course-progress.ts": {
+   "size": 1512,
+   "mtime": 1791717821188,
+   "sha": "5a45a54b3e923f883ed0a69838484ab3d2e6a94776b2ecf662d77ddb6c7421fe",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "5a45a54b3e923f883ed0a69838484ab3d2e6a94776b2ecf662d77ddb6c7421fe",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/planning.test.ts": {
+   "size": 1919,
+   "mtime": 1791707195100,
+   "sha": "a923c8279982107ffeab497c50ad24333b259bdb4fbf002bde6b4ee97238d9b4",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "a923c8279982107ffeab497c50ad24333b259bdb4fbf002bde6b4ee97238d9b4",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/planning.ts": {
+   "size": 4296,
+   "mtime": 1791707212849,
+   "sha": "d7ae9eec35907e006055ef59f1ca664427b74e1dafb0f5305b0dae4a1c33fc95",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "d7ae9eec35907e006055ef59f1ca664427b74e1dafb0f5305b0dae4a1c33fc95",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/returns.test.ts": {
+   "size": 1505,
+   "mtime": 1791712650552,
+   "sha": "6b0b30009184850bc44bc7580f19f84fae215ad1c76753e453213b724032ff56",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "6b0b30009184850bc44bc7580f19f84fae215ad1c76753e453213b724032ff56",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/returns.ts": {
+   "size": 2625,
+   "mtime": 1791712633671,
+   "sha": "19fe87a57ba0304756b390eeec5fe75c207a02e93c166eb57aae4d3ac9f6e260",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "19fe87a57ba0304756b390eeec5fe75c207a02e93c166eb57aae4d3ac9f6e260",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/td-control.test.ts": {
+   "size": 1047,
+   "mtime": 1791712605649,
+   "sha": "4d91c29c155bf78a0bd82a8aeb47d6b2d92be9e2128026674c23b2ea9c7decb9",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "4d91c29c155bf78a0bd82a8aeb47d6b2d92be9e2128026674c23b2ea9c7decb9",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/domain/td-control.ts": {
+   "size": 3131,
+   "mtime": 1791712663582,
+   "sha": "e1ecc283aab0f0fd734df9fbd929b92e6292005a9333f4eda633f70b26cafd86",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "e1ecc283aab0f0fd734df9fbd929b92e6292005a9333f4eda633f70b26cafd86",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/env.d.ts": {
+   "size": 85,
+   "mtime": 1791784493357,
+   "sha": "5a498a2ff3c0abb338aff60209dfe32fb591fc5ad359182c5a14910f4c2fff8f",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "5a498a2ff3c0abb338aff60209dfe32fb591fc5ad359182c5a14910f4c2fff8f",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/hooks/use-course-progress.ts": {
+   "size": 1827,
+   "mtime": 1791717821190,
+   "sha": "1815f506046e78fb23def7a37b1324b5681101a8d2de54ece5c20c9729b82006",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "1815f506046e78fb23def7a37b1324b5681101a8d2de54ece5c20c9729b82006",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/hooks/use-theme.ts": {
+   "size": 430,
+   "mtime": 1791707290105,
+   "sha": "c547f724fdf983c482a98be359721d66b35b0e30a29258e65182693e61e59c11",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c547f724fdf983c482a98be359721d66b35b0e30a29258e65182693e61e59c11",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/layouts/GuideLayout.astro": {
+   "size": 3113,
+   "mtime": 1791803449563,
+   "sha": "79548597ee563e3fb8f877526a746fe3fd9cf5445b4ad69af285f599af2365f9",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": "79548597ee563e3fb8f877526a746fe3fd9cf5445b4ad69af285f599af2365f9",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/lib/utils.ts": {
+   "size": 169,
+   "mtime": 1791707290094,
+   "sha": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/main.tsx": {
+   "size": 236,
+   "mtime": 1791707869467,
+   "sha": "a6bcae9c4f04d6ff36406b2966379834342b41b08b83ba7bd0334712d6cf87f0",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "a6bcae9c4f04d6ff36406b2966379834342b41b08b83ba7bd0334712d6cf87f0",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/pages/[lang]/index.astro": {
+   "size": 5407,
+   "mtime": 1791803501233,
+   "sha": "640b9045a5dcf15f12955cd13d1fb72f1947425e251ef7b03c0eeb8dd108e54b",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": "640b9045a5dcf15f12955cd13d1fb72f1947425e251ef7b03c0eeb8dd108e54b",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/pages/[lang]/learn/[lesson].astro": {
+   "size": 8782,
+   "mtime": 1791803543624,
+   "sha": "a2726f9a437823ec1e905e48b7ae8acb9941b3fe203a964d622fa2180bcd34e0",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": "a2726f9a437823ec1e905e48b7ae8acb9941b3fe203a964d622fa2180bcd34e0",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/pages/index.astro": {
+   "size": 1000,
+   "mtime": 1791803572085,
+   "sha": "941fcdb4eacab11230e8e53d63a53e3fccc7f5fbe3dde46a3dde0912649f42f8",
+   "tracked": true,
+   "class": "other",
+   "lastReadHash": "941fcdb4eacab11230e8e53d63a53e3fccc7f5fbe3dde46a3dde0912649f42f8",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/styles.css": {
+   "size": 24068,
+   "mtime": 1791719765712,
+   "sha": "b1d9b0cd413f66ef69fba6853d288ae72e58e35cb560d8b053f08a1d2285a2d9",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "b1d9b0cd413f66ef69fba6853d288ae72e58e35cb560d8b053f08a1d2285a2d9",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/styles/guide-base.css": {
+   "size": 2007,
+   "mtime": 1791793334051,
+   "sha": "a5c3121d06009e4bc2f3653eedefee66bda37a956e86741fe35ef83d2db20d08",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "a5c3121d06009e4bc2f3653eedefee66bda37a956e86741fe35ef83d2db20d08",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/styles/guide.css": {
+   "size": 36467,
+   "mtime": 1791804818106,
+   "sha": "f4504bc48415ca8a032840fd1281c6d771d8bd74bab12a61c47ee67e15c27d6d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "f4504bc48415ca8a032840fd1281c6d771d8bd74bab12a61c47ee67e15c27d6d",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "src/test/setup.ts": {
+   "size": 150,
+   "mtime": 1791707290091,
+   "sha": "c2ccf2417a8183a91935356b3d91c9aefc75b23abe2e72e335e671c12654f65d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "c2ccf2417a8183a91935356b3d91c9aefc75b23abe2e72e335e671c12654f65d",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "tsconfig.app.json": {
+   "size": 621,
+   "mtime": 1791706967092,
+   "sha": "e304e10273547ecf189076e347dc3447e0f6e8bea938721ec2012fefa221918a",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "e304e10273547ecf189076e347dc3447e0f6e8bea938721ec2012fefa221918a",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "tsconfig.json": {
+   "size": 324,
+   "mtime": 1791784493355,
+   "sha": "a36d55b0b9b917cae5066cfae1ecd38361ea990459d7eaf9dc94c90a4ceb161d",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "a36d55b0b9b917cae5066cfae1ecd38361ea990459d7eaf9dc94c90a4ceb161d",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "tsconfig.node.json": {
+   "size": 211,
+   "mtime": 1791706967094,
+   "sha": "964c05e0cfb4f9fa07c2518c3edaa04d995c08e4580461ab8699734a813dbafb",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "964c05e0cfb4f9fa07c2518c3edaa04d995c08e4580461ab8699734a813dbafb",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  },
+  "vite.config.ts": {
+   "size": 554,
+   "mtime": 1791706967096,
+   "sha": "aabdd31ee4dbab48b51f8d83da89d4f58801096747316989d7b5e56323128874",
+   "tracked": true,
+   "class": "source",
+   "lastReadHash": "aabdd31ee4dbab48b51f8d83da89d4f58801096747316989d7b5e56323128874",
+   "lastReadCommit": "d6f85b0dc0cdaadbccf0e6cd56e2768c851f791c",
+   "lastReadAt": "2026-10-13T15:36:27.942Z"
+  }
+ }
+}
