@@ -91,6 +91,7 @@ export const ZH_MANUSCRIPT = {
         "因此，Expected SARSA 的 Expected 不是一句笼统的‘更稳’，而是明确指出平均发生在哪里。动作概率和 Q 值都能枚举时，它用更多计算减少由 A′ 抽样带来的方差；若求和里放的是另一套目标策略，它也可以成为离策略更新。关键始终是先写清谁的概率进入了这个平均。",
       ],
     },
+    { type: "diagram" },
     { type: "worked-example" },
     {
       type: "section",

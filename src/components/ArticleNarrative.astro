@@ -23,18 +23,7 @@ interface Props {
 
 const { chapter, slug, labels } = Astro.props;
 const blocks = chapter.narrative ?? [];
-const links = blocks.map((block) => {
-  if (block.type === "section") return { id: block.id, label: block.title };
-  if (block.type === "diagram") return { id: "diagram", label: chapter.diagram.title };
-  if (block.type === "worked-example") return { id: "example", label: chapter.workedExample.title };
-  if (block.type === "equations") return { id: "equations", label: labels.equationsTitle };
-  return { id: "boundary", label: chapter.boundary.title };
-});
 ---
-
-<nav class="lesson-sections narrative-sections" aria-label={labels.sections}>
-  {links.map((link) => <a href={`#${link.id}`}>{link.label}</a>)}
-</nav>
 
 {blocks.map((block) => (
   block.type === "section" ? (

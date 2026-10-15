@@ -1,27 +1,37 @@
 ---
-import type { Language } from "@/content/bilingual-course";
+import type { ReadingMode } from "@/content/reading-mode";
 
 interface Props {
-  language: Language;
+  mode: ReadingMode;
   brand: string;
-  alternateHref?: string;
-  alternateLabel?: string;
+  languageLinks: readonly { mode: ReadingMode; href: string; label: string; accessibleLabel: string }[];
   homeHref: string;
   themeLabel: string;
 }
 
-const { language, brand, alternateHref, alternateLabel, homeHref, themeLabel } = Astro.props;
-const darkLabel = language === "zh" ? "切换到暗色" : "Switch to dark";
-const lightLabel = language === "zh" ? "切换到亮色" : "Switch to light";
+const { mode, brand, languageLinks, homeHref, themeLabel } = Astro.props;
+const darkLabel = mode === "zh" ? "切换到暗色" : mode === "bilingual" ? "Dark / 暗色" : "Switch to dark";
+const lightLabel = mode === "zh" ? "切换到亮色" : mode === "bilingual" ? "Light / 亮色" : "Switch to light";
 ---
 
 <header class="guide-header">
-  <a class="guide-brand" href={homeHref} aria-label={language === "zh" ? `${brand} 首页` : `${brand} home`}>
+  <a class="guide-brand" href={homeHref} aria-label={mode === "zh" ? `${brand} 首页` : `${brand} home`}>
     <span class="guide-brand-mark" aria-hidden="true">RL</span>
     <span>{brand}</span>
   </a>
   <div class="guide-header-actions">
-    {alternateHref && alternateLabel ? <a class="guide-control" href={alternateHref} data-language-toggle>{alternateLabel}</a> : null}
+    <nav class="language-switch" aria-label={mode === "zh" ? "语言" : "Language"}>
+      {languageLinks.map((link) => (
+        <a
+          class="language-chip"
+          href={link.href}
+          lang={link.mode === "zh" ? "zh-CN" : undefined}
+          aria-label={link.accessibleLabel}
+          aria-current={link.mode === mode ? "page" : undefined}
+          data-language-toggle
+        >{link.label}</a>
+      ))}
+    </nav>
     <button class="guide-control theme-control" type="button" data-theme-toggle data-dark-label={darkLabel} data-light-label={lightLabel} aria-label={themeLabel} aria-pressed="false">{darkLabel}</button>
   </div>
 </header>

@@ -3,16 +3,17 @@ import GuideLayout from "@/layouts/GuideLayout.astro";
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
-<GuideLayout title="RL Field Guide · 强化学习指南" description="A complete, example-first bilingual reinforcement learning reading course. 一套以例子和证据为先的中英双语强化学习课程。" language="en" canonicalPath={`${base}/`}>
+<GuideLayout title="RL Field Guide · 强化学习指南" description="A complete, example-first bilingual reinforcement learning reading course. 一套以例子和证据为先的中英双语强化学习课程。" mode="en" canonicalPath={`${base}/`}>
   <main id="main-content" class="language-gate" tabindex="-1">
     <div class="language-gate-card">
       <span class="guide-brand-mark" aria-hidden="true">RL</span>
       <p class="instrument-label">RL FIELD GUIDE · 强化学习指南 · CHAPTER 00 + 46 DEEP CHAPTERS · 9 PARTS</p>
       <h1>Learn reinforcement learning as a chain of decisions and evidence.<br /><span lang="zh-CN">沿着决策与证据链学习强化学习。</span></h1>
-      <p>Choose one language. Both routes contain the same read-first panorama and 46 deep chapters.<br /><span lang="zh-CN">请选择语言。两条路线都包含一篇全景导读和 46 章深入讲解。</span></p>
+      <p>Choose English, Chinese, or an alternating bilingual reading mode.<br /><span lang="zh-CN">请选择英文、中文，或中英逐段对照的双语模式。</span></p>
       <div class="language-gate-actions">
         <a class="primary-link" href={`${base}/en/`}>Open English course <span>→</span></a>
         <a class="primary-link" href={`${base}/zh/`} lang="zh-CN">打开中文课程 <span>→</span></a>
+        <a class="primary-link" href={`${base}/bilingual/`} aria-label="Open bilingual English and Chinese course"><span aria-hidden="true">中/EN</span> Bilingual <span>→</span></a>
       </div>
     </div>
   </main>

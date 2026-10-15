@@ -18,6 +18,24 @@ describe("the read-first RL panorama", () => {
     expect(getPanoramaArticle("en")).toBe(PANORAMA_ARTICLES.en);
   });
 
+  it("keeps every bilingual movement aligned at the paragraph level", () => {
+    expect(PANORAMA_ARTICLES.en.opening).toHaveLength(PANORAMA_ARTICLES.zh.opening.length);
+    for (const [index, english] of PANORAMA_ARTICLES.en.movements.entries()) {
+      const chinese = PANORAMA_ARTICLES.zh.movements[index];
+      expect(chinese.id, english.id).toBe(english.id);
+      expect(chinese.paragraphs.length, english.id).toBe(english.paragraphs.length);
+    }
+    expect(PANORAMA_ARTICLES.en.closing).toHaveLength(PANORAMA_ARTICLES.zh.closing.length);
+  });
+
+  it("introduces the problem before naming reinforcement learning", () => {
+    for (const article of Object.values(PANORAMA_ARTICLES)) {
+      const opening = article.opening.join(" ");
+      const nameIndex = article.language === "zh" ? opening.indexOf("强化学习（reinforcement learning, RL）") : opening.indexOf("called reinforcement learning");
+      expect(nameIndex, article.language).toBeGreaterThan(article.opening[0].length);
+    }
+  });
+
   it("links every deep chapter in both languages", () => {
     const slugs = new Set(CURRICULUM.map((chapter) => chapter.slug));
     const marker = /\[\[[^\]|]+\|([^\]]+)\]\]/g;

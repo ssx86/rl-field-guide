@@ -39,6 +39,11 @@
 
 .guide-header-actions { display: flex; align-items: center; gap: 8px; }
 
+.language-switch { display: inline-flex; gap: 3px; border: 1px solid var(--border); border-radius: 9px; padding: 3px; background: var(--card); }
+.language-chip { display: inline-grid; min-width: 38px; min-height: 36px; place-items: center; border-radius: 6px; padding: 0 9px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 800; letter-spacing: .02em; text-decoration: none; }
+.language-chip:hover, .language-chip:focus-visible { background: var(--surface-subtle); color: var(--foreground); outline: none; }
+.language-chip[aria-current="page"] { background: var(--primary); color: var(--primary-foreground); }
+
 .guide-control {
   display: inline-flex;
   min-height: 36px;
@@ -107,7 +112,7 @@
 .language-gate-card h1 { margin: 18px 0 24px; font-size: clamp(34px, 7vw, 62px); line-height: 1.02; letter-spacing: -.05em; }
 .language-gate-card h1 span { color: var(--primary); }
 .language-gate-card > p:not(.instrument-label) { margin: 6px auto; max-width: 58ch; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
-.language-gate-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 32px; }
+.language-gate-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
 .language-gate-actions.single-action { grid-template-columns: 1fr; }
 
 .course-home { max-width: 1500px; margin: 0 auto; padding: 0 28px 96px; }
@@ -202,12 +207,18 @@
 .lesson-rail nav a em { font-style: normal; line-height: 1.35; }
 .lesson-rail nav a:hover { background: var(--surface-subtle); color: var(--foreground); }
 .lesson-rail nav a[aria-current="page"] { background: var(--accent); color: var(--primary); font-weight: 800; }
+.chapter-outline-desktop { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 18px; }
+.chapter-outline-desktop > .instrument-label { margin-bottom: 8px; }
+.chapter-outline-desktop nav a { min-height: 34px; grid-template-columns: 14px 1fr; padding-block: 4px; }
+.chapter-outline-desktop nav a span { color: var(--primary); }
+.chapter-outline-mobile { display: none; }
 
 .lesson-article { width: 100%; max-width: 980px; margin: 0 auto; padding: 64px clamp(24px, 6vw, 76px) 100px; }
 .lesson-intro { border-bottom: 1px solid var(--border); padding-bottom: 48px; }
 .lesson-meta { display: flex; gap: 10px; }
 .lesson-meta span { border: 1px solid var(--border); border-radius: 999px; padding: 5px 9px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 800; text-transform: uppercase; }
 .lesson-intro h1 { max-width: 790px; margin: 24px 0 0; font-size: clamp(38px, 5vw, 58px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
+.lesson-title-translation { max-width: 760px; margin: 12px 0 0; color: var(--muted-foreground); font-size: clamp(24px, 3vw, 34px); line-height: 1.25; letter-spacing: -.025em; }
 .lesson-subtitle { margin: 18px 0 0; color: var(--muted-foreground); font-size: 17px; line-height: 1.6; }
 .lesson-opening-question { max-width: 68ch; margin: 28px 0 0; color: var(--foreground); font-size: 18px; font-weight: 650; line-height: 1.72; text-wrap: pretty; }
 .lesson-contract { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 40px 0 0; border: 1px solid var(--border); border-radius: 12px; background: var(--border); overflow: hidden; }
@@ -217,6 +228,7 @@
 
 .lesson-section { padding: 78px 0 0; }
 .lesson-section > h2 { max-width: 760px; margin: 10px 0 0; font-size: clamp(27px, 3.5vw, 36px); line-height: 1.2; letter-spacing: -.035em; text-wrap: balance; }
+.lesson-section > h3 { max-width: 720px; margin: 10px 0 0; color: var(--muted-foreground); font-size: clamp(20px, 2.5vw, 27px); line-height: 1.35; }
 .longform-prose { max-width: 72ch; margin-top: 24px; }
 .longform-prose p { margin: 0 0 1.25em; color: var(--muted-foreground); font-size: 16px; line-height: 1.88; text-wrap: pretty; }
 .longform-prose .chapter-bridge { color: var(--foreground); font-size: 18px; line-height: 1.75; }
@@ -287,11 +299,19 @@
   .rail-home { margin: 0 0 12px; }
   .lesson-rail nav { display: flex; width: max-content; }
   .lesson-rail nav a { width: 150px; }
+  .chapter-outline-desktop { display: none; }
+  .chapter-outline-mobile { display: block; margin-top: 8px; }
+  .chapter-outline-mobile summary { min-height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--foreground); font-size: 11px; font-weight: 800; cursor: pointer; }
+  .chapter-outline-mobile nav { display: grid; width: 100%; margin-top: 6px; }
+  .chapter-outline-mobile nav a { width: 100%; min-height: 40px; grid-template-columns: 1fr; border-bottom: 1px solid var(--border); }
 }
 
 @media (max-width: 720px) {
   .guide-header { padding: 0 16px; }
   .guide-brand span:last-child { display: none; }
+  .guide-header-actions { gap: 5px; }
+  .language-switch { gap: 2px; }
+  .language-chip { min-width: 34px; min-height: 34px; padding-inline: 7px; }
   .course-home { padding: 0 16px 64px; }
   .course-hero { min-height: auto; padding: 52px 0; }
   .course-hero-copy h1 { font-size: clamp(40px, 12vw, 60px); }
@@ -361,6 +381,7 @@
 .roadmap-link { display: grid; grid-template-columns: 90px minmax(0, 1fr) 44px; align-items: center; gap: 22px; min-height: 116px; padding: 18px 20px; color: var(--foreground); text-decoration: none; }
 .roadmap-link:focus-visible { border-radius: 12px; outline: 3px solid var(--ring); outline-offset: 3px; }
 .roadmap-copy h4 { margin: 0; font-size: 16px; line-height: 1.45; }
+.roadmap-copy h5 { margin: 5px 0 0; color: var(--foreground); font-size: 14px; line-height: 1.45; }
 .roadmap-card[data-complete="true"] { border-color: color-mix(in srgb, var(--success) 55%, var(--border)); }
 .roadmap-card[data-complete="true"] .roadmap-index::after { content: "✓"; margin-left: 7px; color: var(--success); font-size: 12px; font-weight: 900; }
 
@@ -375,11 +396,6 @@
 .foundation-note strong { color: var(--primary); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
 .foundation-note p { margin: 6px 0 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.55; }
 .lesson-contract a { color: var(--foreground); text-underline-offset: 3px; }
-.lesson-sections { position: sticky; z-index: 6; top: 64px; display: flex; gap: 6px; margin: 24px 0 0; border: 1px solid var(--border); border-radius: 10px; padding: 6px; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(12px); }
-.lesson-sections a { flex: 1; border-radius: 7px; padding: 8px; color: var(--muted-foreground); font-size: 10px; font-weight: 800; text-align: center; text-decoration: none; text-transform: uppercase; }
-.lesson-sections a:hover, .lesson-sections a:focus-visible { background: var(--accent); color: var(--primary); outline: none; }
-.narrative-sections { overflow-x: auto; scrollbar-width: thin; }
-.narrative-sections a { flex: 0 0 auto; min-width: 118px; max-width: 230px; line-height: 1.45; text-transform: none; }
 .narrative-section .longform-prose > p:first-child { color: var(--foreground); }
 
 .lab-stage { margin: 22px 0 0; border: 0; border-top: 1px solid var(--border); padding: 22px 0 0; }
@@ -401,6 +417,35 @@
 .lab-feedback.is-correct { border-color: var(--success); color: var(--success); }
 .lab-feedback.is-retry { border-color: var(--danger); color: var(--danger); }
 .boundary-grid.single { grid-template-columns: 1fr; }
+
+/* Alternating bilingual reading: one shared page, never competing columns. */
+.language-marker { display: inline-grid; width: max-content; min-width: 30px; min-height: 22px; place-items: center; align-self: start; border: 1px solid var(--amber-border); border-radius: 5px; padding: 2px 6px; background: var(--accent); color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-style: normal; font-weight: 900; letter-spacing: .04em; line-height: 1; }
+.language-pair { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 10px 14px; margin: 26px 0 34px; }
+.language-pair > p, .language-pair > div { min-width: 0; margin: 0; }
+.language-pair.compact { margin-block: 18px; }
+.bilingual-prose { max-width: 76ch; }
+.bilingual-prose .language-pair { border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+.bilingual-prose .language-pair:last-child { border-bottom: 0; }
+.bilingual-section > h3 { border-left: 2px solid var(--amber-border); padding-left: 14px; }
+.bilingual-caption { margin-top: 16px; border-left: 2px solid var(--amber-border); padding: 12px 0 2px 16px; }
+.bilingual-caption strong { display: block; margin-top: 8px; font-size: 15px; line-height: 1.5; }
+.bilingual-caption p { margin: 7px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
+.bilingual-passage { margin: 0 0 44px; border-bottom: 1px solid var(--border); padding-bottom: 34px; }
+.bilingual-passage h4 { display: flex; align-items: start; gap: 10px; margin: 0 0 12px; color: var(--foreground); font-size: 16px; line-height: 1.5; }
+.bilingual-passage h4[lang="zh-CN"] { margin-top: 24px; }
+.paired-step { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px; }
+.static-evidence-steps .language-marker { display: inline-grid; margin-right: 8px; vertical-align: middle; }
+.lesson-deck-pair { max-width: 74ch; }
+.terminology-note { display: flex; max-width: 72ch; align-items: flex-start; gap: 10px; margin: 22px 0 0; border-left: 2px solid var(--amber-border); padding: 11px 0 11px 14px; color: var(--muted-foreground); font-size: 12px; line-height: 1.75; }
+.terminology-note .language-marker { flex: 0 0 auto; margin-top: 2px; }
+.lesson-transition.language-pair { max-width: 76ch; }
+.lesson-transition.language-pair p { font-size: 16px; font-weight: 600; line-height: 1.8; }
+.panorama-title-translation { max-width: 720px; margin: 14px 0 20px; color: var(--muted-foreground); font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.12; letter-spacing: -.04em; }
+.panorama-rail nav em small { display: block; margin-top: 4px; color: var(--muted-foreground); font-size: .7rem; font-style: normal; font-weight: 500; }
+.panorama-movement > header h3, .panorama-diagnostic > h3 { margin: 10px 0 0; color: var(--muted-foreground); font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.4; }
+.panorama-prose .language-pair { margin-block: 18px 32px; }
+.panorama-prose .language-pair > div > p { margin-bottom: 0; }
+.panorama-diagnostic li > div p + p { margin-top: 8px; color: var(--muted-foreground); }
 
 @media (max-width: 1050px) {
   .lesson-shell { grid-template-columns: minmax(0, 1fr); }
@@ -427,10 +472,6 @@
   .roadmap-open { min-width: 36px; }
   .foundation-note { grid-template-columns: 1fr; }
   .foundation-note > div + div { border-top: 1px solid var(--border); border-left: 0; }
-  .lesson-sections { top: 58px; overflow-x: auto; scrollbar-width: none; }
-  .lesson-sections::-webkit-scrollbar { display: none; }
-  .lesson-sections a { min-width: 64px; }
-  .narrative-sections a { min-width: 148px; max-width: 210px; }
   .evidence-stepper-head { align-items: start; }
   .lab-stage .inline-flex { width: 100%; }
 }

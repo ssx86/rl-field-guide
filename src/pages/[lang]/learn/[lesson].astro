@@ -2,24 +2,31 @@
 import katex from "katex";
 import ArticleDiagram from "@/components/ArticleDiagram.astro";
 import ArticleNarrative from "@/components/ArticleNarrative.astro";
+import BilingualChapterArticle from "@/components/BilingualChapterArticle.astro";
 import GuideHeader from "@/components/GuideHeader.astro";
 import type { Language } from "@/content/bilingual-course";
 import { getLocalizedChapterArticle } from "@/content/chapter-localization";
 import { getLocalizedCurriculum, getLocalizedParts } from "@/content/localized-curriculum";
+import { READING_MODES, languageDestinations, type ReadingMode } from "@/content/reading-mode";
+import { CHAPTER_TERMS, formatChapterTerm } from "@/content/terminology";
 import GuideLayout from "@/layouts/GuideLayout.astro";
 
 export function getStaticPaths() {
-  return (["en", "zh"] as const).flatMap((language) => getLocalizedCurriculum(language).map((chapter) => ({
-    params: { lang: language, lesson: chapter.slug },
-    props: { slug: chapter.slug, language },
+  return READING_MODES.flatMap((mode) => getLocalizedCurriculum(mode === "zh" ? "zh" : "en").map((chapter) => ({
+    params: { lang: mode, lesson: chapter.slug },
+    props: { slug: chapter.slug, mode },
   })));
 }
 
-const { slug, language } = Astro.props as { slug: string; language: Language };
-const zh = language === "zh";
+const { slug, mode } = Astro.props as { slug: string; mode: ReadingMode };
+const language: Language = mode === "zh" ? "zh" : "en";
+const zh = mode === "zh";
+const bilingual = mode === "bilingual";
 const CURRICULUM = getLocalizedCurriculum(language);
 const PARTS = getLocalizedParts(language);
 const chapter = getLocalizedChapterArticle(language, slug);
+const englishChapter = bilingual ? getLocalizedChapterArticle("en", slug) : chapter;
+const chineseChapter = bilingual ? getLocalizedChapterArticle("zh", slug) : chapter;
 const route = CURRICULUM.find((item) => item.slug === slug)!;
 const chapterIndex = CURRICULUM.findIndex((item) => item.slug === slug);
 const previous = CURRICULUM[chapterIndex - 1];
@@ -29,9 +36,10 @@ const part = PARTS[partIndex];
 const partChapters = CURRICULUM.filter((item) => item.part === route.part);
 const prerequisites = route.prerequisites.map((item) => CURRICULUM.find((candidate) => candidate.slug === item)).filter(Boolean);
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const homeHref = `${base}/${language}/`;
-const lessonHref = `${base}/${language}/learn/${slug}/`;
-const alternateHref = `${base}/${zh ? "en" : "zh"}/learn/${slug}/`;
+const homeHref = `${base}/${mode}/`;
+const lessonHref = `${base}/${mode}/learn/${slug}/`;
+const languageLinks = languageDestinations(slug).map((item) => ({ mode: item.mode, href: `${base}${item.path}`, label: item.mode === "en" ? "EN" : item.mode === "zh" ? "中" : "中/EN", accessibleLabel: item.mode === "en" ? "Read this chapter in English" : item.mode === "zh" ? "阅读本章中文版" : "Read this chapter in alternating English and Chinese" }));
+const alternatePaths = [{ hreflang: "en", path: `${base}/en/learn/${slug}/` }, { hreflang: "zh-CN", path: `${base}/zh/learn/${slug}/` }, { hreflang: "x-default", path: `${base}/bilingual/learn/${slug}/` }];
 const sentenceLead = (title: string) => /[。！？.!?]$/.test(title) ? `${title} ` : `${title}${zh ? "。" : ". "}`;
 const t = zh ? {
   brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English", map: "完整课程地图", part: "部分", chapter: "第", openPart: "打开本部分", noPrior: "无需任何 RL 前置术语", builds: "前置基础", why: "为什么此处学习", sections: "章节目录",
@@ -40,10 +48,26 @@ const t = zh ? {
   brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文", map: "Complete field map", part: "Part", chapter: "Chapter", openPart: "Open this part", noPrior: "No prior RL vocabulary required", builds: "Builds on", why: "Why it is here", sections: "Chapter sections",
   nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], diagram: "Lay the relationship out", example: "Follow the numbers", pause: "Stop here: what would you calculate?", result: "After the calculation", equationsTitle: "Write the relationship as an equation", equationLead: "The equation is not a second story. It compresses the relationship you have already seen into one line.", sourcesTitle: "Follow the argument into the primary sources", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
 };
+const outline = bilingual || !chapter.narrative
+  ? [
+      { id: "situation", label: bilingual ? "Situation / 情境" : t.nav[0] },
+      { id: "diagram", label: bilingual ? "Diagram / 图解" : t.nav[1] },
+      { id: "example", label: bilingual ? "Example / 算例" : t.nav[2] },
+      { id: "mechanism", label: bilingual ? "Mechanism / 机制" : t.nav[3] },
+      ...(chapter.equations.length ? [{ id: "equations", label: bilingual ? "Equations / 公式" : t.nav[4] }] : []),
+      { id: "boundary", label: bilingual ? "Boundary / 边界" : t.nav[5] },
+    ]
+  : chapter.narrative.map((block) => block.type === "section"
+      ? { id: block.id, label: block.title }
+      : block.type === "diagram" ? { id: "diagram", label: chapter.diagram.title }
+      : block.type === "worked-example" ? { id: "example", label: chapter.workedExample.title }
+      : block.type === "equations" ? { id: "equations", label: t.equationsTitle }
+      : { id: "boundary", label: chapter.boundary.title });
+const chapterTerms = CHAPTER_TERMS[slug];
 ---
 
-<GuideLayout title={`${chapter.title} · ${t.brand}`} description={chapter.deck} language={language} canonicalPath={lessonHref} alternatePath={alternateHref}>
-  <GuideHeader language={language} brand={t.brand} homeHref={homeHref} themeLabel={t.theme} alternateHref={alternateHref} alternateLabel={t.alternate} />
+<GuideLayout title={`${chapter.title} · ${t.brand}`} description={chapter.deck} mode={mode} canonicalPath={lessonHref} alternatePaths={alternatePaths}>
+  <GuideHeader mode={mode} brand={bilingual ? "RL 学习指南" : t.brand} homeHref={homeHref} themeLabel={bilingual ? "Theme / 主题" : t.theme} languageLinks={languageLinks} />
 
   <main id="main-content" class="lesson-shell" tabindex="-1">
     <aside class="lesson-rail" aria-label={`${part.title} chapters`}>
@@ -51,19 +75,27 @@ const t = zh ? {
       <p class="instrument-label">{t.part} {partIndex + 1} · {part.title}</p>
       <nav class="lesson-rail-links">
         {partChapters.map((item) => (
-          <a data-lesson-id={item.slug} href={`${base}/${language}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}>
+          <a data-lesson-id={item.slug} href={`${base}/${mode}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}>
             <span>{String(item.order).padStart(2, "0")}</span><em>{item.title}</em>
           </a>
         ))}
       </nav>
+      <div class="chapter-outline-desktop">
+        <p class="instrument-label">{bilingual ? "IN THIS CHAPTER / 本章" : t.sections}</p>
+        <nav aria-label={bilingual ? "In this chapter / 本章目录" : t.sections}>{outline.map((item) => <a href={`#${item.id}`}><span aria-hidden="true">•</span><em>{item.label}</em></a>)}</nav>
+      </div>
       <div class="lesson-mobile-current">
-        {previous ? <a href={`${base}/${language}/learn/${previous.slug}/`} aria-label={`${t.previous}: ${previous.title}`}>←</a> : <span aria-hidden="true">·</span>}
+        {previous ? <a href={`${base}/${mode}/learn/${previous.slug}/`} aria-label={`${t.previous}: ${previous.title}`}>←</a> : <span aria-hidden="true">·</span>}
         <strong>{String(route.order).padStart(2, "0")} / {CURRICULUM.length}<small>{chapter.title}</small></strong>
-        {next ? <a href={`${base}/${language}/learn/${next.slug}/`} aria-label={`${t.next}: ${next.title}`}>→</a> : <span aria-hidden="true">·</span>}
+        {next ? <a href={`${base}/${mode}/learn/${next.slug}/`} aria-label={`${t.next}: ${next.title}`}>→</a> : <span aria-hidden="true">·</span>}
       </div>
       <details class="lesson-mobile-menu">
         <summary>{t.openPart}</summary>
-        <nav>{partChapters.map((item) => <a href={`${base}/${language}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}><span>{String(item.order).padStart(2, "0")}</span>{item.title}</a>)}</nav>
+        <nav>{partChapters.map((item) => <a href={`${base}/${mode}/learn/${item.slug}/`} aria-current={item.slug === slug ? "page" : undefined}><span>{String(item.order).padStart(2, "0")}</span>{item.title}</a>)}</nav>
+      </details>
+      <details class="chapter-outline-mobile">
+        <summary>{bilingual ? "In this chapter / 本章目录" : t.sections}</summary>
+        <nav>{outline.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}</nav>
       </details>
     </aside>
 
@@ -71,21 +103,27 @@ const t = zh ? {
       <header class="lesson-intro">
         <div class="lesson-meta"><span>{t.part} {partIndex + 1} · {part.title}</span><span>{t.chapter} {String(route.order).padStart(2, "0")} / {CURRICULUM.length}</span></div>
         <h1>{chapter.title}</h1>
-        <p class="lesson-subtitle">{chapter.deck}</p>
-        <p class="lesson-opening-question">{chapter.openingQuestion}</p>
+        {bilingual ? <h2 class="lesson-title-translation" lang="zh-CN">{chineseChapter.title}</h2> : null}
+        <div class={bilingual ? "language-pair compact lesson-deck-pair" : undefined}>
+          {bilingual ? <span class="language-marker" aria-hidden="true">EN</span> : null}<p class="lesson-subtitle" lang={bilingual ? "en" : undefined}>{chapter.deck}</p>
+          {bilingual ? <><span class="language-marker" aria-hidden="true">中</span><p class="lesson-subtitle" lang="zh-CN">{chineseChapter.deck}</p></> : null}
+        </div>
+        <div class={bilingual ? "language-pair compact" : undefined}>
+          {bilingual ? <span class="language-marker" aria-hidden="true">EN</span> : null}<p class="lesson-opening-question" lang={bilingual ? "en" : undefined}>{chapter.openingQuestion}</p>
+          {bilingual ? <><span class="language-marker" aria-hidden="true">中</span><p class="lesson-opening-question" lang="zh-CN">{chineseChapter.openingQuestion}</p></> : null}
+        </div>
+        {zh || bilingual ? <p class="terminology-note" lang="zh-CN"><span class="language-marker" aria-hidden="true">中</span>把上面这个问题继续往下讲时，会用到这些名字：{chapterTerms.map((term, index) => <>{formatChapterTerm(term)}{index < chapterTerms.length - 1 ? "；" : "。"}</>)}</p> : null}
         <dl class="lesson-contract">
-          <div><dt>{t.builds}</dt><dd>{prerequisites.length ? prerequisites.map((item, index) => <><a href={`${base}/${language}/learn/${item!.slug}/`}>{item!.title}</a>{index < prerequisites.length - 1 ? " · " : ""}</>) : t.noPrior}</dd></div>
+          <div><dt>{t.builds}</dt><dd>{prerequisites.length ? prerequisites.map((item, index) => <><a href={`${base}/${mode}/learn/${item!.slug}/`}>{item!.title}</a>{index < prerequisites.length - 1 ? " · " : ""}</>) : t.noPrior}</dd></div>
           <div><dt>{t.why}</dt><dd>{route.purpose}</dd></div>
         </dl>
       </header>
 
-      {chapter.narrative ? (
+      {bilingual ? (
+        <BilingualChapterArticle english={englishChapter} chinese={chineseChapter} slug={slug} />
+      ) : chapter.narrative ? (
         <ArticleNarrative chapter={chapter} slug={slug} labels={{ sections: t.sections, diagram: t.diagram, example: t.example, pause: t.pause, result: t.result, equationsTitle: t.equationsTitle, equationLead: t.equationLead, boundary: t.nav[5] }} />
       ) : (<>
-      <nav class="lesson-sections" aria-label={t.sections}>
-        <a href="#situation">{t.nav[0]}</a><a href="#diagram">{t.nav[1]}</a><a href="#example">{t.nav[2]}</a><a href="#mechanism">{t.nav[3]}</a>{chapter.equations.length ? <a href="#equations">{t.nav[4]}</a> : null}<a href="#boundary">{t.nav[5]}</a>
-      </nav>
-
       <section id="situation" class="lesson-section" aria-labelledby="situation-title">
         <h2 id="situation-title">{chapter.situation.title}</h2>
         <div class="longform-prose">
@@ -150,7 +188,7 @@ const t = zh ? {
       </section>
       </>)}
 
-      <p class="lesson-transition">{chapter.nextBridge}</p>
+      {bilingual ? <div class="lesson-transition language-pair compact"><span class="language-marker" aria-hidden="true">EN</span><p lang="en">{englishChapter.nextBridge}</p><span class="language-marker" aria-hidden="true">中</span><p lang="zh-CN">{chineseChapter.nextBridge}</p></div> : <p class="lesson-transition">{chapter.nextBridge}</p>}
 
       <section class="lesson-references" aria-labelledby="sources-title">
         <h2 id="sources-title">{t.sourcesTitle}</h2>
@@ -158,8 +196,8 @@ const t = zh ? {
       </section>
 
       <nav class="lesson-next" aria-label="Chapter pagination">
-        {previous ? <a href={`${base}/${language}/learn/${previous.slug}/`}><small>← {t.previous}</small><strong>{previous.title}</strong></a> : <a href={homeHref}><small>← {t.map}</small><strong>{t.brand}</strong></a>}
-        {next ? <a class="next-link" href={`${base}/${language}/learn/${next.slug}/`}><small>{t.next} →</small><strong>{next.title}</strong></a> : <a class="next-link" href={homeHref}><small>{t.returnMap} →</small><strong>{t.revisit}</strong></a>}
+        {previous ? <a href={`${base}/${mode}/learn/${previous.slug}/`}><small>← {t.previous}</small><strong>{previous.title}</strong></a> : <a href={homeHref}><small>← {t.map}</small><strong>{t.brand}</strong></a>}
+        {next ? <a class="next-link" href={`${base}/${mode}/learn/${next.slug}/`}><small>{t.next} →</small><strong>{next.title}</strong></a> : <a class="next-link" href={homeHref}><small>{t.returnMap} →</small><strong>{t.revisit}</strong></a>}
       </nav>
     </article>
   </main>
