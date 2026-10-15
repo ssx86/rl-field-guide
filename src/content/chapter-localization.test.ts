@@ -18,6 +18,9 @@ describe("bilingual chapter corpus", () => {
       "bandits-contextual-bandits",
       "mdp-state-design",
       "value-bellman",
+      "dynamic-programming",
+      "monte-carlo",
+      "td-traces",
       "tabular-control",
     ];
 
