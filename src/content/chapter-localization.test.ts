@@ -38,6 +38,9 @@ describe("bilingual chapter corpus", () => {
       "mcts-alphazero",
       "dyna-mpc",
       "latent-world-models",
+      "behavior-cloning-dagger",
+      "inverse-rl-gail",
+      "offline-rl",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
