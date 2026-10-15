@@ -1,10 +1,10 @@
 import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const ZH_MANUSCRIPT = {
-  "title": "把一句回复放回序列决策",
+  "title": "不是用了梯度就叫 RL：先看反馈究竟来自哪里",
   "deck": "生成一个 token 会改变后续前缀，整段回复常只得到一个分数。LLM 的 RL 表述由此连接状态、动作、策略、轨迹与信用分配。",
-  "openingQuestion": "下一个 token 有监督标签，和整段回复有偏好分数，是同一个学习问题吗？",
-  "bridge": "经典 RL 讨论的时间、行为策略和回报，在语言模型里并没有消失，只是被藏进自回归生成。",
+  "openingQuestion": "SFT 已经知道正确下一个 token，RL 却要让模型先生成整段回复再看结果；这两份证据为什么不能混称？",
+  "bridge": "经典 RL 主线最后落在数据、目标与系统契约上。语言生成同样是序列决策，但是否属于 RL 不由网络结构决定，而由动作是否来自策略采样、反馈是否评价结果、更新是否依赖这些轨迹决定。",
   "situation": {
     "title": "每写一个词，下一步能写什么就变了",
     "paragraphs": [
@@ -109,5 +109,22 @@ export const ZH_MANUSCRIPT = {
       "语言质量、事实性与安全不能由单一标量完整代表，仍需分项评估与人类审查。"
     ]
   },
-  "nextBridge": "有了这套映射，下一章具体拆解 RLHF：奖励模型怎样训练，PPO 又如何在 KL 约束下更新语言策略。"
+  "nextBridge": "当回复只有人类成对偏好而没有逐 token 标准答案时，可以先把比较训练成奖励模型，再让策略生成新回复并用 PPO 优化。下一章沿 SFT、偏好、奖励模型、PPO 四段流水线逐段检查误差怎样传递。",
+  "narrative": [
+    { "type": "section", "id": "map-generation-to-a-trajectory", "title": "每生成一个 token，后面的状态就被改写", "paragraphs": [
+      "提示与已生成前缀构成当前状态，下一个 token 是动作，模型的词表分布是策略，直到 EOS 或外部停止规则的一整段回复是一条轨迹。这个映射首先是在说明一次生成怎样展开，还没有说明训练信号从哪里来。",
+      "工具型智能体还要把搜索结果、权限、错误和剩余预算放进观察；遗漏这些变量时，相同文本前缀可能对应不同真实局面，问题就变成部分可观测。"
+    ] },
+    { "type": "section", "id": "sft-and-rl-use-different-evidence", "title": "SFT 与 RL 可以更新同一网络，却在回答不同问题", "paragraphs": [
+      "SFT 在数据给出的正确前缀上逐 token 预测目标 token，即使模型自己本会先犯错，教师强制仍继续提供正确历史。它不需要奖励、rollout 或 Bellman 目标。",
+      "RL 让策略生成自己的前缀，再由整段结果给反馈。早期错误会进入后续状态，终局分数只告诉这条轨迹总体怎样，不直接提供每个 token 的标准答案。"
+    ] },
+    { "type": "worked-example" },
+    { "type": "equations" },
+    { "type": "section", "id": "sequence-reward-creates-credit", "title": "整段回复一个分数，会重新带回长时域信用问题", "paragraphs": [
+      "价值头和优势估计可以把末尾奖励沿前缀分配，却只是统计归因，不是某个词造成成功的因果证明。长度、停止与 padding 掩码都会改变分配；所以发现某个 token 得到较大优势，不能反过来断言它就是成功原因。",
+      "temperature、top-p、top-k 和最大长度还决定 rollout 探索什么回复。采样太窄看不到改进，太宽又会产生乱码和奖励漏洞，因此解码参数也是训练分布定义。"
+    ] },
+    { "type": "boundary" }
+  ]
 } satisfies ChineseManuscript;

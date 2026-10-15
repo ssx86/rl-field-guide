@@ -1,10 +1,10 @@
 import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const ZH_MANUSCRIPT = {
-  "title": "跳过显式奖励模型，直接移动偏好概率",
-  "deck": "DPO 把 KL 正则化 RL 的最优策略关系改写成分类损失；实现更简洁，却仍受偏好数据支持、参考模型和离线分布限制。",
-  "openingQuestion": "只凭 chosen 与 rejected，能否直接训练策略而不运行在线 PPO？",
-  "bridge": "RLHF 先把偏好压成 reward，再由策略优化器读取。直接偏好方法把两步合并，对策略与参考模型的相对对数概率做监督。",
+  "title": "如果比较已经在手，能不能绕开奖励模型与 PPO",
+  "deck": "DPO 把一对偏好直接翻译成策略概率的相对移动；IPO、KTO、ORPO 与 SimPO 则分别处理间隔失控、非配对反馈、参考模型成本和长度偏差。流程变短了，证据并没有变多。",
+  "openingQuestion": "我们真正想要的是 chosen 比 rejected 更容易出现，为什么还要先造一个标量奖励，再让在线策略去追它？",
+  "bridge": "上一章那条长流水线有两次明显的中转：偏好先被奖励模型外推成分数，分数再通过 rollout、critic 与 PPO 返回策略。直接偏好方法尝试把中间层折叠掉，从固定比较数据直接约束策略；因此它更像一个离线的偏好目标，而不是把所有后训练都重新命名为在线 RL。",
   "situation": {
     "title": "简化了流水线，没有消除数据假设",
     "paragraphs": [
@@ -40,28 +40,28 @@ export const ZH_MANUSCRIPT = {
     ]
   },
   "workedExample": {
-    "title": "计算 DPO 的相对偏好间隔",
-    "setup": "chosen 回复在当前策略下 log-prob 为 −2.2、参考模型下为 −3.0；rejected 分别为 −2.3 与 −2.5。",
-    "prediction": "相对参考模型，当前策略是否把 chosen 提升得比 rejected 更多？",
+    "title": "两条回复都变得更可能，偏好方向仍然可以是对的",
+    "setup": "chosen 在当前策略下的 log-prob 是 −2.2，在参考策略下是 −3.0；rejected 的对应数值是 −2.3 与 −2.5。先不要只看谁的绝对概率大，而要看两条回复相对各自参考点移动了多少。",
+    "prediction": "当前策略同时抬高了两条回复。它究竟是在靠近 chosen，还是只是把整个区域一起抬高？",
     "steps": [
       {
-        "label": "Chosen 的相对变化",
-        "explanation": "当前策略的 −2.2 减参考模型的 −3.0，得到 +0.8，说明 chosen 相对参考更可能。"
+        "label": "量 chosen 的移动",
+        "explanation": "−2.2−(−3.0)=+0.8。chosen 在当前策略中比在参考策略中更容易出现，而且提升幅度是 0.8 个 log-prob 单位。"
       },
       {
-        "label": "Rejected 的相对变化",
-        "explanation": "rejected 的对应变化为 +0.2；它也更可能，但提升幅度较小。"
+        "label": "再量 rejected 的移动",
+        "explanation": "−2.3−(−2.5)=+0.2。rejected 也被抬高了，所以只检查它是否下降会得出错误结论；这里真正重要的是两者移动幅度的差。"
       },
       {
-        "label": "相对间隔",
-        "explanation": "chosen 的 +0.8 再减 rejected 的 +0.2，得到 +0.6，策略相对地向 chosen 偏移。"
+        "label": "比较两次移动",
+        "explanation": "+0.8−(+0.2)=+0.6。参考策略提供共同锚点后，正间隔说明当前策略确实更偏向 chosen，而不是仅仅把两条回复一起变得更常见。"
       },
       {
-        "label": "DPO 分类得分",
-        "explanation": "β 缩放 0.6 的间隔后进入 log-sigmoid；它改变目标敏感度，而不是普通学习率。"
+        "label": "把间隔送进损失",
+        "explanation": "DPO 用 β 缩放 0.6，再通过 log-sigmoid 奖励正确方向。β 改变的是隐式奖励与参考约束的尺度，不应被当成一个普通学习率。"
       }
     ],
-    "result": "chosen 的相对变化为 +0.8，rejected 为 +0.2，偏好间隔为 +0.6。DPO 优化的是成对的相对变化，而不是只看 chosen 的绝对概率。"
+    "result": "chosen 相对参考移动 +0.8，rejected 移动 +0.2，因此偏好间隔为 +0.6。这个结果也解释了 DPO 的观察单位：它关心一对回复相对参考策略怎样重新排序，而不是要求 rejected 的绝对概率每次都下降。"
   },
   "mechanism": {
     "introduction": "直接偏好优化改变了训练路径，不改变证据来源。",
@@ -94,20 +94,39 @@ export const ZH_MANUSCRIPT = {
   },
   "equations": [
     {
-      "read": "DPO 比较 chosen 与 rejected 的策略—参考 log-ratio 差，并通过 sigmoid 分类。",
-      "meaning": "损失鼓励相对偏好，不直接拟合一个可独立读取的奖励分数。"
+      "read": "DPO 先计算 chosen 与 rejected 各自的策略—参考 log-ratio，再对两者之差做 sigmoid 分类。",
+      "meaning": "它直接鼓励偏好间隔朝正确方向变化，不训练一个可单独读取的奖励模型，也不需要用当前策略在线采样后再跑 PPO。"
     },
     {
-      "read": "SimPO 用当前策略下每个 token 的平均对数概率给回复打分，再用边际比较 chosen 与 rejected。",
-      "meaning": "长度归一化减轻原始序列长度偏差，目标边际控制所需分离；标准形式仍是固定数据上的直接目标。"
+      "read": "SimPO 用回复的总 log-prob 除以 token 数，得到当前策略下的平均 token 分数，再用显式边际比较 chosen 与 rejected。",
+      "meaning": "长度归一化减少长回复因连乘而天然积累更多负 log-prob 的影响，目标边际规定两者至少分开多少；它仍是固定数据上的直接训练目标。"
     }
   ],
   "boundary": {
-    "title": "离线分类稳定，不等于在线行为可靠",
+    "title": "固定比较只能约束它见过的那片空间",
     "paragraphs": [
-      "模型可在训练对上提高间隔，却在自由生成时产生新型退化。",
-      "偏好数据不覆盖事实正确、安全和长期交互时，DPO 也无法从损失中补出这些目标。"
+      "模型可以在训练对上持续拉大间隔，却在自由生成时组合出数据中从未出现的新型退化。训练更稳定，只说明固定样本上的梯度更直接，并不等于部署时的行为更可靠。",
+      "如果偏好数据没有覆盖事实正确性、安全边界或长期交互后果，DPO 及其变体都不能从概率损失里补出这些目标。策略变化后，新的候选仍需要重新采样、重新比较和独立验收。"
     ]
   },
-  "nextBridge": "偏好标签也可由模型评审生成。下一章讨论 RLAIF、宪法式规则与 judge 的偏差怎样进入训练闭环。"
+  "nextBridge": "直接目标省掉了若干计算环节，却没有回答最上游的问题：chosen 与 rejected 到底由谁判定。当人工比较成为成本瓶颈，人们会把大量判断交给另一个模型；下一章要追踪的，正是 judge 的偏好、盲点与可被操纵之处怎样随规模一起进入训练。",
+  "narrative": [
+    { "type": "section", "id": "collapse-the-middle-of-rlhf", "title": "先问我们真正需要从一对数据里拿走什么", "paragraphs": [
+      "一条训练记录只说：在提示 x 下，chosen 胜过 rejected。若目标只是让策略以后更偏向 chosen，那么先拟合一个能给所有文本打分的奖励模型，再让 PPO 在线寻找高分回复，确实可能是一段过长的绕路。",
+      "DPO 从 KL 正则化目标的最优策略关系出发，把未知奖励差改写成策略相对参考策略的 log-ratio 差。这样，同一对文本就能直接告诉参数应把相对概率往哪边推，不再需要 reward rollout、critic 或 GAE。",
+      "但训练路径缩短，不代表证据升级了。参考策略选谁、β 取多大、偏好对由哪个旧策略生成，以及 chosen 是否系统性更长，都会进入这次看似普通的分类更新。"
+    ] },
+    { "type": "worked-example" },
+    { "type": "equations" },
+    { "type": "section", "id": "variants-answer-different-objections", "title": "这些缩写不是菜单，而是在修补不同的裂缝", "paragraphs": [
+      "当偏好数据几乎可分时，DPO 的 logistic 目标会继续扩大间隔，模型可能被推得过远；IPO 因此把间隔回归到有限目标。它解决的是间隔失控问题，而不是笼统地成为一个“更安全的 DPO”。",
+      "产品日志里常只有某条回复被点赞或被拒绝，并不存在严格配对；KTO 改用非配对的 desirable/undesirable 标签，并围绕参考策略的基准组织得失。它减少了配对要求，却更依赖类别比例、标签口径和正负样本权重。",
+      "若参考模型的额外前向计算成为负担，ORPO 把 chosen 的监督似然与偏好赔率项合在一起，SimPO 则用长度归一化的平均 log-prob 和显式边际比较两条回复。所谓 reference-free 只是改变锚点的写法，不等于模型从此不会漂移。"
+    ] },
+    { "type": "section", "id": "offline-objective-has-an-offline-ceiling", "title": "离线目标最安静的地方，也正是它看不见的地方", "paragraphs": [
+      "固定数据让训练省去在线采样，损失曲线也更容易稳定，可它只能重新排列数据支持范围内的行为。策略更新后会生成新的措辞、长度与失败模式，而训练集不会自动回来告诉我们这些新输出是否仍受偏好。",
+      "所以比较直接偏好方法时，不能只看训练准确率或同一批 pair 上的间隔。必须统一生成设置，检查长度与格式偏差，再让新鲜的盲评、事实指标和安全测试评价自由生成结果；否则只是证明模型更会回答旧考题。"
+    ] },
+    { "type": "boundary" }
+  ]
 } satisfies ChineseManuscript;

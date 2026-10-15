@@ -50,6 +50,9 @@ describe("bilingual chapter corpus", () => {
       "safe-robust-risk",
       "evaluation-reproducibility",
       "rl-systems",
+      "llm-as-rl",
+      "rlhf-ppo",
+      "direct-preference",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
