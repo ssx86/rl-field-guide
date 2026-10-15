@@ -30,6 +30,8 @@ describe("bilingual chapter corpus", () => {
       "reinforce-policy-gradient",
       "actor-critic-gae",
       "trpo-ppo",
+      "continuous-control",
+      "distributed-rl",
     ];
 
     for (const slug of completedChapterLocalRewrites) {

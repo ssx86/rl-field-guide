@@ -1,10 +1,10 @@
 import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const ZH_MANUSCRIPT = {
-  "title": "机器变多以后，算法的时间也分叉了",
-  "deck": "分布式 RL 把 actor、learner 与 replay 分离，换来吞吐，也带来策略陈旧、队列偏差和新的资源瓶颈。",
-  "openingQuestion": "一百个 actor 同时采样，为什么不一定比一个 actor 学得快一百倍？",
-  "bridge": "前面的算法默认采样和更新大致同步。分布式系统把二者拆开：actor 在外面收集，learner 在中心更新。当数据送达时，产生它的策略可能已经过时。",
+  "title": "一百个 actor 同时行动，数据却来自一百个不同的过去",
+  "deck": "分布式 RL 用并行 actor 提高采样吞吐，却把采样、传输和学习拆到不同时间线上。策略版本、队列等待与回放组成从系统指标变成了算法变量。",
+  "openingQuestion": "Learner 已更新三十次以后才收到的一条轨迹，到底还在描述谁的行为？",
+  "bridge": "单机回放已经会混合旧策略的数据。把采样扩展到许多 actor 后，每个 actor 拉取参数、运行环境并上传轨迹都需要时间；learner 在这期间仍不断更新。机器越多，数据生产者与数据消费者之间的策略距离反而可能越大。",
   "situation": {
     "title": "日志还在路上，策略已经换了几代",
     "paragraphs": [
@@ -40,9 +40,9 @@ export const ZH_MANUSCRIPT = {
     ]
   },
   "workedExample": {
-    "title": "量出策略滞后与一项 V-trace 比率",
+    "title": "样本晚到三十个版本，概率已经差了 2.5 倍",
     "setup": "某 actor 用参数版本 100 采样动作，当时行为概率 μ(a|s)=0.20；样本送达时 learner 已到版本 130，当前策略给同一动作的概率 π(a|s)=0.50。",
-    "prediction": "先算原始重要性比，再判断 IMPALA 为何通常要截断这个比率。",
+    "prediction": "版本差告诉我们样本有多旧，却不告诉策略究竟变了多少。比较同一动作的新旧概率后，再判断为什么校正不能无限放大这条晚到样本。",
     "steps": [
       {
         "label": "版本滞后",
@@ -61,7 +61,7 @@ export const ZH_MANUSCRIPT = {
         "explanation": "校正不意味着可以容忍无限滞后；刷新 actor、缩短 rollout 或调整队列，能从架构源头缩小行为策略与目标策略的距离。"
       }
     ],
-    "result": "分布式校正与系统设计必须一起工作：概率比揭示行为失配，版本与队列指标则帮助定位它在系统中的具体来源。"
+    "result": "版本差 30 是系统年龄，概率比 2.5 是动作层面的行为错配。V-trace 控制这条样本的影响，而刷新频率、rollout 长度和队列设计决定错配为何产生。"
   },
   "mechanism": {
     "introduction": "分布式设计会改变算法看到的数据，不能被当作纯工程外壳。",
@@ -103,11 +103,36 @@ export const ZH_MANUSCRIPT = {
     }
   ],
   "boundary": {
-    "title": "更多机器只保证更多活动，不保证更多有效证据",
+    "title": "吞吐更高，只能证明系统更忙",
     "paragraphs": [
-      "若环境重复、策略陈旧或回放失衡，样本数增长可能几乎不增加覆盖。",
-      "可复现性还要求记录拓扑、异步时序、版本与资源配置；仅有随机种子远远不够。"
+      "若快速 actor 反复产生相似环境、慢速稀有场景被队列淹没，样本数增长几乎不增加有效覆盖。每秒帧数必须与回报/环境步、策略滞后和样本年龄一起解释。",
+      "异步调度会让故障依赖运行时序。要复现实验，除随机种子外还需保存 actor 数、拓扑、参数广播频率、队列策略、回放状态与资源配置。"
     ]
   },
-  "nextBridge": "到这里，算法大多假设当前输入足以决策。下一部分撤掉这项便利：当关键状态被隐藏时，策略必须形成记忆或信念。"
+  "nextBridge": "至此，无论单机还是分布式，我们都默认当前输入已经足够说明处境；历史主要被当作相关噪声或回放上下文。下一部分撤掉这个前提：若门刚才是否打开、对手上一轮做了什么都没有出现在当前观察里，历史就不再是负担，而是恢复隐藏状态所必需的证据。",
+  "narrative": [
+    { "type": "section", "id": "parallelism-splits-time", "title": "增加机器以后，采样与学习不再发生在同一个现在", "paragraphs": [
+      "一个 actor 拉取版本 k 的参数，运行几十步环境，再把轨迹送回 learner。就在它行动和传输的这段时间里，learner 可能已经更新到 k+30。收到的数据没有错，它准确记录了旧策略的经历；问题在于当前更新想改善的是一套已经改变的策略。",
+      "因此，分布式 RL 不是给单机算法套一个纯工程外壳。队列多长、参数多久广播、actor 多快、learner 每份数据更新几次，都会改变行为策略与目标策略的距离，也就改变算法实际看到的数据分布。"
+    ] },
+    { "type": "section", "id": "different-architectures-make-different-trades", "title": "A3C、Ape-X 与 IMPALA 拆分系统的方式并不相同", "paragraphs": [
+      "A3C 让多个 worker 收集短轨迹并异步写回梯度，用不同环境经历减弱局部相关，同时接受陈旧梯度。A2C 等待 worker 同步成批，更适合加速器，也让数据版本较整齐。异步或同步是系统时序选择，不是 actor–critic 本身的定义。",
+      "Ape-X 让大量 actor 持续填充集中优先回放，learner 可以按自己的速度高速更新。不同 ε 扩大探索差异，可快速环境、优先级与样本年龄也会共同重塑缓冲区。IMPALA 则允许轨迹直接流向 learner，并用 V-trace 显式处理 actor 策略落后的问题。"
+    ] },
+    { "type": "worked-example" },
+    { "type": "equations" },
+    { "type": "section", "id": "correction-and-architecture-share-the-job", "title": "概率校正只能处理已经产生的滞后，系统设计决定滞后有多大", "paragraphs": [
+      "V-trace 比较当前目标策略 π 与采样行为 μ 对已发生动作的概率，并截断比率以限制方差。截断意味着接受一定偏差，因此上限不是无关实现细节。它还要求 actor 准确记录当时的行为概率。",
+      "即使有校正，也不能任由队列无限增长。缩短 rollout、更频繁刷新 actor、限制 learner 更新速度或调整背压，能够从源头缩小错配。版本差易于记录，适合定位系统延迟；相同的版本差却可能对应完全不同的 KL，所以还需行为距离指标。"
+    ] },
+    { "type": "section", "id": "recurrent-agents-carry-another-state", "title": "R2D2 还提醒我们：循环网络的记忆本身也是数据", "paragraphs": [
+      "循环策略在序列中间的隐藏状态来自此前整段观察。若随机抽取一段序列却把隐藏状态清零，learner 看到的是实际 actor 从未经历过的上下文。R2D2 用 burn-in 前缀先重建记忆，再在后半段计算损失。",
+      "存储的隐藏状态也会随网络参数更新而陈旧，episode 边界一旦错误，记忆还会跨进不相干的回合。分布式系统中不仅参数有版本，样本携带的上下文同样有时间。"
+    ] },
+    { "type": "section", "id": "throughput-needs-an-evidence-denominator", "title": "每秒多少帧，没有说明每帧增加了多少证据", "paragraphs": [
+      "系统瓶颈可能在环境、推理、序列化、网络、回放采样或 learner GPU。提升某一环吞吐，可能只让队列更长、样本更旧。快速 actor 还可能挤占慢而重要的环境情形。",
+      "所以报告吞吐时必须同时给出回报/环境步、墙钟时间、计算量、策略滞后、样本年龄与覆盖。更多机器能保证更多活动，不能保证更快学习。"
+    ] },
+    { "type": "boundary" }
+  ]
 } satisfies ChineseManuscript;
