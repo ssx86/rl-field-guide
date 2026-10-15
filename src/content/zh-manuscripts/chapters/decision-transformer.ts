@@ -1,10 +1,10 @@
 import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const ZH_MANUSCRIPT = {
-  "title": "把控制问题写成一段有条件的序列",
+  "title": "把轨迹排成一句话，并告诉模型还想得到多少回报",
   "deck": "Decision Transformer 根据期望剩余回报、状态与历史动作预测下一动作。训练像监督学习，部署能力仍被轨迹支持约束。",
-  "openingQuestion": "如果把“想要多少回报”放进上下文，序列模型会自动学会更好的策略吗？",
-  "bridge": "离线 RL 显式学习价值并处理外推。Decision Transformer 取消 Bellman 目标，把轨迹重排成 token 序列；问题随之从 Q 外推转为条件序列能否由数据支持。",
+  "openingQuestion": "在输入开头写下‘我想要 100 分’，为什么不会自动让只见过 20 分轨迹的模型学会 100 分策略？",
+  "bridge": "离线 RL 用价值函数在固定日志里挑选较好行为。Decision Transformer 换了一种表述：不做 Bellman 最大化，而把剩余回报、状态和动作排成因果序列，训练模型预测日志中的下一动作。外推问题没有消失，只是从 Q 值移到了条件上下文。",
   "situation": {
     "title": "向模型提出高分要求，不等于给了它高分路线",
     "paragraphs": [
@@ -40,7 +40,7 @@ export const ZH_MANUSCRIPT = {
     ]
   },
   "workedExample": {
-    "title": "让 return-to-go 穿过两次决策",
+    "title": "目标写成 10，得到 3 分以后，下一步应该还要求多少",
     "setup": "用户给出的目标总回报为 10。第一次动作得到奖励 3，第二次动作得到奖励 2。",
     "prediction": "后续每次动作之前，模型应读到多少期望剩余回报？",
     "steps": [
@@ -61,7 +61,7 @@ export const ZH_MANUSCRIPT = {
         "explanation": "还要回看训练数据中是否存在回报接近 10 的相似上下文；否则条件值只是分布外请求。"
       }
     ],
-    "result": "条件依次为 10、7、5。return-to-go 是控制接口，不是优化器；这串更新只有在训练轨迹覆盖相近目标与上下文时才具有可靠含义。"
+    "result": "条件沿真实奖励从 10 更新到 7，再到 5。它是一项滚动目标，不是模型已经知道的未来；日志若没有相似起点下接近 10 分的行为，这仍是分布外请求。"
   },
   "mechanism": {
     "introduction": "序列建模改变了优化形式，没有取消数据支持。",
@@ -109,5 +109,26 @@ export const ZH_MANUSCRIPT = {
       "序列似然高也可能闭环失败；评估必须让预测动作真正改变后续状态。"
     ]
   },
-  "nextBridge": "无论策略由 Q、actor 还是 Transformer 产生，部署前都要用旧数据估计它会怎样。下一章专门讨论离策略评价。"
+  "nextBridge": "无论候选策略来自保守 Q、actor 还是序列模型，都不能拿自己的训练分数给自己颁奖。真正上线以前，我们仍想只用旧日志估计新策略会怎样。下一章把这个问题单独拿出来：离策略评价究竟能证明多少？",
+  "narrative": [
+    { "type": "section", "id": "turn-a-trajectory-into-a-prefix", "title": "像预测下一个词一样预测下一动作", "paragraphs": [
+      "语言模型读到前缀，再预测下一个 token；选中的 token 会进入更长前缀。Decision Transformer 把前缀换成 return-to-go、状态和过去动作，预测对象换成日志里的下一动作。",
+      "训练仍是监督学习：因果遮罩不许当前动作偷看未来状态和奖励。部署时，模型预测的动作真的进入环境，新状态又回到上下文。序列损失看似离线，闭环输入仍由模型自己的早期选择生成。"
+    ] },
+    { "type": "section", "id": "return-to-go-is-a-condition", "title": "剩余回报是要求，不是预言", "paragraphs": [
+      "训练时，轨迹已经结束，可以从后往前算出每个时刻真实剩余回报。部署时输入的却是期望目标，每拿到一份真实奖励就从中扣除，再用新的剩余值条件化下一动作。",
+      "较高条件会把预测推向日志中与高回报共现的动作模式，但模型没有 Bellman 改进步骤替它验证未见行为。输入更大的数字不会增加训练数据中的技能。"
+    ] },
+    { "type": "worked-example" },
+    { "type": "equations" },
+    { "type": "section", "id": "support-moves-into-context-space", "title": "没有 Q 最大化，不代表没有分布外问题", "paragraphs": [
+      "如果高回报只出现在某类容易起点，模型可能学会的是起点相关性，而不是从困难起点规划到高分。长上下文能恢复速度和隐藏任务，却也可能记住无关标识。",
+      "部署前应按起点估计可实现 return-to-go 范围，比较不同条件下真实闭环达成率，并检查预测动作是否仍在日志支持内。超出范围时需要回退，而不是继续把数字调高。"
+    ] },
+    { "type": "section", "id": "time-indexing-is-part-of-correctness", "title": "序列错一位，未来答案就可能悄悄泄漏", "paragraphs": [
+      "因果 mask 正确还不够。return-to-go、状态、动作若在拼接或 padding 时错移一位，模型可能直接读到答案之后的信息，离线准确率异常漂亮。",
+      "最可靠的检查是用一条手工短轨迹逐 token 核对：预测 Aₜ 时究竟能看到什么，部署更新剩余回报是否与训练约定完全一致。"
+    ] },
+    { "type": "boundary" }
+  ]
 } satisfies ChineseManuscript;

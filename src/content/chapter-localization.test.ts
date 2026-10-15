@@ -41,6 +41,8 @@ describe("bilingual chapter corpus", () => {
       "behavior-cloning-dagger",
       "inverse-rl-gail",
       "offline-rl",
+      "decision-transformer",
+      "off-policy-evaluation",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
