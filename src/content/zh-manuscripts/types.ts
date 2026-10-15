@@ -197,7 +197,7 @@ export function applyChineseManuscript(english: ChapterArticle, copy: ChineseMan
       latex: english.equations[index].latex,
       ...(CHINESE_EQUATION_CORRECTIONS[english.slug]?.[index] ?? equation),
     })),
-    boundary: getAuthoredBoundary(english.slug),
+    boundary: copy.narrative ? copy.boundary : getAuthoredBoundary(english.slug),
     nextBridge: copy.nextBridge,
     sources: english.sources,
     narrative: copy.narrative ?? buildChineseNarrative(english.slug),

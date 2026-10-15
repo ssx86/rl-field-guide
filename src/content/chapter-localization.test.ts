@@ -6,6 +6,7 @@ import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-l
 import { CURRICULUM } from "@/content/curriculum";
 import { AUTHORED_NARRATIVE_SLUGS } from "@/content/zh-manuscripts/chapter-narrative";
 import { AUTHORED_CHAPTER_PROSE } from "@/content/zh-manuscripts/chapter-prose";
+import { AUTHORED_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/chapters";
 
 describe("bilingual chapter corpus", () => {
   it("covers the same 46 routes in the same order", () => {
@@ -57,23 +58,28 @@ describe("bilingual chapter corpus", () => {
     let renderedParagraphs = 0;
     for (const chapter of ZH_CHAPTER_ARTICLES) {
       const authored = AUTHORED_CHAPTER_PROSE[chapter.slug];
+      const chapterLocalNarrative = AUTHORED_CHINESE_MANUSCRIPTS[chapter.slug].narrative;
       expect(authored, chapter.slug).toBeDefined();
 
       const renderedSections = (chapter.narrative ?? []).filter((block) => block.type === "section");
+      const expectedSections = (chapterLocalNarrative ?? []).filter((block) => block.type === "section");
       expect(renderedSections.map((block) => block.type === "section" ? block.id : ""), chapter.slug)
-        .toEqual(Object.keys(authored.sections));
+        .toEqual(chapterLocalNarrative ? expectedSections.map((block) => block.type === "section" ? block.id : "") : Object.keys(authored.sections));
 
       for (const block of renderedSections) {
         if (block.type !== "section") continue;
-        expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toEqual(authored.sections[block.id]);
-        expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toHaveLength(2);
+        const chapterLocalSection = expectedSections.find((candidate) => candidate.type === "section" && candidate.id === block.id);
+        expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toEqual(
+          chapterLocalNarrative && chapterLocalSection?.type === "section" ? chapterLocalSection.paragraphs : authored.sections[block.id],
+        );
+        expect(block.paragraphs.length, `${chapter.slug}: ${block.id}`).toBeGreaterThanOrEqual(2);
         for (const paragraph of block.paragraphs) {
           expect(paragraph.length, `${chapter.slug}: ${block.id}`).toBeGreaterThanOrEqual(60);
           renderedParagraphs += 1;
         }
       }
 
-      expect(chapter.boundary, chapter.slug).toEqual(authored.boundary);
+      expect(chapter.boundary, chapter.slug).toEqual(chapterLocalNarrative ? AUTHORED_CHINESE_MANUSCRIPTS[chapter.slug].boundary : authored.boundary);
       expect(chapter.boundary.paragraphs, `${chapter.slug}: boundary`).toHaveLength(2);
       renderedParagraphs += chapter.boundary.paragraphs.length;
     }
@@ -198,14 +204,15 @@ describe("bilingual chapter corpus", () => {
     }
   });
 
-  it("develops every Chinese mechanism as prose rather than a slide note", () => {
+  it("develops every rendered Chinese section as prose rather than a slide note", () => {
     for (const chapter of ZH_CHAPTER_ARTICLES) {
-      for (const section of chapter.mechanism.sections) {
-        const prose = section.paragraphs.join(" ");
+      for (const block of chapter.narrative ?? []) {
+        if (block.type !== "section") continue;
+        const prose = block.paragraphs.join(" ");
         const sentenceCount = prose.match(/[。！？]/g)?.length ?? 0;
 
-        expect(prose.length, `${chapter.slug}: ${section.title}`).toBeGreaterThanOrEqual(100);
-        expect(sentenceCount, `${chapter.slug}: ${section.title}`).toBeGreaterThanOrEqual(3);
+        expect(prose.length, `${chapter.slug}: ${block.title}`).toBeGreaterThanOrEqual(120);
+        expect(sentenceCount, `${chapter.slug}: ${block.title}`).toBeGreaterThanOrEqual(3);
       }
     }
   });
