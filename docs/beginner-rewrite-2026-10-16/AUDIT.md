@@ -30,8 +30,8 @@
 3. 第二部分：`mdp-state-design` 到 `off-policy-deadly-triad` 七章均已完成中英文重写，并加入同一回归测试。
 4. 第三部分九章：`linear-approximation` 到 `distributed-rl` 已完成中英文重写，并加入同一回归测试。
 5. 第四部分三章：`pomdp-memory`、`deep-exploration` 与 `long-horizon-credit` 已完成中英文重写，并加入同一回归测试。
-6. 第五部分起：继续按课程顺序处理搜索、模型与离线数据。
-7. 第六至第九部分：处理结构、安全、评估与语言模型后训练。
+6. 第五部分三章：`mcts-alphazero`、`dyna-mpc` 与 `latent-world-models` 已完成中英文重写，并加入同一回归测试。
+7. 第六部分起：继续按课程顺序处理离线数据、结构、安全、评估与语言模型后训练。
 8. 全部完成后重新进行中英文对齐、术语、公式、移动端和公开页面验收。
 
 ## 验收线

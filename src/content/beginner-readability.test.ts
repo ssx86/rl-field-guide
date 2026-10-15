@@ -29,6 +29,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "pomdp-memory",
   "deep-exploration",
   "long-horizon-credit",
+  "mcts-alphazero",
+  "dyna-mpc",
+  "latent-world-models",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
