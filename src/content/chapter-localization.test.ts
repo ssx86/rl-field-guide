@@ -36,6 +36,8 @@ describe("bilingual chapter corpus", () => {
       "deep-exploration",
       "long-horizon-credit",
       "mcts-alphazero",
+      "dyna-mpc",
+      "latent-world-models",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
