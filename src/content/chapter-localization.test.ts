@@ -32,6 +32,8 @@ describe("bilingual chapter corpus", () => {
       "trpo-ppo",
       "continuous-control",
       "distributed-rl",
+      "pomdp-memory",
+      "deep-exploration",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
