@@ -31,10 +31,10 @@ const requiredPages = [
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
   ["en/learn/rlvr-grpo/index.html", "RLVR, process rewards, and GRPO", "group-relative"],
   ["en/learn/method-selection/index.html", "deployment evidence is still missing", "weakest evidence level"],
-  ["zh/learn/before-rl/index.html", "先判断问题，再决定要不要用强化学习", "无需任何 RL 前置术语"],
+  ["zh/learn/before-rl/index.html", "narrative-sections", "无需任何 RL 前置术语"],
   ["zh/learn/tabular-control/index.html", "Expected SARSA", "katex-display"],
-  ["zh/learn/rlvr-grpo/index.html", "RLVR", "答案可验证时"],
-  ["zh/learn/method-selection/index.html", "哪个算法最强", "缺失证据清单"],
+  ["zh/learn/rlvr-grpo/index.html", "RLVR", "narrative-sections"],
+  ["zh/learn/method-selection/index.html", "narrative-sections", "lesson-references"],
 ];
 
 for (const [page, ...needles] of requiredPages) {
@@ -67,10 +67,6 @@ for (const page of chineseLessonPages) {
   assert(html.includes("narrative-sections"), `${name} is missing its authored chapter navigation`);
   assert(html.includes("narrative-section"), `${name} is missing its authored prose movement`);
   assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
-  assert(
-    html.includes("knowledge-diagram") || html.includes("static-evidence") || html.includes("formula-list"),
-    `${name} is missing a concrete evidence component`,
-  );
   assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
   assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
   assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);

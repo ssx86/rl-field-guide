@@ -9,6 +9,21 @@ import { AUTHORED_CHAPTER_PROSE } from "@/content/zh-manuscripts/chapter-prose";
 import { AUTHORED_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/chapters";
 
 describe("bilingual chapter corpus", () => {
+  it("keeps completed rewrites in their chapter-local manuscript instead of the central prose map", () => {
+    const completedChapterLocalRewrites = [
+      "before-rl",
+      "interaction-loop",
+      "return-horizon",
+      "probability-expectation",
+      "bandits-contextual-bandits",
+      "tabular-control",
+    ];
+
+    for (const slug of completedChapterLocalRewrites) {
+      expect(AUTHORED_CHINESE_MANUSCRIPTS[slug].narrative, slug).toBeDefined();
+    }
+  });
+
   it("covers the same 46 routes in the same order", () => {
     expect(ZH_CHAPTER_ARTICLES).toHaveLength(46);
     expect(ZH_CHAPTER_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.map((chapter) => chapter.slug));
