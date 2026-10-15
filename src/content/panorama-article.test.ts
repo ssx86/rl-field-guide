@@ -31,9 +31,30 @@ describe("the read-first RL panorama", () => {
   it("introduces the problem before naming reinforcement learning", () => {
     for (const article of Object.values(PANORAMA_ARTICLES)) {
       const opening = article.opening.join(" ");
-      const nameIndex = article.language === "zh" ? opening.indexOf("强化学习（reinforcement learning, RL）") : opening.indexOf("called reinforcement learning");
+      const nameIndex = article.language === "zh"
+        ? opening.indexOf("强化学习（reinforcement learning, RL）")
+        : opening.indexOf("reinforcement learning, usually shortened to RL");
       expect(nameIndex, article.language).toBeGreaterThan(article.opening[0].length);
     }
+  });
+
+  it("keeps Chapter 00 readable for a young first-time reader", () => {
+    const stripLinks = (text: string) => text.replace(/\[\[([^|]+)\|[^\]]+\]\]/g, "$1");
+    const englishSentences = collectStrings(PANORAMA_ARTICLES.en)
+      .flatMap((text) => stripLinks(text).split(/[.!?]+/))
+      .map((sentence) => sentence.trim())
+      .filter(Boolean)
+      .map((sentence) => sentence.split(/\s+/).length);
+    const chineseSentences = collectStrings(PANORAMA_ARTICLES.zh)
+      .flatMap((text) => stripLinks(text).replace(/（[^）]+）/g, "").split(/[。！？；]+/))
+      .map((sentence) => sentence.trim())
+      .filter(Boolean)
+      .map((sentence) => [...sentence].length);
+
+    expect(Math.max(...englishSentences)).toBeLessThanOrEqual(32);
+    expect(englishSentences.reduce((sum, length) => sum + length, 0) / englishSentences.length).toBeLessThanOrEqual(14);
+    expect(Math.max(...chineseSentences)).toBeLessThanOrEqual(85);
+    expect(chineseSentences.reduce((sum, length) => sum + length, 0) / chineseSentences.length).toBeLessThanOrEqual(30);
   });
 
   it("links every deep chapter in both languages", () => {
