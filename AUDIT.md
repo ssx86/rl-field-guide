@@ -1,41 +1,57 @@
-# RL Field Guide audit — 2026-10-12
+# AUDIT · Chapter 00 认知模拟审核报告
 
-## Product decision
+> 审核对象：中文总览《一台机器怎样学会做决定》，开场加九次问题转向
+> 审核视角：能理解日常因果与简单算术、但没有 RL 专业知识的成年读者
+> 配套文件：`brain.md`
 
-This is a field guide for sustained reading, not a slide deck, acronym catalog, or click-through course game. The route begins by deciding whether RL is needed, then adds each method family only when the learner has encountered the problem it solves. Long prose is intentional where a learner needs continuity; diagrams and worked examples carry relationships that prose alone would make hard to inspect.
+严重度：🔴 致命认知缺口 / 🟠 类比后续失效 / 🔵 推理跳跃 / 🟢 术语未解释 / ⚪ 轻微可优化。
 
-The governing sequence is:
+## 本轮发现与修复
 
-`predict → trace the situation → calculate visible evidence → name the mechanism → test the boundary → transfer to the next question`
+### 1. 🔵 第 04 节 · DQN 之后突然进入策略梯度
 
-## Multi-lens audit
+- **问题**：旧稿依次列出 DQN、REINFORCE、Actor–Critic、PPO、连续控制和分布式 RL，但没有让读者先感到“给动作打分”为什么还不够。
+- **大脑为何卡住**：截至第 03 节，读者只知道价值学习；它没有理由主动想到“直接表示策略”这条新路线。
+- **修复**：先说明价值方法先评分再选动作，随后用随机策略、批次过旧、动作不可枚举与采样太慢四个障碍，逐个引出后续方法。已写入 `src/content/panorama/zh.ts`。
 
-| Lens | Question used in review | Result |
-| --- | --- | --- |
-| Product manager | Does each chapter close a learner question and create a reason for the next chapter? | 46 chapters form nine prerequisite-ordered parts; the home page exposes the complete route and purpose of each part. |
-| UI/UX | Does the page behave like a readable technical article rather than a collection of equal cards? | Continuous prose is the dominant surface. Cards are limited to diagrams, worked steps, equations, sources, and navigation where containment has meaning. |
-| `myself` | Are claims separated into implementation, automated evidence, browser evidence, and deployment evidence? | The final chapter and this audit state those boundaries explicitly. No build or benchmark is presented as production proof. |
-| Beginner brain | Can a learner derive each new term from daily knowledge plus previously taught facts? | Every chapter declares what it builds on, starts with a concrete situation, and introduces notation only after quantities have jobs. The 46-page cognitive ledger is in `brain.md`. |
-| Plain-language / anti-AI | Do paragraphs say who does what, avoid slogan-like contrast, and keep necessary caveats near the claim? | Abstract openings were replaced with actors, timelines, numbers, and direct boundary statements. Repeated template filler and decorative conclusions were removed. |
-| Popular-science writing | Can readers see the mechanism without losing technical correctness? | Each chapter combines a semantic diagram, at least three worked steps, mechanism prose, equations with spoken readings, and original or official sources. |
+### 2. 🔵 第 07 节 · 示范、离线 RL 与 OPE 之间缺少权限变化
 
-## Findings and resolution
+- **问题**：旧稿每段介绍一个家族，读者容易把行为克隆、逆 RL、离线 RL、Decision Transformer 和 OPE 当成平级菜单。
+- **大脑为何卡住**：截至第 06 节，读者只知道现实探索昂贵，还不知道“能否继续问专家、能否受控在线到访、能否获得目标”会怎样改变问题。
+- **修复**：用数据权限逐级收紧重新连接：能问专家时补标；目标隐藏时推断目标；完全不能在线时转入离线学习；训练完成后再做 OPE。已写入总览。
 
-| Priority | Finding | Resolution | Evidence |
-| --- | --- | --- | --- |
-| P0 | The earlier 16-page route could not support the requested breadth | Expanded to 46 chapters across nine parts, including classical, deep, offline, structured, reliable, and LLM-focused RL | Curriculum and article collection tests |
-| P0 | Equal-sized lesson cards made the site feel like a presentation | Rebuilt chapters as long-form articles with prose before containers | Desktop and mobile visual inspection |
-| P0 | “All RL” could decay into an untested marketing claim | Added an executable coverage contract for the major method families and modern post-training boundaries | Terminology coverage test |
-| P1 | Topic transitions could look like missing pages | Added a bridge from the previous question, a “why it is here” contract, and a next-question bridge to every chapter | 46 generated pages and content tests |
-| P1 | Formulas could arrive as unexplained decoration | Equations appear after situations and worked evidence, with a spoken reading and a paragraph explaining what the relation does and does not prove | Article schema test and browser inspection |
-| P1 | Long formulas widened the final chapter on phones | Constrained formula grid items so only the formula viewport can scroll | 320/375/390/768 overflow audit |
-| P1 | LLM training terminology is often collapsed into “RL” | Separate chapters distinguish SFT, PPO-style RLHF, direct preference objectives, AI feedback, RLVR/GRPO, search, test-time compute, and distillation | Part 9 content test and browser review |
-| P1 | A complete route can overwhelm navigation | Desktop shows only the current part; mobile shows previous/current/next with an expandable part list | Responsive browser audit |
-| P2 | Accessibility and theme behavior needed runtime evidence | Kept semantic headings/lists/figures, a skip link, visible focus, 44px controls, and action-named theme control | Keyboard, anchor, theme, and console audit |
+### 3. 🔵 第 09 节 · 语言模型后训练像缩写目录
 
-## Verified state
+- **问题**：旧稿从评估与系统直接跳入 RLHF、DPO、RLAIF、RLVR 与测试时计算，反馈来源的变化没有成为显式主线。
+- **大脑为何卡住**：读者已经掌握机器人的状态—动作—反馈，却尚未知道 prompt、prefix、token 和 reply 分别对应什么，也无法判断监督学习与 RL 的边界。
+- **修复**：先把 token 生成重新映射到同一决策接口，再按反馈来源顺序推进：目标 token → 人类比较 → 固定偏好 → 模型 judge → 程序验证 → 推理时筛选。已写入总览。
 
-- Automated: 12 test files and 61 tests pass; lint passes; Astro reports 0 errors and 0 warnings; static verification passes 48 pages and 46 chapters.
-- Browser runtime: all 46 chapters were opened and checked; nine route parts, theme, anchors, keyboard access, diagrams, examples, sources, and four responsive viewports pass; browser console has no errors or warnings.
-- Human visual review: home, first chapter, continuous-control formulas, direct-preference boundaries, and the final method-selection chapter were inspected at desktop and mobile sizes.
-- Not claimed: learner mastery, research exhaustiveness beyond the explicit coverage contract, domain-specific safety approval, production deployment readiness, or release publication of this branch.
+### 4. 🟢 第 09 节 · KL 首次出现时没有口头解释
+
+- **问题**：KL 原先直接作为限制漂移的缩写出现。
+- **大脑为何卡住**：截至该段，读者知道策略会变化，但没学过分布距离。
+- **修复**：第一次出现时补成“策略分布之间的一种距离”，公式与方向留给 RLHF 分章。
+
+### 5. ⚪ 全文 · 少量总结腔与整齐段落
+
+- **问题**：开场和结尾有“读到最后”“至此”“这就是强化学习的轮廓”等旁白；第 04、07、09 节句式与段落长度过于整齐。
+- **修复**：删掉预告式总结，改为机器人当下遇到的障碍；对高密度段落调整长短节奏，保留专业名词与因果关系。
+
+## 整体评价
+
+第 01–03 节的认知地基扎实：每个术语先在送货时间线上获得角色。第 05–06 节能把“学不会”拆成信息、到访与归因三个病因，再自然引入想象模型。主要问题集中在需要覆盖大量方法的第 04、07、09 节，本轮已经把目录式罗列改成由数据、动作与反馈条件推动的转向。
+
+最大的三个结构问题已经修复：
+
+1. 价值方法到策略方法缺少动机桥。
+2. 固定数据方法没有按交互权限分层。
+3. LLM 后训练没有按反馈来源组织。
+
+## 当前证据边界
+
+- 已完成：内容结构审核、46 章本地叙事覆盖测试、公式锚点测试、Astro 类型检查、静态构建与 97 页静态路由核验。
+- 浏览器证据：46 个中文章节分别在 1440px 与 390px 视口运行，共 92 次页面检查；没有横向页面溢出、KaTeX 错误、控制台错误或警告。总览中的 46 个章节链接均返回 200，代表页截图覆盖总览、表格控制、RLHF、DPO、RLVR 与方法选择。
+- 尚待完成：最终公开站点回读与重新发布。
+- 不作声明：读者已经掌握 RL、所有领域算法均穷尽、生产安全已经验证。
+
+**结论**：总览目前可以承担“先串起体系”的任务；发布前仍需浏览器层面的视觉与跳转回归。

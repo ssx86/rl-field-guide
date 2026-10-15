@@ -1,68 +1,126 @@
-# Beginner-brain cognitive ledger
+# 小白大脑 · Chapter 00 学习演化记录
 
-Audience model: an adult who reads plain English or Chinese, can follow everyday arithmetic and a timeline, but does not yet know reinforcement learning, probability notation, calculus, neural networks, or language-model post-training.
+> 审核对象：中文总览《一台机器怎样学会做决定》；开场加九次问题转向。
+> 审核规则：读者只能使用日常常识与上一节已经教会的事实，不能用后文替前文补前提。
 
-Input state is always `daily knowledge ∪ facts taught on earlier pages`. A chapter may introduce notation only after a visible situation has given every quantity a job. The reader is never required to click, guess correctly, or remember an unexplained acronym to reach the explanation.
+## 第 0 节 · 初始设定
 
-## Page-by-page audit
+- **理解能力**：正常成年人，能理解路线、送货、得分、试错和简单平均数。
+- **已有知识**：见过导航、机器人、天气变化和“多试几次再判断”这类生活经验。
+- **专业知识**：不知道 MDP、价值函数、贝尔曼方程、策略梯度、离线 RL 或语言模型后训练。
+- **刻意收紧**：不假定读者学过概率、神经网络或优化；英文缩写必须先有具体问题承接。
 
-| Ch. | Facts added to the learner's usable state | Bridge or analogy used | Cognitive check and boundary |
-| --- | --- | --- | --- |
-| 01 | RL is a candidate only when actions shape later choices and behavior must improve from consequences. | Door rule, photo labels, and warehouse routing separate rules, prediction, planning, and RL. | A score alone does not make a problem RL; simpler methods remain valid competitors. |
-| 02 | Agent, environment, observation, state, action, reward, transition, trajectory, and terminal step have distinct jobs. | Draw what crosses a system boundary like labeling arrows on a control diagram. | If hidden information matters, an observation is not automatically a Markov state. |
-| 03 | Return adds future rewards; discount and horizon change their weight; termination differs from truncation. | Compare short and delayed delivery outcomes on one timeline. | A time limit does not mean the underlying process has no future value. |
-| 04 | Probability weights possible outcomes; expectation averages them; a stochastic policy assigns action probabilities. | Treat uncertain futures as a weighted menu rather than one prediction. | Expected value does not describe variability or guarantee a typical single run. |
-| 05 | Bandits isolate exploration; sample averages, step sizes, epsilon-greedy, UCB, Thompson sampling, regret, and context solve different variants. | Trying restaurants whose quality is initially uncertain. | A contextual bandit does not model how today's action changes tomorrow's state. |
-| 06 | An MDP specifies states, actions, transition and reward distributions, and a policy; Markov is a test of the chosen state description. | A map square is useful only if it contains the history needed to predict the next move. | Calling a record “state” does not make missing history irrelevant. |
-| 07 | State value and action value compress possible futures; Bellman equations split a future into one step plus the remainder. | A trip estimate equals the next leg plus the rest of the route. | Bellman consistency depends on the modeled dynamics and policy; it is not evidence that the model is true. |
-| 08 | Policy evaluation, policy iteration, value iteration, and generalized policy iteration turn Bellman relations into model-based computation. | Repeatedly update a timetable until no estimate changes. | Update order changes speed; loops and stochastic transitions prevent a naive one-pass shortcut. |
-| 09 | Monte Carlo estimates value from complete sampled returns; first-visit and every-visit choices affect counting. | Wait for a whole game before scoring an earlier move. | Complete returns avoid bootstrapping but can be slow and high variance. |
-| 10 | TD(0), n-step returns, TD(lambda), and eligibility traces form a bias–variance and delay spectrum. | Pass credit backward through recent footsteps before the trip ends. | Faster feedback relies on current estimates and can propagate their errors. |
-| 11 | SARSA follows the sampled next action; Expected SARSA averages it; Q-learning uses a greedy target; Double Q reduces maximization bias. | Four accountants use the same transition but different next-action assumptions. | Off-policy optimal targets do not guarantee safe exploratory behavior. |
-| 12 | Importance sampling corrects policy mismatch; coverage is required; bootstrapping, approximation, and off-policy data form the deadly triad. | Reweight a survey when the sampled crowd differs from the target crowd. | Large or missing weights can make correction unusable; approximation can diverge. |
-| 13 | Linear value functions share updates through features; semi-gradients treat the target as fixed during an update. | A few feature sliders move the estimates of many similar states. | Poor features force harmful generalization even when optimization is correct. |
-| 14 | Neural networks learn representations with parameters, losses, batches, and gradients while RL targets and data distributions move. | A flexible curve fits many states but the ruler and examples keep changing. | More capacity does not repair biased targets, correlated data, or unsupported actions. |
-| 15 | DQN combines a neural Q-function, replay, a target network, terminal masks, and practical preprocessing. | Shuffle old experiences and consult a slower-moving answer sheet. | Replay and targets reduce instability; they do not remove the deadly triad or evaluation assumptions. |
-| 16 | Double DQN, dueling networks, prioritized replay, multi-step targets, distributional RL, noisy networks, and Rainbow repair different failure modes. | A repair bench labels which component fixes which defect. | Combining components does not prove every component helps in a new environment. |
-| 17 | REINFORCE changes action log-probability in proportion to return or advantage; baselines reduce variance without changing the expected direction. | Reward strengthens or weakens the probability of the sampled choice. | Policy gradients can have very high variance and do not turn reward into causal attribution. |
-| 18 | Actor–critic uses a critic to form earlier policy updates; A2C, A3C, and GAE trade delay, bias, variance, and parallelism. | An actor performs while a critic supplies a faster estimate of how much better the move was. | A biased critic can steer the actor wrongly; two losses can destabilize each other. |
-| 19 | Natural gradients use policy geometry; TRPO constrains a surrogate update; PPO clips ratios as a practical approximation. | Limit how far a map redraw can move familiar landmarks. | PPO clipping is not a hard safety guarantee and implementation choices materially affect results. |
-| 20 | DDPG uses deterministic actor gradients; TD3 adds twin critics and delayed/smoothed updates; SAC optimizes reward plus entropy. | A steering controller proposes a real-valued torque instead of choosing from a list. | Critic extrapolation, simulator mismatch, and offline support remain failure sources. |
-| 21 | Distributed RL separates actors, learners, and replay; Ape-X, IMPALA, R2D2, and asynchronous A3C handle scale differently. | A newsroom has reporters generating data and an editor updating the shared policy. | Throughput can create stale policies, replay skew, and recurrent-state errors rather than better learning. |
-| 22 | A POMDP separates hidden state from observation; belief, filtering, frame stacks, and recurrent memory summarize missing information. | Infer a room behind a closed door from noisy clues and recent history. | Memory cannot recover information that was never observed, and recurrence can remember the wrong thing. |
-| 23 | Counts, optimism, posterior sampling, entropy, curiosity, information gain, pseudo-counts, and RND supply distinct exploration signals. | A traveler values both promising and genuinely unfamiliar places. | Prediction error can reward noise; novelty is not the same as task progress. |
-| 24 | Sparse reward, temporal abstraction, return decomposition, reward redistribution, and hindsight address long-delay credit. | A late project outcome must be traced back across earlier decisions. | Correlation with success is not proof that an early action caused it. |
-| 25 | Minimax and MCTS search a known rule system; AlphaZero adds policy priors, value estimates, visit targets, and self-play. | Explore a decision tree selectively instead of expanding every branch. | Search quality depends on rules, budget, and learned guidance; self-play may miss external conditions. |
-| 26 | Dyna mixes real and modeled experience; MPC replans; PETS tracks uncertainty; MBPO limits model rollout length. | Rehearse with a simulator but return often to the real instrument panel. | Model error compounds, and plausible predictions can still recommend bad actions. |
-| 27 | Dreamer plans behavior in a learned latent world; MuZero predicts decision-relevant dynamics without reconstructing every observation. | Use a compressed internal map that preserves what choices need. | A useful latent model can hide failure modes outside its training distribution. |
-| 28 | Behavior cloning learns demonstrated actions; DAgger collects expert labels on learner-visited states to reduce compounding error. | Copy a driving instructor, then ask for corrections where your own driving drifts. | Demonstrations may be suboptimal, ambiguous, or unavailable in unsafe states. |
-| 29 | Inverse RL infers reward, maximum-entropy IRL represents ambiguity, and GAIL matches occupancy through adversarial training. | Infer the recipe from observed meals rather than being given ingredients and steps. | Many objectives explain the same behavior; imitation does not reveal moral or causal intent. |
-| 30 | Offline RL learns only from fixed logs; BCQ, CQL, and IQL constrain or penalize unsupported action estimates differently. | Plan from a museum archive where no new experiment can be run. | Dataset support limits what can be learned; high estimated value outside support is not evidence. |
-| 31 | Decision Transformer conditions a sequence model on desired return and prior trajectory tokens. | Complete the next step of a route after being told the destination and trip history. | Return conditioning is supervised sequence modeling over logged support, not automatically online RL. |
-| 32 | Off-policy evaluation uses importance sampling, fitted Q evaluation, model methods, and doubly robust estimators to estimate a new policy from old data. | Audit a proposed route using past trips before sending a vehicle. | Coverage, confounding, model error, and uncertainty can make deployment claims indefensible. |
-| 33 | Options, MAXQ, goal conditioning, and skill discovery add temporal abstraction and reusable behavior. | Replace keystrokes with meaningful macros such as “navigate to the door.” | Bad abstractions hide necessary control and can transfer failure as efficiently as success. |
-| 34 | Multi-agent RL introduces joint dynamics; CTDE, VDN, QMIX, and MADDPG coordinate or factor value and policy learning. | Teammates train with a shared playbook but act from local views. | Other learners make the environment non-stationary; credit and equilibrium replace single-agent optimality. |
-| 35 | Multi-task learning, meta-RL, domain randomization, adaptation, and sim-to-real address transfer across related tasks. | Practice several kitchens so a cook can adapt to a new layout. | Broad training distributions do not prove out-of-distribution generalization. |
-| 36 | Reward shaping, potential-based shaping, proxies, preference signals, and specification gaming separate the score from the real goal. | A scoreboard guides play but can be exploited without winning the intended game. | Reward optimization amplifies loopholes; observed score must be audited against real outcomes. |
-| 37 | CMDPs and CPO model constraints; robust RL handles model uncertainty; CVaR and risk-sensitive objectives care about tails. | Choose a route with fuel, safety, and worst-case requirements, not only average speed. | These problem statements encode particular risks; none provides universal safety certification. |
-| 38 | Seeds, confidence intervals, baselines, ablations, checkpoints, evaluation protocols, and benchmark choices determine claim strength. | Repeat an experiment with several measuring instruments and comparison points. | One best run, one seed, or one benchmark cannot establish a robust improvement. |
-| 39 | Environment APIs, termination semantics, wrappers, replay, logging, distributed systems, reproducibility, and monitoring are part of the algorithm's behavior. | A laboratory result depends on the apparatus as well as the formula. | A passing unit test or build is not real-environment validation. |
-| 40 | Token generation can be represented as a trajectory; SFT uses target tokens, while RL needs a policy, feedback, and an optimization loop over consequences. | Each generated token changes the prefix available to the next choice. | Calling sequence generation an MDP does not mean every language-model training loss is RL. |
-| 41 | RLHF separates preference collection, reward-model fitting, PPO policy updates, reference KL, and evaluation. | Humans compare outputs, a learned judge generalizes the comparisons, and a policy is updated under a drift limit. | Reward-model scores are proxies and can be exploited or misgeneralize. |
-| 42 | DPO, IPO, KTO, ORPO, and SimPO are distinct direct preference objectives with different feedback and reference assumptions. | Adjust relative response likelihood directly from fixed comparisons instead of running reward-model PPO. | Preference learning from fixed data is not automatically online reinforcement learning. |
-| 43 | RLAIF and constitutional methods use model-generated feedback and explicit principles; judge ensembles and audits manage but do not remove bias. | A rubric guides reviewers, including automated ones, but does not become ground truth. | Judges can share blind spots, be gamed, and inherit the policy's own errors. |
-| 44 | RLVR uses verifiable outcomes; process and outcome rewards supervise different evidence; GRPO compares sampled groups without a separate critic. | Several candidate solutions take the same exam and receive checkable scores. | Verifiable endpoints may reward shortcuts and do not prove sound reasoning or safe behavior. |
-| 45 | RL training, search, test-time compute, self-consistency, tool use, and distillation improve systems through different mechanisms. | Training changes the student; search lets the same student spend longer on one problem; distillation copies selected behavior. | Similar benchmark gains do not make the methods equivalent or equally costly at runtime. |
-| 46 | Method selection begins with data access, action space, observability, safety, model knowledge, and evaluation; claims are capped by their weakest evidence layer. | Eliminate infeasible tools before comparing fashionable algorithm names. | Build, benchmark, runtime validation, safety evidence, human acceptance, and deployment are separate gates. |
+## 第 1 节 · 开场：先选，世界稍后才回答
 
-## Consistency rules applied across all pages
+**本节教了什么**：送货机器人没有标准路线标签，只能行动后收到耗时；动作还会改变下一步处境。
 
-1. Every new page reuses only facts listed above it; acronyms are expanded when first introduced in their local part.
-2. Every analogy is followed by the exact technical relationship it represents and a sentence saying where the analogy stops.
-3. Worked evidence exposes intermediate steps instead of presenting a polished result as self-evident.
-4. Equations come after their quantities have concrete roles and include a spoken reading plus a limitation.
-5. A chapter cannot end with confidence alone; it ends with a counterexample, missing assumption, or unsupported state and then opens the next question.
+**认知检查**：✅ 顺畅。路线、积水、电量和包裹都是日常对象，读者先感到“为何难”，还不需要术语。
 
-## Final learner state
+**类比保质期**：送货故事在后文扩展到医院、团队和 token 时仍保留“行动改变后续信息”这一核心；语言模型段会明确动作换成 token，避免类比突然失效。
 
-After chapter 46, the learner should be able to classify an RL problem, trace the source and target of an update, compare the principal method families, recognize common failure modes, read representative equations without treating them as magic, and design an evidence plan. The course does not claim production competence, mathematical research fluency, safety approval, or mastery without practice and external assessment.
+**状态快照**：读者知道 RL 候选问题有两个特征：先行动后反馈；当前动作影响以后。
+
+## 第 2 节 · 选择一次：探索为何有代价
+
+**本节教了什么**：利用拿眼前收益，探索用一次可能损失购买以后更好的判断；老虎机只处理每轮互不影响的选择。
+
+**认知检查**：✅ 顺畅。先有两条路线，再命名探索、利用、上下文与遗憾；术语均有生活对象承接。
+
+**类比一致性**：本节末尾主动撤销“每轮重置”条件，使读者看见老虎机为何不够，没有把它误当成完整 RL。
+
+**状态快照**：读者能区分一次性选择与会改变未来的连续决策。
+
+## 第 3 节 · 动作打开不同未来
+
+**本节教了什么**：状态、动作、奖励、策略、轨迹与回报按照时间顺序进入；价值把眼前结果与后续处境连起来。
+
+**认知检查**：✅ 顺畅。每个词都先在机器人时间线上承担一个角色。MDP 在“当前信息是否足够预测下一步”之后才出现。
+
+**类比一致性**：折扣没有被解释成“未来不重要”，而是远期权重、无限任务和尽早完成的建模选择。
+
+**状态快照**：读者已有决策过程骨架，也知道奖励可能写错。
+
+## 第 4 节 · 有地图时规划，没地图时学习
+
+**本节教了什么**：已知模型允许动态规划；未知模型时，蒙特卡洛等完整回报，TD 提前自举；控制算法因下一动作假设不同而分叉。
+
+**认知检查**：✅ 顺畅。地图存在与否先决定证据来源，再引出算法。SARSA、Expected SARSA、Q-learning 与 Double Q 都围绕“下一步按谁算”出现。
+
+**类比一致性**：地图代表转移与奖励模型，不暗示真实环境必然是二维空间；后文世界模型沿用同一含义。
+
+**状态快照**：读者能按“模型已知 / 只有经历”分类方法，并知道覆盖不足不能靠权重补出。
+
+## 第 5 节 · 表格放不下以后
+
+**本节教了什么**：函数逼近把相似经验连接起来；DQN 处理大规模离散动作；策略梯度直接移动动作概率；actor–critic、PPO、连续控制与分布式系统分别解决新的具体限制。
+
+**认知检查**：✅ 修复后顺畅。旧稿从 DQN 直接跳到 REINFORCE，再快速罗列连续控制与分布式算法。现稿先说明“给动作打分不是唯一选择”，再用批次过旧、动作不可枚举和采样太慢依次打开 PPO、连续控制与分布式 RL。
+
+**状态快照**：读者知道网络扩大了表示能力，却没有消除移动数据、移动目标和系统过时问题。
+
+## 第 6 节 · 学不会可能是三种病
+
+**本节教了什么**：部分可观测、探索不足与长时信用是三个不同断点，需要记忆、深度探索和信用分配方法分别处理。
+
+**认知检查**：✅ 顺畅。三个问题先用同一栋楼的门、电梯和末端奖励并置，再分别命名，不会把“训练没效果”当作一个病因。
+
+**状态快照**：读者会先问缺信息、缺到访还是缺归因，而不是直接更换算法。
+
+## 第 7 节 · 在脑中预演
+
+**本节教了什么**：搜索可使用已知规则，Dyna/MPC 使用或学习模型，Dreamer/MuZero 学决策相关潜在模型；规划会主动利用模型误差。
+
+**认知检查**：✅ 顺畅。先分清搜索与学习，再分清已知模型与学习模型，最后讨论像素重建是否必要。
+
+**类比一致性**：“梦”只表示模型内展开，不表示模型是真实世界的完整复制；段落明确写出误差会被规划器放大。
+
+**状态快照**：读者会问模型从哪里来、为谁服务、能信多远。
+
+## 第 8 节 · 只能使用过去的日志
+
+**本节教了什么**：行为克隆复制示范，DAgger 补学习者到访状态；逆 RL 追问隐藏目标；离线 RL、Decision Transformer 与 OPE 都受固定数据覆盖限制。
+
+**认知检查**：✅ 修复后顺畅。现稿用权限逐级收紧连接各方法：能问专家时用 DAgger；看得到动作却看不到目标时进入逆 RL；连受控在线到访也不允许时才进入离线 RL；训练后再用 OPE 做上线前估计。
+
+**状态快照**：读者知道固定日志没有展示过的后果仍是未知，任何建模形式都不能凭空补出。
+
+## 第 9 节 · 技能、队友和变化的世界
+
+**本节教了什么**：层级方法组织多步技能，多智能体方法处理共同学习者，迁移与元学习处理任务变化。
+
+**认知检查**：✅ 顺畅。任务先变长，再增加同时行动者，最后改变楼宇分布；每次只增加一个难点。
+
+**状态快照**：读者知道抽象、协作与迁移会增加复用，也会带来子目标、信用、均衡与负迁移的新边界。
+
+## 第 10 节 · 分数开始说谎，动作又变成词
+
+**本节教了什么**：奖励、约束、风险与评估先处理“分数是否可信”；随后把动作换成 token，沿反馈来源区分 SFT、RLHF、直接偏好、RLAIF、RLVR 与测试时计算。
+
+**认知检查**：✅ 修复后顺畅。旧稿在安全与系统之后直接列出语言模型后训练缩写。现稿先建立“token 仍是序列动作”的等号，再按反馈依次变化：目标 token、人类比较、固定偏好、模型评审、程序验证、推理时筛选。
+
+**类比一致性**：语言模型段没有推翻送货机器人框架，只替换了状态、动作与反馈的具体载体；同时明确自回归生成本身不等于 RL。
+
+**状态快照**：读者能从反馈来源和是否在线采样判断方法，而不是把所有后训练统称为 RL。
+
+## 终态小结
+
+### 大脑最终掌握的概念
+
+- 先画出状态、动作、反馈与时间顺序，再判断是否需要 RL。
+- 方法家族由模型是否已知、数据能否重采、观察是否充分、动作形状和风险边界共同决定。
+- 价值、策略、世界模型、奖励模型与评审器是不同估计对象，各自可能出错。
+- 训练分数、离线评估、运行验证、人类验收与部署不是同一层证据。
+
+### 仍需到分章消化的内容
+
+- 总览只建立“为什么出现”的路线，不承担公式推导与实现细节。
+- DQN 家族、连续控制、离线 RL 与 LLM 后训练仍包含多个变体，需要进入对应章节逐一比较。
+- 安全约束与部署验收只能在具体环境中验证，课程不能替项目提供安全证明。
+
+### 学习曲线评价
+
+- 第 1–4 节从日常选择走到价值学习，认知台阶最稳定。
+- 第 5、8、10 节原本缩写密度过高，本轮已补上“上一个办法在哪里失效”的连接句。
+- 第 6、7、9 节保持一节一个新障碍，承担中段呼吸与结构扩展。
+
+**总评**：修复后的总览可以让零基础读者先建立整张问题地图；它有意不把“认识地图”写成“已经掌握算法”。
