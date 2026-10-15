@@ -32,6 +32,11 @@ const REWRITTEN_FOR_BEGINNERS = [
   "mcts-alphazero",
   "dyna-mpc",
   "latent-world-models",
+  "behavior-cloning-dagger",
+  "inverse-rl-gail",
+  "offline-rl",
+  "decision-transformer",
+  "off-policy-evaluation",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
