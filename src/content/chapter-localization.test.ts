@@ -34,6 +34,8 @@ describe("bilingual chapter corpus", () => {
       "distributed-rl",
       "pomdp-memory",
       "deep-exploration",
+      "long-horizon-credit",
+      "mcts-alphazero",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
