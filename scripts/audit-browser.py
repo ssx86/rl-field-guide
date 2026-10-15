@@ -13,6 +13,34 @@ def assert_no_overflow(page, url: str, width: int) -> None:
     assert metrics["scroll"] == metrics["client"], (width, url, metrics)
 
 
+def assert_formula_cards_are_readable(page, url: str) -> None:
+    page.set_viewport_size({"width": 1440, "height": 900})
+    page.goto(url, wait_until="networkidle")
+    desktop = page.locator(".formula-render").evaluate_all("""cards => cards.map(card => ({
+        client: card.clientWidth,
+        scroll: card.scrollWidth,
+        errors: card.querySelectorAll('.katex-error').length,
+    }))""")
+    assert desktop, url
+    assert all(card["errors"] == 0 for card in desktop), (url, desktop)
+    assert all(card["scroll"] <= card["client"] + 1 for card in desktop), (url, desktop)
+
+    page.set_viewport_size({"width": 390, "height": 900})
+    page.goto(url, wait_until="networkidle")
+    mobile = page.locator(".formula-render").evaluate_all("""cards => cards.map(card => {
+        card.scrollLeft = card.scrollWidth;
+        const formula = card.querySelector('.katex');
+        const cardBox = card.getBoundingClientRect();
+        const formulaBox = formula?.getBoundingClientRect();
+        return {
+            overflowX: getComputedStyle(card).overflowX,
+            lastGlyphVisible: formulaBox ? formulaBox.right <= cardBox.right + 1 : false,
+        };
+    })""")
+    assert all(card["overflowX"] in ("auto", "scroll") for card in mobile), (url, mobile)
+    assert all(card["lastGlyphVisible"] for card in mobile), (url, mobile)
+
+
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)
     page = browser.new_page(viewport={"width": 1280, "height": 900})
@@ -119,6 +147,9 @@ with sync_playwright() as p:
     assert page.locator(".diagram-formula-compare .katex-error").count() == 0
     assert page.evaluate("document.documentElement.scrollWidth === document.documentElement.clientWidth")
 
+    assert_formula_cards_are_readable(page, f"{BASE}/en/learn/method-selection/")
+    assert_formula_cards_are_readable(page, f"{BASE}/zh/learn/method-selection/")
+
     page.goto(f"{BASE}/zh/learn/continuous-control/#diagram", wait_until="networkidle")
     language_toggle = page.get_by_role("link", name="English")
     assert language_toggle.get_attribute("href").endswith("/en/learn/continuous-control/#diagram")
@@ -146,5 +177,5 @@ with sync_playwright() as p:
     assert page.get_by_role("link", name="Skip to main content").evaluate("el => el === document.activeElement")
 
     assert not console_errors, console_errors
-    print("Browser audit passed: bilingual Chapter 00 panorama, 46 matched deep chapters, flexible Chinese narratives, strict bilingual tabular-control formula matrix, safe shared anchors, theme, keyboard, and 6 responsive viewports.")
+    print("Browser audit passed: bilingual Chapter 00 panorama, 46 matched deep chapters, flexible Chinese narratives, strict bilingual formula rendering (including long-card visibility), safe shared anchors, theme, keyboard, and 6 responsive viewports.")
     browser.close()

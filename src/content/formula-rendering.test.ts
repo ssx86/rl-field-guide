@@ -47,5 +47,7 @@ describe("formula rendering contracts", () => {
     expect(getChapterArticle("off-policy-deadly-triad").equations[1].latex).toContain("A\\sim b(\\cdot\\mid s)");
     expect(getChapterArticle("continuous-control").equations[1].latex).toContain("\\gamma^t");
     expect(getChapterArticle("rlvr-grpo").equations[1].latex).toContain("\\max_\\theta\\;J_{\\mathrm{GRPO}}");
+    expect(getChapterArticle("method-selection").equations[0].latex).toContain("\\mathcal F");
+    expect(getChapterArticle("method-selection").equations[1].latex).toContain("\\kappa_{\\mathrm{claim}}");
   });
 });

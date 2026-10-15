@@ -1,39 +1,122 @@
-# Beginner-brain audit report
+# AUDIT · 认知模拟审核报告
 
-## Scope and method
+> 审核对象：RL Field Guide 中文教程 46 章，共 274 个正文段落与 92 个边界段落，按公开阅读顺序审核
+>
+> 审核视角：能做日常因果推理和简单代数、但没有强化学习、机器学习、微积分与概率术语的小白大脑
+>
+> 配套文件：`brain.md`（逐章累计认知状态、类比一致性与第二轮结论）
 
-This audit covers the 46 Chinese deep chapters in reading order. The simulated reader begins with ordinary causal reasoning, percentages, averages, and simple algebra, but no reinforcement-learning terms. Each chapter was checked for prerequisite continuity, first-use definitions, analogy fidelity, explicit failure boundaries, and whether the section order follows a question rather than a fixed presentation template.
+每条发现采用“章节 → 问题 → 大脑为何卡住 → 修法”的格式。严重度图例：🔴 致命认知缺口 / 🟡 类比前提缺失 / 🟠 类比后续失效或矛盾 / 🔵 推理跳跃过大 / 🟢 术语未解释 / ⚪ 轻微可优化。
 
-The detailed per-chapter ledger is in `brain.md`.
+## 审核过程
 
-## Result after repair
+第一轮不是按关键词扫一遍，而是把大脑锁定在“日常常识 ∪ 上一章以前已经教过的事实”，从第 1 章一路读到第 46 章。发现问题后先修改正文，再清空对修改处的记忆，从该章的上一章状态重新读入，完成第二轮。第二轮还反向检查了后续章节有没有继续依赖已经失效的类比。
 
-- 46/46 chapters begin from a concrete decision or evidence problem.
-- 46/46 finish with an explicit boundary instead of a universal recommendation.
-- All chapters use authored section titles and ordering; there are at least ten distinct component sequences across the course.
-- Formulas, worked calculations, source references, and existing bilingual factual alignment were preserved.
-- Four first-use vocabulary jumps were repaired during the audit: regression in neural approximation, tree anatomy in MCTS, prior/posterior in latent world models, and chosen/rejected in direct preference optimization.
+## 🔴 致命认知缺口
 
-## The three largest structural risks checked
+第一轮与第二轮均未发现。每章的核心问题都能从上一章的累计状态推出，没有章节依赖后文倒过来补齐自己的核心机制。
 
-### 1. Algorithm names arriving before the problem
+## 🟡 类比前提缺失
 
-The rewrite now introduces the failure or constraint first. DQN follows moving targets and correlated samples; PPO follows oversized policy steps; SAC follows continuous actions and exploration; offline RL follows missing interaction and unsupported actions. Names answer a problem already visible to the reader.
+第一轮未发现。正文主要使用路线、队列、同一观察下的不同历史、固定日志等日常对象；树、绳子、角色等比喻都在使用前说明了对应关系。
 
-### 2. Adjacent concepts being collapsed
+## 🟠 类比后续失效或矛盾
 
-The prose keeps high-risk distinctions separate: reward versus return, observation versus state, termination versus truncation, sample versus expectation, memory versus credit, search versus learning, SFT versus RL, and inference-time search versus training. These separations are repeated only when a later topic depends on them.
+第一轮没有阻断项，第二轮重点复核了三处高风险类比：
 
-### 3. A formula or diagram becoming the explanation
+- 第 19/41 章的“步子”和“绳子”只帮助理解策略距离，正文随后明确 PPO clipping 不是硬边界、KL 惩罚也不是安全证明。
+- 第 25/26 章的“在模型里试错”在进入学习模型时明确受模型误差限制，没有把想象轨迹当成真实证据。
+- 第 40 章的“token 是动作”被明确写成接口映射；词片、标点、长度归一化与整段奖励随后展示了该映射的边界。
 
-Equations and visual components are optional evidence blocks in the Chinese renderer. The prose movement is the primary structure. The tabular-control formula comparison remains because the mathematical difference is the subject; method-selection omits a diagram because a forced picture would add presentation shape without explanatory value.
+复核结论：没有仍在后文被当作严格等价使用的类比。
 
-## Residual limitations
+## 🔵 推理跳跃过大
 
-- This is a source, build, and browser-level editorial audit, not observed comprehension data from real novice readers.
-- English deep chapters retain the previous fixed renderer and wording; the new authored narrative flow is currently Chinese-only.
-- Some chapters necessarily use standard English algorithm names because those names are the searchable technical vocabulary; every central mechanism is still explained in Chinese prose.
+### 1. 第 5 章 · “后验采样”比读者多走了一步
 
-## Release recommendation
+- **问题**：原稿直接写“按后验采样”，却还没有教贝叶斯更新或后验分布。
+- **大脑为何卡住**：截至第 4 章，大脑只知道样本、分布、条件平均与估计误差；它不知道“后验”是把既有判断与新证据合并后的分布。
+- **修复**：正文改成“从当前证据仍允许的许多回报模型中随机抽一份”，然后才给 Thompson sampling 的名字。读者不需要先学贝叶斯术语也能理解动作。
 
-Content and layout are ready for local acceptance. Publish only after the user has inspected representative early, middle, and late chapters in the local preview and explicitly requests deployment.
+### 2. 第 13/17 章 · 从调权重跳到梯度公式
+
+- **问题**：原稿把“梯度”“求导”“logits”当作读者已有的优化知识。
+- **大脑为何卡住**：截至第 12 章，大脑会读表格更新和重要性比率，但没有微积分，也不知道网络输出如何变成动作概率。
+- **修复**：第 13 章先把梯度定义为“权重轻微改变时，预测会往哪个方向变化”；第 17 章把同一定义迁移到动作概率，再把 logits 定义为网络送入概率变换之前的原始动作分数。公式成为压缩表达，而不是新前提。
+
+### 3. 第 21 章 · 分布式系统突然堆入两个实现名词
+
+- **问题**：V-trace 和 burn-in 原本只以名字出现，读者无法判断它们分别在修什么。
+- **大脑为何卡住**：截至第 20 章，大脑知道离策略概率校正、回放与循环记忆，但还不知道旧轨迹校正和隐藏状态恢复怎样落在分布式训练片段上。
+- **修复**：V-trace 改写为“按采样策略与当前策略的概率差修正旧轨迹”；burn-in 改写为“片段开头只用来恢复隐藏状态、暂不计算主损失的前缀”。名字现在跟在动作之后。
+
+第二轮复核：上述三处都能仅靠前文继续推理，不再有关键中间步靠读者脑补。
+
+## 🟢 术语未解释
+
+### 4. 第 14 章 · 回归
+
+- **问题**：原稿用“普通回归”来解释神经网络损失，但基线大脑不拥有这个术语。
+- **大脑为何卡住**：它只知道预测值和目标值，不知道“回归”是让连续数值预测靠近目标的训练形式。
+- **修复**：首次出现处直接补成“反复调整参数，让预测数值靠近已经给定的目标数值”。
+
+### 5. 第 19 章 · KL
+
+- **问题**：原稿要求同时监控 KL，却未说明它监控的是什么。
+- **大脑为何卡住**：它知道动作概率比，只能比较日志中某个动作；还没有一个汇总整个动作分布变化的量。
+- **修复**：先解释“用一个数汇总新旧动作概率分布相差多远”，再给 KL 的名字，并保留“平均 KL 不是逐状态硬保证”的边界。
+
+### 6. 第 37 章 · CVaR
+
+- **问题**：原稿说 CVaR 关注最差一部分结果，却没有说明究竟怎样汇总。
+- **大脑为何卡住**：它已经知道均值会遮住事故，也知道回报分布，但还不知道 CVaR 与某个极端最小值的区别。
+- **修复**：改成“先截出最差的一部分结果，再看这一小段的平均有多坏”。
+
+### 7. 第 40 章 · token 与 SFT
+
+- **问题**：这是语言模型部分的入口，原稿却假设读者理解 token 和 SFT。
+- **大脑为何卡住**：前 39 章只建立了通用决策、数据与估计器知识，刻意没有假设读者用过语言模型训练工具。
+- **修复**：token 先定义为可能是一个词、半个词或标点的生成单位；SFT 先展开为监督微调，再说明它用固定目标回复提高下一 token 概率，因此不自动构成 RL。
+
+第二轮复核：以上术语在后续再次出现时，都已有可回溯的第一处定义。
+
+## ⚪ 轻微可优化
+
+### 8. 标准英文算法名仍然密集
+
+- **问题**：DQN、GAE、TRPO、PPO、BCQ、CQL、IQL、DPO、GRPO 等名称不可避免地提高了视觉密度。
+- **大脑为何会累**：名称本身不提供机制，连续看到多个缩写时容易把“记住名字”误当成“理解区别”。
+- **处理**：保留可搜索的标准名，但正文一律先交代问题与动作；家族章节按“改目标、改表示、改采样、改探索”等机制分类。该项不是理解阻断，因此没有删除技术词。
+
+## 第二轮逐章结果
+
+- 46/46 章都从可观察的问题或证据缺口开始，而不是先报算法名。
+- 46/46 章都说明了方法实际改变或估计什么、为什么前一方法不够、至少一个失败边界，以及通往下一章的未解决问题。
+- 46/46 章都通过累计认知检查；逐章快照和类比保质期记录见 `brain.md`。
+- 274/274 个正文段落来自独立重写稿；92/92 个边界段落来自独立重写稿。
+- 公式、公式阅读、例题数据和来源保持原有数学对象；新正文没有改写公式本身。
+- 自动测试同时锁定 46 个 slug、逐节段落映射、边界映射与禁用模板句，漏写会直接失败。
+
+## 整体评价
+
+### 认知阶梯是否扎实
+
+第 1–12 章现在形成最稳定的地基：先判定是不是序列决策，再建立时间、随机性、状态、价值、样本更新和策略差异。第 13–21 章原本最容易因为优化与系统术语突然加速，第一轮问题也主要集中在这里；补桥后，读者可以沿“共享证据 → 移动目标 → 概率更新 → 旧数据代表性 → 分布式滞后”继续走。第 22–39 章的风险不是单个术语，而是方法家族过多；新稿通过每章只追一个故障、并把失败边界留在结尾，避免了百科式罗列。第 40–46 章把语言模型重新映射回前面已经建立的动作、轨迹、代理奖励、覆盖与验证器，不另起一套神秘语言。
+
+### 最大的 3 个结构性风险
+
+1. **首次术语被作者经验吞掉**：第一轮十个修补点均属于此类；现已把解释移到第一次出现的位置。
+2. **算法家族容易退化成目录**：DQN family、continuous control、offline RL、direct preference 等章节现按“各自在修哪一段反馈回路”组织，而不是并排简介。
+3. **类比被误读成等价**：搜索、KL、token-as-action 等高风险类比都增加了失效边界，后文也不再偷偷扩大它们的适用范围。
+
+### 修复优先级
+
+- **必修（致命）**：无剩余项。
+- **强烈建议**：第 5、13、17、21 章的推理桥已修复并通过第二轮复核。
+- **顺手优化**：第 14、19、37、40 章的首次术语解释已补齐；算法缩写保留为检索入口。
+
+## 证据边界
+
+本报告证明的是：源码中的 46 章按限定小白基线完成了两轮顺序认知审核，第一轮发现已落入正文，第二轮未发现仍会阻断整条推理链的问题。它不等同于真实新手的阅读实验、记忆保持率或学习效果统计；这些仍需要实际读者测试。就本次指定的 beginner-brain-audit 标准而言，当前无未关闭的内容阻断项。
+
+**一句话结论**：这版教程已经从“算法名与公式的说明书”变成一条可以从问题本身逐步推到方法、证据和局限的连续路线，满足进入发布回归的条件。

@@ -5,6 +5,7 @@ import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
 import { AUTHORED_NARRATIVE_SLUGS } from "@/content/zh-manuscripts/chapter-narrative";
+import { AUTHORED_CHAPTER_PROSE } from "@/content/zh-manuscripts/chapter-prose";
 
 describe("bilingual chapter corpus", () => {
   it("covers the same 46 routes in the same order", () => {
@@ -47,6 +48,59 @@ describe("bilingual chapter corpus", () => {
     }
 
     expect(signatures.size).toBeGreaterThanOrEqual(10);
+  });
+
+  it("renders the independently rewritten prose for every narrative section and boundary", () => {
+    const curriculumSlugs = CURRICULUM.map((chapter) => chapter.slug);
+    expect(Object.keys(AUTHORED_CHAPTER_PROSE).sort()).toEqual([...curriculumSlugs].sort());
+
+    let renderedParagraphs = 0;
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      const authored = AUTHORED_CHAPTER_PROSE[chapter.slug];
+      expect(authored, chapter.slug).toBeDefined();
+
+      const renderedSections = (chapter.narrative ?? []).filter((block) => block.type === "section");
+      expect(renderedSections.map((block) => block.type === "section" ? block.id : ""), chapter.slug)
+        .toEqual(Object.keys(authored.sections));
+
+      for (const block of renderedSections) {
+        if (block.type !== "section") continue;
+        expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toEqual(authored.sections[block.id]);
+        expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toHaveLength(2);
+        for (const paragraph of block.paragraphs) {
+          expect(paragraph.length, `${chapter.slug}: ${block.id}`).toBeGreaterThanOrEqual(60);
+          renderedParagraphs += 1;
+        }
+      }
+
+      expect(chapter.boundary, chapter.slug).toEqual(authored.boundary);
+      expect(chapter.boundary.paragraphs, `${chapter.slug}: boundary`).toHaveLength(2);
+      renderedParagraphs += chapter.boundary.paragraphs.length;
+    }
+
+    expect(renderedParagraphs).toBeGreaterThanOrEqual(360);
+  });
+
+  it("avoids recurrent presentation-template language in the rewritten article", () => {
+    const disallowedPhrases = [
+      "首先，我们",
+      "其次，我们",
+      "最后，我们",
+      "综上所述",
+      "在本章节中",
+      "让我们深入探讨",
+      "值得注意的是",
+    ];
+
+    for (const [slug, authored] of Object.entries(AUTHORED_CHAPTER_PROSE)) {
+      const prose = [
+        ...Object.values(authored.sections).flat(),
+        ...authored.boundary.paragraphs,
+      ].join("\n");
+      for (const phrase of disallowedPhrases) {
+        expect(prose, `${slug}: ${phrase}`).not.toContain(phrase);
+      }
+    }
   });
 
   it("contains no legacy generator scaffolding or duplicated teaching paragraphs", () => {
@@ -102,7 +156,7 @@ describe("bilingual chapter corpus", () => {
       "direct-preference": ["DPO", "SimPO"],
       "rlaif-judges": ["评委一致率", "交换一致性"],
       "test-time-compute": ["至少一次成功", "部署效用"],
-      "method-selection": ["性能、风险、数据与计算约束", "声明的强度"],
+      "method-selection": ["证据、安全、数据权利与计算成本", "声明的强度"],
     };
 
     for (const [slug, anchors] of Object.entries(expectedAnchors)) {

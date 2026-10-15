@@ -27,7 +27,7 @@ npm run verify:static
 python scripts/audit-browser.py
 ```
 
-The build produces 97 static pages: one bilingual language gate, two localized course maps, one matched Chapter 00 pair, and 46 matched deep-chapter pairs. The verification scripts enforce route order, formula/calculation/source parity, strict KaTeX rendering, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, language-preserving anchors, theme behavior, and document-level overflow checks at four responsive widths.
+The build produces 97 static pages: one bilingual language gate, two localized course maps, one matched Chapter 00 pair, and 46 matched deep-chapter pairs. The verification scripts enforce route order, formula/calculation/source parity, strict KaTeX rendering, semantic diagrams, worked examples, source links, boundaries, link integrity, keyboard access, language-preserving anchors, theme behavior, long-formula visibility, and document-level overflow checks at six responsive widths.
 
 ## Evidence boundary
 

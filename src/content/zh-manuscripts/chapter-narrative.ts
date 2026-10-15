@@ -1,5 +1,5 @@
 import type { ArticleNarrativeBlock } from "@/content/chapter-article";
-import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
+import { getAuthoredSectionParagraphs } from "@/content/zh-manuscripts/chapter-prose";
 
 type SourceKey =
   | "bridge"
@@ -425,23 +425,13 @@ const PLANS: Readonly<Record<string, readonly BlockPlan[]>> = {
   ],
 };
 
-function resolveParagraph(copy: ChineseManuscript, source: SourceKey): string {
-  if (source === "bridge") return copy.bridge;
-
-  const [group, rawIndex] = source.split(":");
-  const index = Number(rawIndex);
-  if (group === "situation") return copy.situation.paragraphs[index];
-  if (group === "boundary") return copy.boundary.paragraphs[index];
-  return copy.mechanism.sections[index].paragraphs.join(" ");
-}
-
 function isSectionPlan(block: BlockPlan): block is SectionPlan {
   return typeof block !== "string";
 }
 
 export const AUTHORED_NARRATIVE_SLUGS = Object.keys(PLANS);
 
-export function buildChineseNarrative(slug: string, copy: ChineseManuscript): readonly ArticleNarrativeBlock[] {
+export function buildChineseNarrative(slug: string): readonly ArticleNarrativeBlock[] {
   const plan = PLANS[slug];
   if (!plan) throw new Error(`Missing Chinese narrative plan: ${slug}`);
 
@@ -451,7 +441,7 @@ export function buildChineseNarrative(slug: string, copy: ChineseManuscript): re
       type: "section",
       id: block.id,
       title: block.title,
-      paragraphs: [block.lead, ...block.sources.map((source) => resolveParagraph(copy, source))].filter((paragraph): paragraph is string => Boolean(paragraph)),
+      paragraphs: getAuthoredSectionParagraphs(slug, block.id),
     };
   });
 }

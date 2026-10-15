@@ -1,5 +1,6 @@
 import type { ChapterArticle } from "@/content/chapter-article";
 import { buildChineseNarrative } from "@/content/zh-manuscripts/chapter-narrative";
+import { getAuthoredBoundary } from "@/content/zh-manuscripts/chapter-prose";
 
 const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "shortest path on a weighted graph": "在带权图上求最短路径",
@@ -196,9 +197,9 @@ export function applyChineseManuscript(english: ChapterArticle, copy: ChineseMan
       latex: english.equations[index].latex,
       ...(CHINESE_EQUATION_CORRECTIONS[english.slug]?.[index] ?? equation),
     })),
-    boundary: copy.boundary,
+    boundary: getAuthoredBoundary(english.slug),
     nextBridge: copy.nextBridge,
     sources: english.sources,
-    narrative: copy.narrative ?? buildChineseNarrative(english.slug, copy),
+    narrative: copy.narrative ?? buildChineseNarrative(english.slug),
   };
 }

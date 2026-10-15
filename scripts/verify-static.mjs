@@ -30,7 +30,7 @@ const requiredPages = [
   ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
   ["en/learn/rlvr-grpo/index.html", "RLVR, process rewards, and GRPO", "group-relative"],
-  ["en/learn/method-selection/index.html", "deployment evidence is still missing", "claim strength"],
+  ["en/learn/method-selection/index.html", "deployment evidence is still missing", "weakest evidence level"],
   ["zh/learn/before-rl/index.html", "先判断问题，再决定要不要用强化学习", "无需任何 RL 前置术语"],
   ["zh/learn/tabular-control/index.html", "Expected SARSA", "katex-display"],
   ["zh/learn/rlvr-grpo/index.html", "RLVR", "答案可验证时"],
