@@ -17,6 +17,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "td-traces",
   "tabular-control",
   "off-policy-deadly-triad",
+  "linear-approximation",
+  "neural-approximation",
+  "dqn",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
