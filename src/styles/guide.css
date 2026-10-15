@@ -378,6 +378,9 @@
 .lesson-sections { position: sticky; z-index: 6; top: 64px; display: flex; gap: 6px; margin: 24px 0 0; border: 1px solid var(--border); border-radius: 10px; padding: 6px; background: color-mix(in srgb, var(--background) 92%, transparent); backdrop-filter: blur(12px); }
 .lesson-sections a { flex: 1; border-radius: 7px; padding: 8px; color: var(--muted-foreground); font-size: 10px; font-weight: 800; text-align: center; text-decoration: none; text-transform: uppercase; }
 .lesson-sections a:hover, .lesson-sections a:focus-visible { background: var(--accent); color: var(--primary); outline: none; }
+.narrative-sections { overflow-x: auto; scrollbar-width: thin; }
+.narrative-sections a { flex: 0 0 auto; min-width: 118px; max-width: 230px; line-height: 1.45; text-transform: none; }
+.narrative-section .longform-prose > p:first-child { color: var(--foreground); }
 
 .lab-stage { margin: 22px 0 0; border: 0; border-top: 1px solid var(--border); padding: 22px 0 0; }
 .lab-stage legend, .lab-stage h4 { margin: 0; padding: 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
@@ -427,6 +430,7 @@
   .lesson-sections { top: 58px; overflow-x: auto; scrollbar-width: none; }
   .lesson-sections::-webkit-scrollbar { display: none; }
   .lesson-sections a { min-width: 64px; }
+  .narrative-sections a { min-width: 148px; max-width: 210px; }
   .evidence-stepper-head { align-items: start; }
   .lab-stage .inline-flex { width: 100%; }
 }

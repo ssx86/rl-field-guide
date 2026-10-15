@@ -11,6 +11,18 @@ export interface ArticleSource {
   readonly kind: "book" | "paper" | "official documentation";
 }
 
+export type ArticleNarrativeBlock =
+  | {
+      readonly type: "section";
+      readonly id: string;
+      readonly title: string;
+      readonly paragraphs: readonly string[];
+    }
+  | { readonly type: "diagram" }
+  | { readonly type: "worked-example" }
+  | { readonly type: "equations" }
+  | { readonly type: "boundary" };
+
 export interface ChapterArticle {
   readonly slug: string;
   readonly title: string;
@@ -49,4 +61,5 @@ export interface ChapterArticle {
   };
   readonly nextBridge: string;
   readonly sources: readonly ArticleSource[];
+  readonly narrative?: readonly ArticleNarrativeBlock[];
 }

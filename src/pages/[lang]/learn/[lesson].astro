@@ -1,6 +1,7 @@
 ---
 import katex from "katex";
 import ArticleDiagram from "@/components/ArticleDiagram.astro";
+import ArticleNarrative from "@/components/ArticleNarrative.astro";
 import GuideHeader from "@/components/GuideHeader.astro";
 import type { Language } from "@/content/bilingual-course";
 import { getLocalizedChapterArticle } from "@/content/chapter-localization";
@@ -78,6 +79,9 @@ const t = zh ? {
         </dl>
       </header>
 
+      {chapter.narrative ? (
+        <ArticleNarrative chapter={chapter} slug={slug} labels={{ sections: t.sections, diagram: t.diagram, example: t.example, pause: t.pause, result: t.result, equationsTitle: t.equationsTitle, equationLead: t.equationLead, boundary: t.nav[5] }} />
+      ) : (<>
       <nav class="lesson-sections" aria-label={t.sections}>
         <a href="#situation">{t.nav[0]}</a><a href="#diagram">{t.nav[1]}</a><a href="#example">{t.nav[2]}</a><a href="#mechanism">{t.nav[3]}</a>{chapter.equations.length ? <a href="#equations">{t.nav[4]}</a> : null}<a href="#boundary">{t.nav[5]}</a>
       </nav>
@@ -144,6 +148,7 @@ const t = zh ? {
         <h2 id="boundary-title">{chapter.boundary.title}</h2>
         <div class="longform-prose">{chapter.boundary.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
       </section>
+      </>)}
 
       <p class="lesson-transition">{chapter.nextBridge}</p>
 

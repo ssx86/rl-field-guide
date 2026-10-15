@@ -47,12 +47,30 @@ const chineseLessonPages = collect(join(rootPath, "zh", "learn"), "index.html").
 assert(englishLessonPages.length === 46, `Expected 46 English chapter pages, found ${englishLessonPages.length}`);
 assert(chineseLessonPages.length === 46, `Expected 46 Chinese chapter pages, found ${chineseLessonPages.length}`);
 
-for (const page of [...englishLessonPages, ...chineseLessonPages]) {
+for (const page of englishLessonPages) {
   const html = readFileSync(page, "utf8");
   const name = relative(rootPath, page);
   assert(html.includes("knowledge-diagram"), `${name} is missing its semantic diagram`);
   assert(html.includes("static-evidence"), `${name} is missing its worked example`);
   assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
+  assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
+  assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
+  assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
+  assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
+  assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
+  assert(!html.includes("<astro-island"), `${name} must not depend on an interactive learning island`);
+}
+
+for (const page of chineseLessonPages) {
+  const html = readFileSync(page, "utf8");
+  const name = relative(rootPath, page);
+  assert(html.includes("narrative-sections"), `${name} is missing its authored chapter navigation`);
+  assert(html.includes("narrative-section"), `${name} is missing its authored prose movement`);
+  assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
+  assert(
+    html.includes("knowledge-diagram") || html.includes("static-evidence") || html.includes("formula-list"),
+    `${name} is missing a concrete evidence component`,
+  );
   assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
   assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
   assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);

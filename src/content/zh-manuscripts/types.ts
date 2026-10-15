@@ -1,4 +1,5 @@
 import type { ChapterArticle } from "@/content/chapter-article";
+import { buildChineseNarrative } from "@/content/zh-manuscripts/chapter-narrative";
 
 const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "shortest path on a weighted graph": "在带权图上求最短路径",
@@ -152,6 +153,7 @@ export interface ChineseManuscript {
   readonly equations: readonly { readonly read: string; readonly meaning: string }[];
   readonly boundary: ChapterArticle["boundary"];
   readonly nextBridge: string;
+  readonly narrative?: ChapterArticle["narrative"];
 }
 
 function requireLength(label: string, actual: number, expected: number): void {
@@ -197,5 +199,6 @@ export function applyChineseManuscript(english: ChapterArticle, copy: ChineseMan
     boundary: copy.boundary,
     nextBridge: copy.nextBridge,
     sources: english.sources,
+    narrative: copy.narrative ?? buildChineseNarrative(english.slug, copy),
   };
 }

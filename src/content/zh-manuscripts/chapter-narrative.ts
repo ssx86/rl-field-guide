@@ -1,0 +1,457 @@
+import type { ArticleNarrativeBlock } from "@/content/chapter-article";
+import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
+
+type SourceKey =
+  | "bridge"
+  | `situation:${number}`
+  | `mechanism:${number}`
+  | `boundary:${number}`;
+
+interface SectionPlan {
+  readonly id: string;
+  readonly title: string;
+  readonly lead?: string;
+  readonly sources: readonly SourceKey[];
+}
+
+type BlockPlan = SectionPlan | ArticleNarrativeBlock["type"];
+
+const section = (id: string, title: string, sources: readonly SourceKey[], lead?: string): SectionPlan => ({ id, title, sources, lead });
+
+const PLANS: Readonly<Record<string, readonly BlockPlan[]>> = {
+  "before-rl": [
+    section("decision-first", "先别问用什么算法，先问这里有没有一个会延续的决定", ["bridge", "situation:0"], "一个系统拿到分数，并不等于它遇到了强化学习问题。真正要找的是：今天的动作会不会改变明天还能看到什么、还能选择什么。"),
+    "diagram",
+    section("not-a-reward-label", "把奖励这个词拿掉，再看问题还剩下什么", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("cost-of-rl", "只有简单办法不够时，RL 的额外代价才值得付", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "interaction-loop": [
+    section("draw-the-boundary", "先把谁能决定什么画清楚", ["bridge", "situation:0"], "agent、environment、action 这些词不是给图上贴标签。边界一旦画错，后面记录的经验就不是你以为的那条经验。"),
+    "diagram",
+    section("state-is-a-promise", "状态不是一个数组名，而是一份预测承诺", ["situation:1", "mechanism:0"]),
+    "worked-example",
+    section("keep-the-clock", "顺序不能乱：先看到什么，后决定什么", ["situation:2", "mechanism:1", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "return-horizon": [
+    section("one-reward-is-not-the-task", "一份即时奖励，回答不了一条路线值不值得走", ["bridge", "situation:0"], "如果眼前奖励相同而后果不同，比较就必须越过当前一步。Return 不是为了把公式写长，而是为了让未来后果进入今天的判断。"),
+    "worked-example",
+    section("where-the-future-stops", "先决定未来算到哪里，再谈折扣", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("two-kinds-of-ending", "回合停下，不一定代表任务真的结束", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "probability-expectation": [
+    section("sample-versus-rule", "一次发生的结果，不等于产生结果的规则", ["bridge", "situation:0", "situation:1"], "强化学习反复在样本和期望之间来回。如果这两个层次没有分开，看到一次好运就会被当成策略真的更好。"),
+    "worked-example",
+    section("condition-before-average", "平均之前先问：是在什么条件下平均", ["mechanism:0", "mechanism:1"]),
+    "diagram",
+    section("uncertainty-has-a-source", "随机性、无知和估计误差不是同一件事", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "bandits-contextual-bandits": [
+    section("choice-without-state", "先研究一个最小问题：每次选择以后都回到原点", ["bridge", "situation:0"], "赌博机把长期状态变化暂时拿掉，只留下探索与利用。这样做不是说现实没有状态，而是先把‘怎样为不知道的选项付一点试错成本’讲清楚。"),
+    "worked-example",
+    section("exploration-needs-a-reason", "随机尝试、乐观尝试和按概率尝试，依据并不一样", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "diagram",
+    section("context-does-not-create-a-future", "加上上下文，仍不代表动作会改变下一次处境", ["situation:1", "situation:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "mdp-state-design": [
+    section("what-must-be-remembered", "先问下一步还依赖什么，再决定状态里放什么", ["bridge", "situation:0", "situation:1"], "状态设计不是把传感器都塞进向量。它要保留的是：给定当前状态和动作以后，过去还会不会继续改变下一步的概率。"),
+    "diagram",
+    section("markov-is-a-testable-claim", "Markov 不是世界的标签，而是模型作出的声明", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("small-enough-but-not-too-small", "状态过少会混淆，状态过多会让学习失去复用", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "value-bellman": [
+    section("why-value-exists", "策略已经给定以后，我们还缺一张关于后果的地图", ["bridge", "situation:0"], "价值不是奖励的别名。奖励只记录一步发生了什么，价值要回答从这里继续照这套策略走，后面大致还能得到多少。"),
+    "worked-example",
+    section("one-step-decomposition", "把整段未来拆成眼前一步和剩下的未来", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("expectation-is-over-transitions", "Bellman 等式不是替环境挑一个最顺眼的后果", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "dynamic-programming": [
+    section("known-model-changes-the-job", "如果转移和奖励都知道，就别假装还要从试错里猜", ["bridge", "situation:0"], "模型已知时，问题从‘收集经验’变成‘怎样组织计算’。动态规划做的是规划，不是让 agent 通过未知环境慢慢学会。"),
+    "diagram",
+    section("evaluate-then-improve", "先把当前策略算清，再问有没有更好的动作", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("same-equation-different-schedule", "同步、原地更新和优先更新，改变的是计算日程", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "monte-carlo": [
+    section("wait-for-the-answer", "如果愿意等到回合结束，可以直接拿完整结果当样本", ["bridge", "situation:0"], "Monte Carlo 的直觉很朴素：这一局已经结束，就别再用一个估计去猜另一个估计，直接把后来真的发生的奖励加起来。"),
+    "worked-example",
+    section("unbiased-does-not-mean-calm", "完整回报不自举，但可能非常吵", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("which-visits-count", "同一回合多次到达同一状态，统计口径必须先说清", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "td-traces": [
+    section("learn-before-the-end", "如果一局很长，就不能每次都等最终答案", ["bridge", "situation:0"], "TD 的出发点不是比 Monte Carlo 更聪明，而是它愿意用当前估计先垫一部分未来，因此每一步都能更新。"),
+    "diagram",
+    section("targets-form-a-continuum", "一步 TD 和整局回报之间，并不是只有二选一", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("traces-decide-who-gets-blamed", "资格迹记录的不是奖励，而是谁仍有资格接收后来的误差", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "tabular-control": [
+    section("one-next-step-question", "先固定同一条转移，只追问下一步按谁来估价", ["bridge", "situation:0", "situation:1", "situation:2"]),
+    "diagram",
+    "worked-example",
+    section("three-answers-and-one-repair", "前三种方法回答未来策略，Double Q 修补最大化偏差", ["mechanism:0", "mechanism:1", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "off-policy-deadly-triad": [
+    section("old-data-new-policy", "旧策略留下的数据，凭什么能替新策略说话", ["bridge", "situation:0"], "离策略学习首先是证据覆盖问题。概率比率只能重新分配已有样本的代表性，不能创造日志里从未发生过的动作后果。"),
+    "worked-example",
+    section("coverage-before-correction", "分母为零时，公式不是很大，而是没有答案", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("three-parts-start-chasing-each-other", "离策略、自举和函数逼近相遇后，误差会循环放大", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "linear-approximation": [
+    section("table-no-longer-fits", "状态太多时，先决定哪些状态应该共享一次更新", ["bridge", "situation:0"], "线性函数逼近不是为了把神经网络前的历史补齐。它把‘怎样泛化’直接写进特征，因此每个特征选择都等于声明哪些状态可以互相借证据。"),
+    "worked-example",
+    section("features-are-the-model", "参数很少，不代表假设很少", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("projection-has-a-price", "一个状态的修正会牵动别的状态", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "neural-approximation": [
+    section("representation-is-learned", "不再手写相似性以后，网络会从数据里自己决定怎样共享", ["bridge", "situation:0"], "神经网络扩大了表达能力，也拿走了线性模型里那份清楚的可解释结构。更重要的是，RL 的训练目标和数据分布会跟着策略一起动。"),
+    "diagram",
+    section("supervised-shape-rl-data", "损失看起来像回归，样本却不是固定数据集", ["situation:1", "mechanism:0", "mechanism:1"], "这里说的回归，只是让网络输出靠近一个数值目标；它并不意味着训练数据像普通表格那样事先固定。在 RL 里，策略一变，接下来收集到的状态和目标也会跟着变。"),
+    "worked-example",
+    section("optimization-is-part-of-the-algorithm", "批次、归一化和更新数据比都会改变学习到的东西", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "dqn": [
+    section("why-naive-neural-q-breaks", "把 Q 表换成网络以后，两种不稳定同时出现", ["bridge", "situation:0"], "连续样本彼此相关，网络刚更新又立刻改写下一步目标。DQN 的两个核心机制分别对付这两个问题，不是装饰性的工程技巧。"),
+    "diagram",
+    section("replay-changes-the-training-stream", "经验回放把经历变成可重复抽样的数据", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("target-network-slows-the-chase", "目标网络让回归对象暂时别跟着学生一起跑", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "dqn-family": [
+    section("one-baseline-many-failures", "先把 DQN 的故障拆开，扩展方法才不会变成名词堆", ["bridge", "situation:0"], "Double、dueling、prioritized、distributional 和 noisy 并不是同一件事的不同品牌。每一种都在修一个不同的薄弱点。"),
+    "diagram",
+    section("estimate-selection-and-credit", "有的方法改目标，有的方法改网络，有的方法改采样", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "worked-example",
+    section("rainbow-is-a-combination-not-a-proof", "把组件叠起来以前，要知道每个收益来自哪里", ["situation:1", "situation:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "reinforce-policy-gradient": [
+    section("change-probabilities-directly", "如果动作不能靠列出 Q 值来挑，就直接改变动作概率", ["bridge", "situation:0"], "策略梯度不先求出每个动作的完整价值表。它观察一次采样带来的回报，再让产生好结果的动作在相似情境下更容易出现。"),
+    "worked-example",
+    section("log-probability-is-the-handle", "我们不能对随机抽样求导，但可以对抽中动作的对数概率求导", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("baseline-reduces-noise", "减去基线不改期望方向，却能让更新少被运气左右", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "actor-critic-gae": [
+    section("one-network-acts-one-network-judges", "完整回报太慢太吵，于是让 critic 提前估计这一步比平常好多少", ["bridge", "situation:0"], "actor 和 critic 不是两个互不相干的模型。critic 产生方向，actor 按这个方向改变行为；任何一边失真都会把另一边带偏。"),
+    "diagram",
+    section("advantage-connects-them", "优势函数只问这个动作比当前状态的通常表现好多少", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("gae-chooses-a-time-scale", "GAE 在短而偏、长而吵的估计之间调节", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "trpo-ppo": [
+    section("good-direction-bad-step", "方向算对了，步子太大仍可能把策略毁掉", ["bridge", "situation:0"], "策略梯度只给方向，不保证沿这个方向走多远都安全。旧策略收集的数据也只在新策略离它不太远时仍有代表性。"),
+    "worked-example",
+    section("ratios-measure-local-change", "先用概率比看同一个动作被放大了多少", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("constraint-versus-clipping", "TRPO 约束平均 KL，PPO 则删掉一部分过大更新的激励", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "continuous-control": [
+    section("actions-cannot-be-listed", "动作变成连续数值以后，max 不能再靠枚举完成", ["bridge", "situation:0"], "方向盘角度、推力和关节力矩有无数个候选值。连续控制因此需要一个直接产生动作的 actor，以及一个评价这些动作的 critic。"),
+    "diagram",
+    section("three-ways-to-stabilize", "DDPG 给出骨架，TD3 修高估，SAC 再把探索写进目标", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "worked-example",
+    section("units-and-limits-are-part-of-the-problem", "动作缩放错一位，算法名再正确也没有意义", ["situation:1", "situation:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "distributed-rl": [
+    section("more-machines-create-new-delays", "把采样和学习拆到不同机器以后，数据会带着旧策略的时间戳到达", ["bridge", "situation:0"], "分布式 RL 不是单机算法跑得更快。actor、队列、replay 和 learner 之间的延迟，会直接改变样本代表的是哪一版策略。"),
+    "diagram",
+    section("throughput-is-not-freshness", "吞吐量增加时，先检查策略滞后和回放偏斜", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("architecture-changes-the-estimator", "Ape-X、IMPALA 与 R2D2 对旧数据作了不同处理", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "pomdp-memory": [
+    section("same-view-different-world", "画面相同而后果不同，说明眼前观察还不是充分状态", ["bridge", "situation:0"], "部分可观测不是像素太少的同义词。真正的问题是：仅凭当前观察，agent 无法判断自己处在哪种隐藏情形。"),
+    "worked-example",
+    section("belief-is-a-distribution", "记忆的任务不是保存一切，而是更新对隐藏状态的判断", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "equations",
+    section("memory-can-forget-or-invent", "循环网络只是记忆载体，不自动等于正确 belief", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "deep-exploration": [
+    section("randomness-does-not-plan", "需要连续几步才到达的新区域，逐步随机往往走不到", ["bridge", "situation:0"], "深度探索要让不确定性在一段轨迹里保持方向，而不是每一步都重新抛硬币。"),
+    "diagram",
+    section("bonuses-have-different-evidence", "计数、预测误差和信息增益奖励的不是同一种未知", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "worked-example",
+    section("novel-does-not-mean-useful", "新奇奖励会被电视雪花骗到，因为难预测不等于值得到达", ["situation:1", "situation:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "long-horizon-credit": [
+    section("success-arrives-too-late", "记得发生过什么，仍不等于知道哪一步造成了成功", ["bridge", "situation:0"], "长时信用分配要解决的是因果归因：很早的一步究竟是关键原因、普通铺垫，还是恰好与结果同时出现。"),
+    "worked-example",
+    section("move-information-not-goals", "奖励重分配可以把结果信息前移，但不能偷偷改掉任务", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("hindsight-changes-the-question", "失败轨迹可以对另一个目标成功，前提是动力学仍然相同", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "mcts-alphazero": [
+    section("look-ahead-before-acting", "如果规则已知，可以先在树里试，再在现实里走", ["bridge", "situation:0"], "这里的树只是把选择按先后关系展开：根是眼前局面，一条边是一个动作，下一层是动作之后的新局面。搜索把试错搬到这棵内部树里；MCTS 的关键不是穷举所有未来，而是在访问次数有限时决定哪些分支值得继续展开。"),
+    "diagram",
+    section("four-numbers-one-search", "选择、扩展、评估和回传各自回答不同问题", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    "worked-example",
+    section("alphazero-closes-the-loop", "网络指导搜索，搜索结果又反过来监督网络", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "dyna-mpc": [
+    section("learn-what-actions-do", "规则未知时，先学一个能用于决策的动力学模型", ["bridge", "situation:0"], "世界模型的价值不在于把画面预测得漂亮，而在于它能否让计划在真实环境里得到相近后果。"),
+    "worked-example",
+    section("two-uses-of-a-model", "Dyna 用模型补训练数据，MPC 用模型临时规划动作", ["mechanism:0", "mechanism:1"]),
+    "diagram",
+    section("short-rollouts-limit-fantasy", "模型误差会沿想象轨迹累积，所以每多走一步都要付可信度", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "latent-world-models": [
+    section("predict-only-what-decisions-need", "重建每个像素可能很浪费，决策只需要保留会改变奖励和可选动作的部分", ["bridge", "situation:0"], "latent world model 把观察压成内部状态，再在这个空间里想象未来。压缩的标准不是图像好看，而是控制所需的信息有没有留下。"),
+    "diagram",
+    section("posterior-teaches-prior", "训练时能看见真实观察，想象时只能依靠先验往前推", ["mechanism:0", "mechanism:1"], "先验是模型在看见下一帧之前对内部状态的预测；后验则是在真实下一帧到来以后修正出的判断。训练让前者追上后者，部署时才有可能只靠模型继续想象。"),
+    "equations",
+    section("dreamer-and-muzero-keep-different-things", "一个学习可想象的动力学，一个只要求搜索相关的预测一致", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "worked-example",
+    "boundary",
+  ],
+  "behavior-cloning-dagger": [
+    section("copying-is-not-recovering", "示范只告诉你专家去过的地方，部署会把模仿者带到别处", ["bridge", "situation:0"], "行为克隆把状态到动作当监督学习，第一步很自然。问题出在小错误会改变下一状态，而训练集里可能从未出现过这种偏离。"),
+    "worked-example",
+    section("distribution-shifts-under-the-learner", "每次犯错都在改写后面要面对的数据", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "diagram",
+    section("dagger-asks-the-expert-where-the-learner-goes", "DAgger 的关键不是更多示范，而是在 learner 自己到达的状态补答案", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "inverse-rl-gail": [
+    section("same-behavior-many-objectives", "看到专家这样做，不代表我们已经知道他为什么这样做", ["bridge", "situation:0"], "逆强化学习面对的第一件事是不可识别性：多套奖励都可能让同一条行为看起来合理。"),
+    "diagram",
+    section("recover-a-reward-or-match-a-distribution", "IRL 想解释目标，GAIL 更直接地逼近专家占用分布", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "worked-example",
+    section("interpretation-needs-extra-evidence", "一个能复现行为的奖励，不自动等于人的真实意图", ["situation:1", "situation:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "offline-rl": [
+    section("the-dataset-is-the-world", "不能再向环境追问时，日志没覆盖的动作就没有纠错机会", ["bridge", "situation:0"], "离线 RL 不是把在线算法的采样开关关掉。策略一旦偏向数据外动作，Q 函数可能用自己的外推给自己制造虚假的高价值。"),
+    "worked-example",
+    section("three-ways-to-stay-near-evidence", "BCQ 限制动作，CQL 压低陌生动作，IQL 避开显式最大化", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "equations",
+    section("pessimism-can-also-hide-improvement", "保守是对证据不足的反应，不是永远不尝试更好动作", ["situation:1", "situation:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "decision-transformer": [
+    section("ask-for-a-return-then-imitate", "把轨迹排成序列以后，策略可以像条件生成一样回答‘想达到这个回报该怎么走’", ["bridge", "situation:0"], "Decision Transformer 没有凭空知道未来回报。训练时的 return-to-go 来自完整历史轨迹；部署时输入的是目标，并随着已经拿到的奖励递减。"),
+    "diagram",
+    section("conditioning-is-not-planning", "模型学习的是数据里目标回报与动作序列的对应关系", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("support-still-limits-what-can-be-composed", "序列模型能拼接模式，不保证能发明日志里没有的可靠策略", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "off-policy-evaluation": [
+    section("choose-without-deploying", "训练出一个新策略很容易，证明它上线前更好是另一道题", ["bridge", "situation:0"], "离策略评估要用旧策略产生的结果估计新策略会怎样。它和训练目标分开，因为同一份日志可以支持训练，却不足以支持可信比较。"),
+    "worked-example",
+    section("three-estimators-three-failure-modes", "直接建模怕模型错，重要性采样怕方差，FQE 怕覆盖与自举误差", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "equations",
+    section("confidence-needs-overlap", "没有策略重叠时，窄置信区间也只是对错误假设很自信", ["situation:1", "situation:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "hierarchical-rl": [
+    section("name-a-repeated-piece-of-behavior", "长任务里总有成段重复动作，层级把它们变成高层可调用的动作", ["bridge", "situation:0"], "option 不只是一个子策略。它还必须说明从哪里可以开始，以及在什么条件下把控制权交回上层。"),
+    "diagram",
+    section("time-scales-change-the-backup", "高层一次选择可能持续很多环境步，因此更新要按半 MDP 记账", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("decomposition-can-be-wrong", "技能名字看起来合理，不代表边界真的帮助了信用分配", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "worked-example",
+    "boundary",
+  ],
+  "multi-agent-rl": [
+    section("the-environment-is-learning-back", "当别的 agent 也在更新时，你看到的世界不再稳定", ["bridge", "situation:0"], "单智能体里环境动力学通常被视为固定；多智能体里，另一个策略的变化会改变同一动作的后果。"),
+    "worked-example",
+    section("credit-can-be-joint", "团队奖励相同，并不说明每个 agent 知道自己贡献了什么", ["situation:1", "mechanism:0", "mechanism:1"]),
+    "diagram",
+    section("centralize-training-not-execution", "集中 critic 可以在训练时看全局，部署 actor 仍要守住本地信息边界", ["situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "transfer-meta-generalization": [
+    section("what-is-supposed-to-survive", "换任务以后，先说清究竟希望参数、表示、技能还是适应规则留下来", ["bridge", "situation:0"], "transfer 不是一个统一动作。零样本泛化、少量数据微调、meta-RL 和 sim-to-real 需要的证据完全不同。"),
+    "diagram",
+    section("adaptation-has-a-budget", "比较适应能力时，要把新环境交互次数和计算成本一起算进去", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("training-diversity-can-teach-shortcuts", "域随机化扩大变化范围，也可能让模型学到随机化器特有的线索", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "reward-design": [
+    section("score-is-not-the-goal", "agent 优化的是你写下来的信号，不是你脑子里没写出来的愿望", ["bridge", "situation:0"], "奖励设计的难点不是把偏好变成一个数字，而是确认这个数字在不同情境下仍与真实目标同向。"),
+    "worked-example",
+    section("shaping-should-help-learning-not-change-the-task", "塑形项可以提供路标，但必须检查最优策略有没有被偷偷改写", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("every-proxy-invites-a-shortcut", "一旦代理指标可被单独提高，系统就会寻找人没有想到的路径", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "safe-robust-risk": [
+    section("do-not-hide-requirements-in-one-number", "不可接受的失败，不应该只靠降低平均奖励来表达", ["bridge", "situation:0"], "safe、constrained、robust 和 risk-sensitive 不是四个近义词。它们分别处理预算约束、扰动、分布变化和尾部结果。"),
+    "diagram",
+    section("constraints-need-their-own-accounting", "CMDP 把奖励和成本分开，乘子只是寻找可行折中的一种方法", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("average-success-can-hide-rare-failure", "均值看起来很好时，仍要单独观察最坏组和尾部风险", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "worked-example",
+    "boundary",
+  ],
+  "evaluation-reproducibility": [
+    section("one-curve-is-not-evidence", "一次跑得好，只说明这次配置和随机性共同产生了好结果", ["bridge", "situation:0"], "RL 的训练方差、选择偏差和基准差异都很大。评估必须先说明比较单位，再谈谁领先。"),
+    "worked-example",
+    section("report-the-distribution", "多随机种子、区间和完整学习曲线用来暴露结果的不稳定", ["mechanism:0", "mechanism:1"]),
+    section("fairness-is-in-the-budget", "基线调参少、方法调参多时，排行榜比较已经不公平", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "equations",
+    "boundary",
+  ],
+  "rl-systems": [
+    section("follow-one-transition", "先沿着一条转移走完整条数据链，系统错误才不会藏在算法名字后面", ["bridge", "situation:0"], "环境返回的 terminated、truncated、动作单位和随机种子，会一直进入回放、目标和评估。任一环节解释不同，训练的就不是同一个问题。"),
+    "diagram",
+    section("contracts-before-throughput", "先固定 step API、终止语义和数据字段，再讨论并行速度", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("reproducibility-is-an-identity-chain", "权重文件之外，还要能找回代码、配置、环境和数据版本", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "llm-as-rl": [
+    section("draw-the-token-timeline", "先把语言模型生成拆成状态、动作和后果，再决定它是不是 RL", ["bridge", "situation:0"], "prompt 和已经生成的前缀构成当前信息，下一个 token 是动作。仅仅把回答打分还不够；关键是这个分数怎样影响由策略采样出来的整条生成轨迹。"),
+    "diagram",
+    section("sft-stops-before-interaction", "SFT 学的是数据集给出的目标 token，不需要从策略行为产生的后果学习", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("sequence-reward-creates-credit", "一句回答只拿一个总分时，每个 token 应承担多少责任仍没有答案", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "worked-example",
+    "boundary",
+  ],
+  "rlhf-ppo": [
+    section("trace-the-whole-pipeline", "偏好标签不会直接更新语言模型，中间还隔着奖励模型、采样和策略优化", ["bridge", "situation:0"], "把 RLHF 缩成‘人类喜欢哪个’会漏掉最危险的部分：代理奖励如何被训练、策略如何利用它，以及 KL 怎样限制偏移。"),
+    "diagram",
+    section("reward-model-is-a-proxy", "比较数据训练出的是一个评分器，不是人的完整价值判断", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("ppo-optimizes-under-a-leash", "策略提高奖励模型分数，同时用 KL 代价避免一步离参考模型太远", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "direct-preference": [
+    section("remove-the-explicit-reward-model", "如果比较数据已经固定，可以直接调整 chosen 与 rejected 的相对概率", ["bridge", "situation:0"], "每条比较数据里，chosen 是评审更偏好的回答，rejected 是同题下没有被选中的回答。DPO 一类目标直接拉开两者的相对概率，把 RLHF 管线的一部分折进一个离线损失；管线更短，不代表数据覆盖、偏好噪声和参考策略问题消失。"),
+    "worked-example",
+    section("same-data-different-objectives", "DPO、IPO、KTO、ORPO 和 SimPO 对反馈形式与基准的处理不同", ["mechanism:0", "mechanism:1", "mechanism:2"]),
+    "equations",
+    section("do-not-rename-everything-rl", "固定偏好数据上的直接优化没有在线交互轨迹，不应因为结果改变了行为就统称 RL", ["situation:1", "situation:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "rlaif-judges": [
+    section("who-produces-the-label", "把人类评审换成 AI，首先改变的是错误来源和错误相关性", ["bridge", "situation:0"], "AI judge 可以快速扩展反馈，却可能在大量样本上重复同一个盲点。规模会放大偏差，不会把偏差平均掉。"),
+    "worked-example",
+    section("calibrate-before-scaling", "先用有人类参考的样本测一致率、分组误差和顺序敏感", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("a-stable-judge-can-still-be-wrong", "交换顺序后结论不变，只能证明稳定，不能证明正确", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "boundary",
+  ],
+  "rlvr-grpo": [
+    section("replace-opinion-with-a-check", "答案能被程序验证时，可以把部分反馈从主观判断换成明确结果", ["bridge", "situation:0"], "RLVR 的优势是结果信号清楚，不是信用分配自动消失。只有最终通过或失败时，中间每一步为何有用仍需估计。"),
+    "diagram",
+    section("group-relative-is-a-baseline", "GRPO 用同题多个回答的相对表现构造优势，省掉单独价值网络", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("verifiers-are-attack-surfaces", "格式漏洞、测试缺口和奖励稀疏都会成为策略可利用的空间", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+  "test-time-compute": [
+    section("better-answer-without-learning", "多采样、搜索和重排可以提高一次回答，却没有改变模型参数", ["bridge", "situation:0"], "test-time compute 必须和训练分开记账。一个系统答得更好，可能只是它在每个问题上花了更多尝试和验证成本。"),
+    "worked-example",
+    section("sample-then-select", "收益来自候选多样性和验证器，而不是采样次数本身", ["mechanism:0", "mechanism:1"]),
+    "equations",
+    section("distillation-moves-cost", "把搜索结果蒸馏回模型，是把推理成本转成新的训练数据", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "diagram",
+    "boundary",
+  ],
+  "method-selection": [
+    section("return-to-the-problem", "最后不要从算法名字出发，而要重新画数据、动作和后果", ["bridge", "situation:0"], "方法选择不是把任务塞进最流行的家族。模型是否已知、数据能否继续收集、动作是否安全、观察是否充分，会先排除大部分选项。"),
+    section("use-gates-not-a-ranking", "每个条件都像一道门：过不了就不要继续假设", ["mechanism:0", "mechanism:1"]),
+    "worked-example",
+    section("state-what-evidence-is-missing", "教程理解、离线指标、模拟器结果和线上安全不是同一层证据", ["situation:1", "situation:2", "mechanism:2", "mechanism:3"]),
+    "equations",
+    "boundary",
+  ],
+};
+
+function resolveParagraph(copy: ChineseManuscript, source: SourceKey): string {
+  if (source === "bridge") return copy.bridge;
+
+  const [group, rawIndex] = source.split(":");
+  const index = Number(rawIndex);
+  if (group === "situation") return copy.situation.paragraphs[index];
+  if (group === "boundary") return copy.boundary.paragraphs[index];
+  return copy.mechanism.sections[index].paragraphs.join(" ");
+}
+
+function isSectionPlan(block: BlockPlan): block is SectionPlan {
+  return typeof block !== "string";
+}
+
+export const AUTHORED_NARRATIVE_SLUGS = Object.keys(PLANS);
+
+export function buildChineseNarrative(slug: string, copy: ChineseManuscript): readonly ArticleNarrativeBlock[] {
+  const plan = PLANS[slug];
+  if (!plan) throw new Error(`Missing Chinese narrative plan: ${slug}`);
+
+  return plan.map((block): ArticleNarrativeBlock => {
+    if (!isSectionPlan(block)) return { type: block } as ArticleNarrativeBlock;
+    return {
+      type: "section",
+      id: block.id,
+      title: block.title,
+      paragraphs: [block.lead, ...block.sources.map((source) => resolveParagraph(copy, source))].filter((paragraph): paragraph is string => Boolean(paragraph)),
+    };
+  });
+}

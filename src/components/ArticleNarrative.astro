@@ -1,0 +1,89 @@
+---
+import katex from "katex";
+
+import ArticleDiagram from "@/components/ArticleDiagram.astro";
+import type { ChapterArticle } from "@/content/chapter-article";
+
+interface Labels {
+  readonly sections: string;
+  readonly diagram: string;
+  readonly example: string;
+  readonly pause: string;
+  readonly result: string;
+  readonly equationsTitle: string;
+  readonly equationLead: string;
+  readonly boundary: string;
+}
+
+interface Props {
+  readonly chapter: ChapterArticle;
+  readonly slug: string;
+  readonly labels: Labels;
+}
+
+const { chapter, slug, labels } = Astro.props;
+const blocks = chapter.narrative ?? [];
+const links = blocks.map((block) => {
+  if (block.type === "section") return { id: block.id, label: block.title };
+  if (block.type === "diagram") return { id: "diagram", label: chapter.diagram.title };
+  if (block.type === "worked-example") return { id: "example", label: chapter.workedExample.title };
+  if (block.type === "equations") return { id: "equations", label: labels.equationsTitle };
+  return { id: "boundary", label: chapter.boundary.title };
+});
+---
+
+<nav class="lesson-sections narrative-sections" aria-label={labels.sections}>
+  {links.map((link) => <a href={`#${link.id}`}>{link.label}</a>)}
+</nav>
+
+{blocks.map((block) => (
+  block.type === "section" ? (
+    <section id={block.id} class="lesson-section narrative-section" aria-labelledby={`${block.id}-title`}>
+      <h2 id={`${block.id}-title`}>{block.title}</h2>
+      <div class="longform-prose">{block.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+    </section>
+  ) : block.type === "diagram" ? (
+    <section id="diagram" class="lesson-section diagram-section">
+      <ArticleDiagram diagram={chapter.diagram} slug={slug} label={labels.diagram} />
+    </section>
+  ) : block.type === "worked-example" ? (
+    <section id="example" class="lesson-section" aria-labelledby="example-title">
+      <p class="instrument-label">{labels.example}</p>
+      <h2 id="example-title">{chapter.workedExample.title}</h2>
+      <div class="longform-prose section-lead"><p>{chapter.workedExample.setup}</p></div>
+      <article class="static-evidence">
+        <header>
+          <p class="instrument-label">{labels.pause}</p>
+          <h3>{chapter.workedExample.prediction}</h3>
+        </header>
+        <ol class="static-evidence-steps">
+          {chapter.workedExample.steps.map((step, index) => (
+            <li><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.label}</strong><code>{step.calculation}</code><p>{step.explanation}</p></div></li>
+          ))}
+        </ol>
+        <p class="worked-result"><strong>{labels.result}</strong>{chapter.workedExample.result}</p>
+      </article>
+    </section>
+  ) : block.type === "equations" ? (
+    chapter.equations.length ? (
+      <section id="equations" class="lesson-section" aria-labelledby="equations-title">
+        <h2 id="equations-title">{labels.equationsTitle}</h2>
+        <div class="longform-prose section-lead"><p>{labels.equationLead}</p></div>
+        <div class="formula-list">
+          {chapter.equations.map((equation) => (
+            <article>
+              <div class="formula-render" set:html={katex.renderToString(equation.latex, { displayMode: true, throwOnError: true })} />
+              <p><strong>{equation.read}</strong></p>
+              <p>{equation.meaning}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    ) : null
+  ) : (
+    <section id="boundary" class="lesson-section boundary-section" aria-labelledby="boundary-title">
+      <h2 id="boundary-title">{chapter.boundary.title}</h2>
+      <div class="longform-prose">{chapter.boundary.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+    </section>
+  )
+))}

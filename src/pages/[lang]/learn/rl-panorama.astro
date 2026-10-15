@@ -46,7 +46,7 @@ const t = zh ? {
 };
 ---
 
-<GuideLayout title={`${article.title} · ${t.brand}`} description={article.deck} language={language} canonicalPath={canonicalPath} alternatePath={alternatePath}>
+<GuideLayout title={`${article.title} · ${t.brand}`} description={article.deck} language={language} canonicalPath={canonicalPath} alternatePath={alternatePath} languageHashMode="all">
   <GuideHeader language={language} brand={t.brand} homeHref={homeHref} themeLabel={t.theme} alternateHref={alternatePath} alternateLabel={t.alternate} />
 
   <main id="main-content" class="panorama-shell" tabindex="-1">
@@ -108,15 +108,4 @@ const t = zh ? {
       </footer>
     </article>
   </main>
-  <script is:inline>
-    document.querySelectorAll('a[href*="/learn/rl-panorama/"]').forEach((link) => {
-      link.addEventListener('click', (event) => {
-        const anchor = event.currentTarget;
-        if (!(anchor instanceof HTMLAnchorElement) || !location.hash) return;
-        const target = new URL(anchor.href);
-        target.hash = location.hash;
-        anchor.href = target.toString();
-      });
-    });
-  </script>
 </GuideLayout>

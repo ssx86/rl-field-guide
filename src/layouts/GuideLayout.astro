@@ -10,9 +10,10 @@ interface Props {
   language: Language;
   canonicalPath: string;
   alternatePath?: string;
+  languageHashMode?: "shared" | "all";
 }
 
-const { title, description, language, canonicalPath, alternatePath } = Astro.props;
+const { title, description, language, canonicalPath, alternatePath, languageHashMode = "shared" } = Astro.props;
 const htmlLang = language === "zh" ? "zh-CN" : "en";
 const canonical = new URL(canonicalPath, Astro.site);
 const alternate = alternatePath ? new URL(alternatePath, Astro.site) : undefined;
@@ -41,13 +42,20 @@ const alternateLang = language === "zh" ? "en" : "zh-CN";
       } catch {}
     </script>
   </head>
-  <body>
+  <body data-language-hash-mode={languageHashMode}>
     <a class="skip-link" href="#main-content">{language === "zh" ? "跳到主要内容" : "Skip to main content"}</a>
     <slot />
     <script is:inline>
-      document.querySelectorAll("[data-language-toggle]").forEach((link) => {
-        if (link instanceof HTMLAnchorElement && location.hash) link.href += location.hash;
+      const syncLanguageToggleHashes = () => document.querySelectorAll("[data-language-toggle]").forEach((link) => {
+        const sharedChapterAnchors = new Set(["#diagram", "#example", "#equations", "#boundary"]);
+        if (!(link instanceof HTMLAnchorElement)) return;
+        const target = new URL(link.href);
+        target.hash = "";
+        if (document.body.dataset.languageHashMode === "all" || sharedChapterAnchors.has(location.hash)) target.hash = location.hash;
+        link.href = target.toString();
       });
+      syncLanguageToggleHashes();
+      window.addEventListener("hashchange", syncLanguageToggleHashes);
       document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
         button.addEventListener("click", () => {
           const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";

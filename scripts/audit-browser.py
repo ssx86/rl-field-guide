@@ -78,15 +78,18 @@ with sync_playwright() as p:
     for chapter_url in chinese_chapter_urls:
         page.goto(chapter_url, wait_until="networkidle")
         assert page.locator("html").get_attribute("lang") == "zh-CN"
-        assert page.locator("main .knowledge-diagram").count() == 1
-        assert page.locator("main .static-evidence").count() == 1
+        assert page.locator("main .knowledge-diagram, main .static-evidence, main .formula-list").count() >= 1
+        assert page.locator(".narrative-section").count() >= 2
         assert page.locator("main .longform-prose").count() >= 2
         assert page.locator("main button, main input, main select, main textarea").count() == 0
         assert page.locator("astro-island").count() == 0
-        assert page.locator(".static-evidence-steps li").count() >= 3
         assert page.locator(".lesson-references a").count() >= 2
-        assert page.locator("#mechanism .mechanism-passage").count() == 4
-        assert page.locator("#mechanism h3, #mechanism .prose-marker, #mechanism .prose-subsection").count() == 0
+        navigation = page.locator(".narrative-sections a")
+        assert navigation.count() >= 4
+        targets = navigation.evaluate_all("links => links.map(link => link.hash.slice(1))")
+        assert len(targets) == len(set(targets))
+        for target in targets:
+            assert page.locator(f"#{target}").count() == 1, (chapter_url, target)
         assert page.locator(".lesson-transition").count() == 1
         assert page.locator(".lesson-next span").count() == 0
         assert page.get_by_text("这个例子真正说明了什么", exact=True).count() == 0
@@ -116,16 +119,20 @@ with sync_playwright() as p:
     assert page.locator(".diagram-formula-compare .katex-error").count() == 0
     assert page.evaluate("document.documentElement.scrollWidth === document.documentElement.clientWidth")
 
-    page.goto(f"{BASE}/zh/learn/continuous-control/#mechanism", wait_until="networkidle")
+    page.goto(f"{BASE}/zh/learn/continuous-control/#diagram", wait_until="networkidle")
     language_toggle = page.get_by_role("link", name="English")
-    assert language_toggle.get_attribute("href").endswith("/en/learn/continuous-control/#mechanism")
+    assert language_toggle.get_attribute("href").endswith("/en/learn/continuous-control/#diagram")
+
+    page.goto(f"{BASE}/zh/learn/continuous-control/#three-ways-to-stabilize", wait_until="networkidle")
+    language_toggle = page.get_by_role("link", name="English")
+    assert language_toggle.get_attribute("href").endswith("/en/learn/continuous-control/")
 
     page.goto(f"{BASE}/en/learn/continuous-control/", wait_until="networkidle")
     page.get_by_role("link", name="Mechanism", exact=True).click()
     anchor_metrics = page.evaluate("({top: document.querySelector('#mechanism').getBoundingClientRect().top, navBottom: document.querySelector('.lesson-sections').getBoundingClientRect().bottom})")
     assert anchor_metrics["top"] >= anchor_metrics["navBottom"], anchor_metrics
 
-    for viewport in (320, 375, 390, 768):
+    for viewport in (320, 375, 390, 768, 1024, 1440):
         assert_no_overflow(page, f"{BASE}/en/learn/rl-panorama/", viewport)
         assert_no_overflow(page, f"{BASE}/zh/learn/rl-panorama/", viewport)
         assert_no_overflow(page, f"{BASE}/en/learn/method-selection/", viewport)
@@ -139,5 +146,5 @@ with sync_playwright() as p:
     assert page.get_by_role("link", name="Skip to main content").evaluate("el => el === document.activeElement")
 
     assert not console_errors, console_errors
-    print("Browser audit passed: bilingual Chapter 00 panorama, 46 matched deep chapters, strict bilingual tabular-control formula matrix, language-preserving anchors, theme, keyboard, and 4 responsive viewports.")
+    print("Browser audit passed: bilingual Chapter 00 panorama, 46 matched deep chapters, flexible Chinese narratives, strict bilingual tabular-control formula matrix, safe shared anchors, theme, keyboard, and 6 responsive viewports.")
     browser.close()

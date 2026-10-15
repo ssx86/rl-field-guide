@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
+import { AUTHORED_NARRATIVE_SLUGS } from "@/content/zh-manuscripts/chapter-narrative";
 
 describe("bilingual chapter corpus", () => {
   it("covers the same 46 routes in the same order", () => {
@@ -24,6 +25,28 @@ describe("bilingual chapter corpus", () => {
 
     expect(files).toHaveLength(46);
     expect(files).toEqual(CURRICULUM.map((chapter) => chapter.slug).sort());
+  });
+
+  it("gives every Chinese chapter an authored, non-uniform narrative flow", () => {
+    expect(new Set(AUTHORED_NARRATIVE_SLUGS)).toEqual(new Set(CURRICULUM.map((chapter) => chapter.slug)));
+
+    const signatures = new Set<string>();
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      expect(chapter.narrative, chapter.slug).toBeDefined();
+      const blocks = chapter.narrative ?? [];
+      const sections = blocks.filter((block) => block.type === "section");
+      const ids = sections.map((block) => block.type === "section" ? block.id : "");
+
+      expect(sections.length, chapter.slug).toBeGreaterThanOrEqual(2);
+      expect(new Set(ids).size, chapter.slug).toBe(ids.length);
+      expect(blocks.at(0)?.type, chapter.slug).toBe("section");
+      expect(blocks.at(-1)?.type, chapter.slug).toBe("boundary");
+      expect(blocks.filter((block) => block.type === "worked-example").length, chapter.slug).toBeLessThanOrEqual(1);
+      expect(blocks.filter((block) => block.type === "diagram").length, chapter.slug).toBeLessThanOrEqual(1);
+      signatures.add(blocks.map((block) => block.type).join("→"));
+    }
+
+    expect(signatures.size).toBeGreaterThanOrEqual(10);
   });
 
   it("contains no legacy generator scaffolding or duplicated teaching paragraphs", () => {
