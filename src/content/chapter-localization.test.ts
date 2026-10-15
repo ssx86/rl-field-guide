@@ -48,6 +48,8 @@ describe("bilingual chapter corpus", () => {
       "transfer-meta-generalization",
       "reward-design",
       "safe-robust-risk",
+      "evaluation-reproducibility",
+      "rl-systems",
     ];
 
     for (const slug of completedChapterLocalRewrites) {

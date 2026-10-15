@@ -1,10 +1,10 @@
 import type { ChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const ZH_MANUSCRIPT = {
-  "title": "训练能跑起来，离算法被正确实现还很远",
+  "title": "训练进程没有报错，不代表它实现了你以为的算法",
   "deck": "环境 step API、动作缩放、终止语义、回放、种子和检查点都会改变学习目标；RL 系统必须让这些边界可见。",
-  "openingQuestion": "同一份算法代码，为什么换一个 wrapper 就能学出另一套价值？",
-  "bridge": "可靠评估假定每次运行实现的是同一个问题。系统层若把截断当终止、把动作缩放错位或漏存随机状态，这项前提已经破裂。",
+  "openingQuestion": "只把 truncated 错当成 terminated，为什么一个布尔值就能让目标少掉 49.5？",
+  "bridge": "上一章的重复实验默认每次都实现同一学习问题。可环境 API、wrapper 顺序、动作缩放、回放与恢复状态都会改写进入公式的数据；系统语义一变，种子再多也只是在稳定复现另一个算法。",
   "situation": {
     "title": "一个布尔值，足以改写所有边界目标",
     "paragraphs": [
@@ -40,7 +40,7 @@ export const ZH_MANUSCRIPT = {
     ]
   },
   "workedExample": {
-    "title": "计算误读时间上限造成的目标偏差",
+    "title": "同样停止记录，目标可能是 50.5，也可能只有 1",
     "setup": "一条转移因时间上限而截断，即时奖励为 1，γ=0.99，下一状态估计价值为 50。比较正确的持续任务目标与把截断误当终点的目标。",
     "prediction": "一个错误布尔标志会让目标丢失多少价值？",
     "steps": [
@@ -109,5 +109,26 @@ export const ZH_MANUSCRIPT = {
       "发布还需要回滚、监控、版本标记与现场验收；构建产物不能替代这些外部证据。"
     ]
   },
-  "nextBridge": "经典 RL 的工具已经齐备。最后一部分把它们映射到语言模型：token 是动作、回复是轨迹，但偏好与验证信号会带来新的边界。"
+  "nextBridge": "到这里，经典 RL 从问题建模一路走到系统证据。最后一部分把同一套问题映射到语言模型：token 可以看作动作，整段回复像一条轨迹，但 SFT、偏好优化、RLHF 与可验证奖励并不是同一种训练。先从‘什么时候它真的属于 RL’开始。",
+  "narrative": [
+    { "type": "section", "id": "the-api-is-part-of-the-math", "title": "环境返回的每个字段，都会进入数学目标", "paragraphs": [
+      "真正终止表示任务未来已经不存在，时间截断只表示记录暂时停止。把两者合成 done 并一律关闭自举，会在时限边界系统性压低价值。",
+      "观察 dtype、动作范围、奖励变换、帧跳与 wrapper 顺序也会改变状态、时间尺度和目标。同名环境配上不同 wrapper，可能已经不是同一个 MDP。"
+    ] },
+    { "type": "worked-example" },
+    { "type": "equations" },
+    { "type": "section", "id": "replay-is-a-database", "title": "Replay 不是一个数组，而是一套持续改变训练分布的数据库", "paragraphs": [
+      "容量、淘汰策略、采样权重、actor 写入速度与优先级更新共同决定 learner 看见什么。并发错误或陈旧权重可以悄悄让某些策略版本长期占据样本。",
+      "转移 schema 要版本化，并记录数据来源、年龄与终止语义。崩溃恢复和并发一致性需要专门测试，否则同一代码实际消费的是另一套经验分布。"
+    ] },
+    { "type": "section", "id": "checkpoint-the-whole-run", "title": "只保存网络权重，恢复的是模型，不是原训练过程", "paragraphs": [
+      "完整检查点还需包含优化器动量、目标网络、回放、归一化统计、RNG 状态和环境进度。漏掉任一项，恢复后的下一批数据与更新方向都会突变。",
+      "文件能加载只证明序列化成功。要把连续训练与中断恢复作对照，验证恢复后轨迹、批次与曲线在允许误差内延续，并为格式设置版本。"
+    ] },
+    { "type": "section", "id": "observability-makes-errors-visible", "title": "可观测性的目标，是让失败能被定位而不只是被发现", "paragraphs": [
+      "系统应同时记录回报、终止类型、动作饱和、Q 与目标尺度、梯度、回放年龄、actor 吞吐和策略滞后。只看平均回报，许多静默错误要数小时后才暴露。",
+      "指标还要绑定代码、配置和数据版本，并设置范围与漂移告警。日志数量不是成果，能回答一次异常来自环境、数据、优化还是系统队列才算证据。"
+    ] },
+    { "type": "boundary" }
+  ]
 } satisfies ChineseManuscript;
