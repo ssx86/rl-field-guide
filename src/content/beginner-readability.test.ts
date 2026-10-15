@@ -20,6 +20,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "linear-approximation",
   "neural-approximation",
   "dqn",
+  "dqn-family",
+  "reinforce-policy-gradient",
+  "actor-critic-gae",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
