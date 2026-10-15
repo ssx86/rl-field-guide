@@ -44,6 +44,13 @@ const REWRITTEN_FOR_BEGINNERS = [
   "safe-robust-risk",
   "evaluation-reproducibility",
   "rl-systems",
+  "llm-as-rl",
+  "rlhf-ppo",
+  "direct-preference",
+  "rlaif-judges",
+  "rlvr-grpo",
+  "test-time-compute",
+  "method-selection",
 ] as const;
 
 const FORMULA_TERMS_TO_DEFINE_FIRST: Readonly<Record<string, readonly string[]>> = {
@@ -54,6 +61,12 @@ const FORMULA_TERMS_TO_DEFINE_FIRST: Readonly<Record<string, readonly string[]>>
   "safe-robust-risk": ["约束马尔可夫决策过程（Constrained Markov Decision Process，CMDP）", "拉格朗日方法（Lagrangian Method）"],
   "evaluation-reproducibility": ["置信区间（Confidence Interval，CI）", "四分位均值（Interquartile Mean，IQM）"],
   "rl-systems": ["终止（Termination）", "哈希值（Hash）"],
+  "llm-as-rl": ["监督微调（Supervised Fine-Tuning，SFT）", "信用分配（Credit Assignment）"],
+  "rlhf-ppo": ["基于人类反馈的强化学习（Reinforcement Learning from Human Feedback，RLHF）", "库尔贝克—莱布勒散度（Kullback–Leibler Divergence，KL Divergence）"],
+  "direct-preference": ["直接偏好优化（Direct Preference Optimization，DPO）", "简单偏好优化（Simple Preference Optimization，SimPO）"],
+  "rlaif-judges": ["位置偏差（Position Bias）"],
+  "rlvr-grpo": ["组相对策略优化（Group Relative Policy Optimization，GRPO）", "库尔贝克—莱布勒散度（Kullback–Leibler Divergence，KL Divergence）"],
+  "test-time-compute": ["测试时计算（Test-Time Compute，TTC）", "最佳 N 选一（Best-of-N）"],
 };
 
 function visibleProse(chapter: ChapterArticle): string[] {

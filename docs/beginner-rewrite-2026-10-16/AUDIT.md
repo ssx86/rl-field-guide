@@ -34,8 +34,8 @@
 7. 第六部分五章：`behavior-cloning-dagger`、`inverse-rl-gail`、`offline-rl`、`decision-transformer` 与 `off-policy-evaluation` 已完成中英文重写，并加入同一回归测试。
 8. 第七部分三章：`hierarchical-rl`、`multi-agent-rl` 与 `transfer-meta-generalization` 已完成中英文重写，并加入同一回归测试。
 9. 第八部分四章：`reward-design`、`safe-robust-risk`、`evaluation-reproducibility` 与 `rl-systems` 已完成中英文重写，并加入同一回归测试。
-10. 第九部分七章：继续按课程顺序处理语言模型后训练、偏好学习、可验证奖励与测试时计算。
-11. 全部完成后重新进行中英文对齐、术语、公式、移动端和公开页面验收。
+10. 第九部分七章：`llm-as-rl`、`rlhf-ppo`、`direct-preference`、`rlaif-judges`、`rlvr-grpo`、`test-time-compute` 与 `method-selection` 已完成中英文重写，并加入同一回归测试。
+11. 全部 46 章已完成内容重写与本地最终验收：159 项测试通过，145 个静态页面通过结构与链接检查；第九部分在 1440px 与 390px 两种宽度下完成真实浏览器抽查，公式、术语弹窗、双语标记与横向宽度均正常。
 
 ## 验收线
 

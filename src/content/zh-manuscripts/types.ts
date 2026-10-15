@@ -120,7 +120,7 @@ const CHINESE_EQUATION_CORRECTIONS: Readonly<Record<string, Readonly<Record<numb
     1: { read: "SFT 最小化给定目标前缀下目标 token 的负对数似然之和。", meaning: "星号表示数据集答案；这里不需要奖励、策略采样轨迹或 Bellman 目标，因此 SFT 不应被改称 RL。" },
   },
   "direct-preference": {
-    1: { read: "SimPO 用当前策略下每个 token 的平均对数概率给回复打分，再用边际比较 chosen 与 rejected。", meaning: "长度归一化减轻原始序列长度偏差，目标边际控制所需分离；标准形式仍是固定数据上的直接目标。" },
+    1: { read: "SimPO 用当前策略下每个 token 的平均对数概率给回复打分。然后再用边际比较 chosen 与 rejected。", meaning: "长度归一化减轻原始序列长度偏差。目标边际控制所需分离；标准形式仍是固定数据上的直接目标。" },
   },
   "rlaif-judges": {
     0: { read: "评委一致率等于校准样本中评委标签与人类参考标签相同的比例。", meaning: "该比例只对采样分布和人类标注流程成立，还应报告置信区间、分组结果、歧义样本与人类分歧。" },
