@@ -27,6 +27,9 @@ describe("bilingual chapter corpus", () => {
       "neural-approximation",
       "dqn",
       "dqn-family",
+      "reinforce-policy-gradient",
+      "actor-critic-gae",
+      "trpo-ppo",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
