@@ -26,6 +26,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "trpo-ppo",
   "continuous-control",
   "distributed-rl",
+  "pomdp-memory",
+  "deep-exploration",
+  "long-horizon-credit",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {

@@ -19,9 +19,12 @@ const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "130−100=30 learner updates": "130−100=30 次 learner 更新",
   "refresh actors, shorten rollouts, or tune queue": "刷新 actor、缩短 rollout，或调整队列",
   "stop if expected failure cost exceeds inspection cost": "若预期失败成本高于检查成本，就先停止并检查",
+  "compare failure cost with inspection cost": "比较故障损失与检查成本",
   "N(s) depends on state identity": "N(s) 取决于如何识别状态",
+  "N(s) depends on what counts as the same s": "N(s) 取决于怎样定义同一个 s",
   "step-one reward changes from 0 to 7": "第一步的奖励从 0 改写为 7",
   "compare policy ordering before and after redistribution": "比较奖励重分配前后的策略排序",
+  "compare policies before and after redistribution": "比较奖励重分配前后的策略排序",
   "plan H steps, execute 1, observe, repeat": "规划 H 步，只执行 1 步，观察后再规划",
   "P(all correct)=0.99¹⁰⁰≈0.366": "P(全部正确)=0.99¹⁰⁰≈0.366",
   "errors need not remain 1% after leaving dexpert": "离开 d_expert 后，错误率未必仍是 1%",
@@ -71,15 +74,15 @@ const CHINESE_EQUATION_CORRECTIONS: Readonly<Record<string, Readonly<Record<numb
     1: { read: "更新数据比等于梯度步数乘批次大小，再除以新收集的环境转移数。", meaning: "比率高会复用数据，也更容易过拟合旧分布或放大自举误差；计算成本与数据成本应分开报告。" },
   },
   "trpo-ppo": {
-    0: { read: "PPO 在原始比率加权优势与裁剪后的版本之间取较小值。", meaning: "这个最小值会移除部分过大更新的样本激励，但不是每个状态上的硬距离约束，仍要检查实际 KL 与性能。" },
-    1: { read: "TRPO 在平均 KL 距离不超过 δ 的约束下最大化代理目标。", meaning: "约束表达旧策略证据只在局部可信；近似求解、采样误差和平均而非最坏 KL 都会削弱实际保证。" },
+    0: { read: "PPO 对每条样本比较原始概率比结果与裁剪后的结果，并取较小的一个。", meaning: "这个办法会拿走一部分继续远移的好处，却不会阻止整个策略继续变化。因此，训练后仍要检查 KL 和真实表现。" },
+    1: { read: "TRPO 寻找更好的策略，同时要求新旧策略的平均 KL 距离不超过 δ。", meaning: "这表示旧数据只在附近可信。距离和更新都由样本近似得到，所以这个限制仍然不是绝对保证。" },
   },
   "distributed-rl": {
-    1: { read: "策略滞后等于消费样本时的 learner 版本减去采样时的 actor 版本。", meaning: "版本差容易记录，可诊断队列与刷新日程；相同版本差不代表相同 KL，仍需行为距离指标。" },
+    1: { read: "策略滞后等于学习者当前版本减去演员收集数据时的版本。", meaning: "这个数字可以帮助发现过长队列或过慢刷新。同样的版本差，仍可能对应完全不同的行为变化。" },
   },
   "long-horizon-credit": {
-    0: { read: "保持总回报的奖励重分配要求整条轨迹上的新奖励和等于原奖励和。", meaning: "在不折扣例子里这是必要的记账条件；要保持策略排序，还需更强的构造并单独处理折扣。" },
-    1: { read: "Hindsight 用轨迹实际达成的替代目标 g' 重新定义这一步的奖励。", meaning: "状态与动作仍是真实发生的，只改变目标条件；这种离策略复用要求不同目标共享动力学且重标规则合法。" },
+    0: { read: "奖励重分配后的全部奖励相加，应该等于原来全部奖励的总和。", meaning: "当 γ=1 时，这是最基本的记账检查。要让所有策略的好坏顺序不变，还需要更强证据。" },
+    1: { read: "事后奖励会使用路线真正到达的替代目标 g′。", meaning: "转移仍然真实，只是问题换了。替代目标必须合法，而且要使用相同的世界规则。" },
   },
   "dyna-mpc": {
     0: { read: "MPC 在学习模型下选择预测有限时域回报最大的动作序列。", meaning: "通常只执行第一个动作后便用真实观察重规划；优化器可能利用模型误差，因此还需约束、不确定性惩罚和现实反馈。" },
