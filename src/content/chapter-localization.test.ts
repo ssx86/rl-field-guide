@@ -53,6 +53,10 @@ describe("bilingual chapter corpus", () => {
       "llm-as-rl",
       "rlhf-ppo",
       "direct-preference",
+      "rlaif-judges",
+      "rlvr-grpo",
+      "test-time-compute",
+      "method-selection",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
