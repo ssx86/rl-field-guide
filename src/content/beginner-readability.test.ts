@@ -37,7 +37,16 @@ const REWRITTEN_FOR_BEGINNERS = [
   "offline-rl",
   "decision-transformer",
   "off-policy-evaluation",
+  "hierarchical-rl",
+  "multi-agent-rl",
+  "transfer-meta-generalization",
 ] as const;
+
+const FORMULA_TERMS_TO_DEFINE_FIRST: Readonly<Record<string, readonly string[]>> = {
+  "hierarchical-rl": ["选项（Option）"],
+  "multi-agent-rl": ["Value-Decomposition Networks", "Multi-Agent Deep Deterministic Policy Gradient"],
+  "transfer-meta-generalization": ["Meta-Learning", "Domain Randomization"],
+};
 
 function visibleProse(chapter: ChapterArticle): string[] {
   return [
@@ -84,6 +93,17 @@ describe("chapters rewritten for a young first-time reader", () => {
       expect(average(englishLengths), `${slug} English average`).toBeLessThanOrEqual(13);
       expect(Math.max(...chineseLengths), `${slug} Chinese maximum`).toBeLessThanOrEqual(60);
       expect(average(chineseLengths), `${slug} Chinese average`).toBeLessThanOrEqual(27);
+    });
+  }
+
+  for (const [slug, terms] of Object.entries(FORMULA_TERMS_TO_DEFINE_FIRST)) {
+    it(`${slug} introduces the names used by its equations before showing those equations`, () => {
+      const chapter = ZH_CHAPTER_ARTICLES.find((item) => item.slug === slug)!;
+      const equationIndex = chapter.narrative!.findIndex((block) => block.type === "equations");
+      const earlierCopy = JSON.stringify(chapter.narrative!.slice(0, equationIndex));
+
+      expect(equationIndex, slug).toBeGreaterThan(0);
+      for (const term of terms) expect(earlierCopy, `${slug}: ${term}`).toContain(term);
     });
   }
 });

@@ -34,11 +34,11 @@ const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "conservatism may miss a genuinely better B": "保守估计也可能错过真实更优的 B",
   "look for training contexts near return 10": "寻找训练集中回报接近 10 的上下文",
   "other trajectories may have ρ near 0 or very large": "其他轨迹的 ρ 可能接近 0，也可能非常大",
-  "bad β can end too early or never return": "错误的 β 可能让 option 过早结束，也可能永不返回",
+  "bad β can end too early or never return": "错误的终止概率 β 可能让选项（Option）过早结束，也可能永不返回",
   "Q(Left,Left)=4; Q(Right,Right)=3; mismatches=0": "Q(左,左)=4；Q(右,右)=3；不匹配时为 0",
   "an agent's reward depends on the other's simultaneous action": "一个智能体的奖励取决于另一个智能体同时采取的动作",
   "frequent Right coordination reinforces Right": "频繁出现的‘共同向右’会继续强化向右选择",
-  "joint critic observes both actions": "联合 critic 同时观察双方动作",
+  "joint critic observes both actions": "联合评价器（Joint Critic）同时观察双方动作",
   "baseline 60 > meta 40": "常规基线 60 > 元学习方法 40",
   "meta 70 > baseline 65": "元学习方法 70 > 常规基线 65",
   "meta 82 > baseline 80": "元学习方法 82 > 常规基线 80",
@@ -99,11 +99,11 @@ const CHINESE_EQUATION_CORRECTIONS: Readonly<Record<string, Readonly<Record<numb
     1: { read: "FQE 用奖励加上目标策略在下一状态的期望动作价值，回归当前 Q。", meaning: "它评价固定目标策略，不像 Q-learning 那样对动作取最大值；近似误差与状态动作覆盖决定估计是否可靠。" },
   },
   "hierarchical-rl": {
-    1: { read: "一个 option 由可启动它的状态集合 I、内部策略 π 和每个状态下的终止概率 β 三部分组成。", meaning: "启动条件决定何时可调用，内部策略决定持续期间怎样行动，终止规则决定何时把控制权交回高层；三者缺一不可。" },
+    1: { read: "一个选项（Option）由启动集合 I、内部策略 π 和终止概率 β 三部分组成。", meaning: "启动集合决定何时可调用，内部策略决定怎样行动，终止规则决定何时把控制权交回高层。" },
   },
   "multi-agent-rl": {
-    0: { read: "QMIX 用依赖全局状态的混合网络组合各智能体效用，并约束总价值对每个个体效用单调不减。", meaning: "单调性让各智能体的局部贪心动作与联合贪心一致，也限制了可表达的协作价值函数。" },
-    1: { read: "MADDPG 的局部 actor 通过能看到联合上下文的集中 critic 获得更新方向。", meaning: "集中信息只在训练时可用；部署时 actor 必须仅依赖允许的局部观察与通信。" },
+    0: { read: "QMIX 把各智能体的本地价值混成团队价值，并要求本地价值上升时团队价值不能下降。", meaning: "这个单调条件让各智能体按本地价值贪心选择，也排除了一些需要局部牺牲的团队计划。" },
+    1: { read: "MADDPG 用集中评价器（Centralized Critic）为本地行动者（Actor）提供更新方向。", meaning: "联合信息只在训练时可用；部署时，行动者只能依赖允许的本地观察与通信。" },
   },
   "reward-design": {
     1: { read: "塑形后的奖励 R' 等于原任务奖励 R 加上塑形项 F。", meaning: "把 R 与 F 分开记录，才能判断表面进步来自真实任务结果，还是只来自学习辅助信号。" },
