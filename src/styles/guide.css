@@ -289,6 +289,174 @@
 .lesson-next strong { margin-top: 8px; font-size: 14px; line-height: 1.45; }
 .lesson-next .next-link { text-align: right; }
 
+/* Knowledge layer: one visual grammar for terms, routes, section anchors, and teaching asides. */
+.knowledge-term {
+  border-radius: 3px;
+  color: var(--primary);
+  font-weight: 680;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: color-mix(in srgb, var(--primary) 72%, transparent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  transition: background-color 120ms ease, color 120ms ease, text-decoration-color 120ms ease;
+}
+
+.knowledge-term:hover,
+.knowledge-term:focus-visible {
+  background: var(--accent);
+  color: var(--primary-hover);
+  text-decoration-style: solid;
+  text-decoration-color: var(--primary);
+}
+
+.knowledge-term:focus-visible,
+.knowledge-link:focus-visible,
+.heading-anchor:focus-visible,
+.knowledge-card a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.knowledge-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .24em;
+  border-radius: 3px;
+  color: var(--foreground);
+  font-weight: 680;
+  text-decoration-line: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: color 120ms ease, background-color 120ms ease;
+}
+
+.knowledge-link > span:last-child { color: var(--primary); transition: transform 120ms ease; }
+.knowledge-link:hover { background: var(--accent); color: var(--primary); }
+.knowledge-link:hover > span:last-child { transform: translateX(2px); }
+
+.anchored-heading {
+  position: relative;
+  scroll-margin-top: 92px;
+}
+
+.heading-anchor {
+  position: absolute;
+  top: .05em;
+  right: calc(100% + 12px);
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  opacity: 0;
+  text-decoration: none;
+  transform: translateX(4px);
+  transition: opacity 120ms ease, transform 120ms ease, color 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.anchored-heading:hover .heading-anchor,
+.anchored-heading:focus-within .heading-anchor,
+.heading-anchor[data-copied="true"] {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.heading-anchor:hover,
+.heading-anchor:focus-visible,
+.heading-anchor[data-copied="true"] {
+  border-color: var(--amber-border);
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.heading-anchor[data-copied="true"] { color: var(--success); }
+
+.knowledge-tip {
+  display: grid;
+  max-width: 72ch;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  margin: 28px 0 0;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--primary);
+  border-radius: 12px;
+  padding: 18px 20px;
+  background: color-mix(in srgb, var(--accent) 46%, var(--card));
+  color: var(--muted-foreground);
+}
+
+.knowledge-tip > svg { margin-top: 1px; color: var(--primary); }
+.knowledge-tip > div { min-width: 0; }
+.knowledge-tip > div > strong { display: block; margin-bottom: 7px; color: var(--foreground); font-size: 13px; line-height: 1.45; }
+.knowledge-tip p { margin: 5px 0 0; font-size: 13px; line-height: 1.75; }
+.knowledge-tip-connection { border-left-color: var(--success); background: color-mix(in srgb, var(--success) 6%, var(--card)); }
+.knowledge-tip-connection > svg { color: var(--success); }
+.knowledge-tip-warning { border-left-color: var(--danger); background: color-mix(in srgb, var(--danger) 6%, var(--card)); }
+.knowledge-tip-warning > svg { color: var(--danger); }
+
+.knowledge-hover-card {
+  animation-duration: 120ms;
+  animation-timing-function: ease-out;
+  transform-origin: var(--radix-hover-card-content-transform-origin);
+}
+
+.knowledge-hover-card[data-state="open"] { animation-name: knowledge-card-in; }
+.knowledge-hover-card[data-state="closed"] { animation-name: knowledge-card-out; }
+
+@keyframes knowledge-card-in {
+  from { opacity: 0; transform: translateY(4px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes knowledge-card-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(3px) scale(.99); }
+}
+
+.knowledge-card { min-width: 0; }
+.knowledge-card > header { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 9px; align-items: start; padding-right: 26px; }
+.knowledge-card > header > svg { margin-top: 2px; color: var(--primary); }
+.knowledge-card > header strong { display: block; font-size: 15px; line-height: 1.35; }
+.knowledge-card > header small { display: block; margin-top: 3px; color: var(--muted-foreground); font-size: 10px; line-height: 1.4; }
+.knowledge-card-definition { margin-top: 13px; }
+.knowledge-card-definition p { margin: 0; color: var(--foreground); font-size: 13px; line-height: 1.65; }
+.knowledge-card-definition p + p { margin-top: 7px; border-top: 1px solid var(--border); padding-top: 7px; color: var(--muted-foreground); }
+.knowledge-card-why { margin-top: 14px; border-left: 2px solid var(--amber-border); padding-left: 11px; }
+.knowledge-card-why > span,
+.knowledge-card-relations > span { display: block; color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: .07em; line-height: 1.35; text-transform: uppercase; }
+.knowledge-card-why p { margin: 5px 0 0; color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
+.knowledge-card-graph { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 13px; }
+.knowledge-card-graph > svg { color: var(--success); }
+.knowledge-card-graph > div { display: grid; gap: 10px; }
+.knowledge-card-relations > div { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; }
+.knowledge-card-relations a { color: var(--foreground); font-size: 11px; font-weight: 680; line-height: 1.45; text-decoration-color: var(--primary); text-underline-offset: 3px; }
+.knowledge-card-relations a:hover { color: var(--primary); }
+.knowledge-card-open { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px; color: var(--foreground); font-size: 11px; font-weight: 800; text-decoration: none; }
+.knowledge-card-open svg { color: var(--primary); transition: transform 120ms ease; }
+.knowledge-card-open:hover { color: var(--primary); }
+.knowledge-card-open:hover svg { transform: translateX(2px); }
+
+.knowledge-sheet-overlay { animation: knowledge-overlay-in 160ms ease-out; }
+.knowledge-sheet-overlay[data-state="closed"] { animation: knowledge-overlay-out 120ms ease-in; }
+.knowledge-sheet-content {
+  max-height: min(82dvh, 720px);
+  overflow-y: auto;
+  border-radius: 12px 12px 0 0;
+  padding: 24px max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  animation: knowledge-sheet-in 180ms ease-out;
+}
+.knowledge-sheet-content[data-state="closed"] { animation: knowledge-sheet-out 140ms ease-in; }
+.knowledge-sheet-content .knowledge-card { width: min(560px, 100%); margin: 0 auto; }
+
+@keyframes knowledge-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes knowledge-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes knowledge-sheet-in { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes knowledge-sheet-out { from { transform: translateY(0); } to { transform: translateY(100%); } }
+
 @media (max-width: 1050px) {
   .course-hero { grid-template-columns: 1fr; }
   .loop-visual { min-height: 480px; }
@@ -564,6 +732,19 @@
 .reading-transfer h3 { margin: 8px 0 0; font-size: 16px; line-height: 1.5; }
 
 @media (max-width: 720px) {
+  .heading-anchor {
+    position: static;
+    display: inline-grid;
+    width: 32px;
+    height: 32px;
+    margin: 0 7px 0 -4px;
+    vertical-align: .12em;
+    opacity: 1;
+    transform: none;
+  }
+  .anchored-heading > span { display: inline; }
+  .knowledge-tip { grid-template-columns: 22px minmax(0, 1fr); padding: 16px; }
+  .knowledge-term { text-underline-offset: 3px; }
   .knowledge-diagram { padding: 20px 16px; }
   .knowledge-diagram header { display: block; }
   .diagram-flow .diagram-items,
@@ -587,6 +768,17 @@
   .diagram-formula-compare .diagram-copy { margin-top: 4px; }
   .diagram-formula-compare .diagram-formula { margin-inline: -2px; padding-bottom: 5px; }
   .static-result { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knowledge-term,
+  .knowledge-link,
+  .knowledge-link > span:last-child,
+  .heading-anchor,
+  .knowledge-card-open svg,
+  .knowledge-hover-card,
+  .knowledge-sheet-overlay,
+  .knowledge-sheet-content { animation: none !important; transition: none !important; }
 }
 
 @media (min-width: 721px) and (max-width: 1040px) {

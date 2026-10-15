@@ -1,5 +1,6 @@
 ---
 import katex from "katex";
+import LinkedHeading from "@/components/LinkedHeading.astro";
 import type { ChapterArticle } from "@/content/chapter-article";
 
 interface Props {
@@ -35,7 +36,7 @@ const variant = inferredVariants[slug] ?? diagram.variant ?? "flow";
   <header>
     <div>
       <span class="sr-only">{label}</span>
-      <h2 id={`diagram-title-${slug}`}>{diagram.title}</h2>
+      <LinkedHeading id={`diagram-title-${slug}`} hash="diagram" label={diagram.title}>{diagram.title}</LinkedHeading>
     </div>
   </header>
   <ol class="diagram-items">

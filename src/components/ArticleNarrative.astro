@@ -2,7 +2,11 @@
 import katex from "katex";
 
 import ArticleDiagram from "@/components/ArticleDiagram.astro";
+import KnowledgeText from "@/components/KnowledgeText.astro";
+import LinkedHeading from "@/components/LinkedHeading.astro";
 import type { ChapterArticle } from "@/content/chapter-article";
+import { createKnowledgeAnnotator } from "@/content/knowledge-text";
+import type { ReadingMode } from "@/content/reading-mode";
 
 interface Labels {
   readonly sections: string;
@@ -19,17 +23,21 @@ interface Props {
   readonly chapter: ChapterArticle;
   readonly slug: string;
   readonly labels: Labels;
+  readonly mode: ReadingMode;
+  readonly base: string;
 }
 
-const { chapter, slug, labels } = Astro.props;
+const { chapter, slug, labels, mode, base } = Astro.props;
 const blocks = chapter.narrative ?? [];
+const language = mode === "zh" ? "zh" : "en";
+const annotate = createKnowledgeAnnotator(language);
 ---
 
 {blocks.map((block) => (
   block.type === "section" ? (
     <section id={block.id} class="lesson-section narrative-section" aria-labelledby={`${block.id}-title`}>
-      <h2 id={`${block.id}-title`}>{block.title}</h2>
-      <div class="longform-prose">{block.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+      <LinkedHeading id={`${block.id}-title`} hash={block.id} label={block.title} copyLabel={language === "zh" ? "复制本节链接" : "Copy link to this section"}>{block.title}</LinkedHeading>
+      <div class="longform-prose">{block.paragraphs.map((paragraph) => <p><KnowledgeText segments={annotate(paragraph, block.id)} language={language} mode={mode} base={base} /></p>)}</div>
     </section>
   ) : block.type === "diagram" ? (
     <section id="diagram" class="lesson-section diagram-section">
@@ -38,8 +46,8 @@ const blocks = chapter.narrative ?? [];
   ) : block.type === "worked-example" ? (
     <section id="example" class="lesson-section" aria-labelledby="example-title">
       <p class="instrument-label">{labels.example}</p>
-      <h2 id="example-title">{chapter.workedExample.title}</h2>
-      <div class="longform-prose section-lead"><p>{chapter.workedExample.setup}</p></div>
+      <LinkedHeading id="example-title" hash="example" label={chapter.workedExample.title} copyLabel={language === "zh" ? "复制本节链接" : "Copy link to this section"}>{chapter.workedExample.title}</LinkedHeading>
+      <div class="longform-prose section-lead"><p><KnowledgeText segments={annotate(chapter.workedExample.setup, "example")} language={language} mode={mode} base={base} /></p></div>
       <article class="static-evidence">
         <header>
           <p class="instrument-label">{labels.pause}</p>
@@ -47,7 +55,7 @@ const blocks = chapter.narrative ?? [];
         </header>
         <ol class="static-evidence-steps">
           {chapter.workedExample.steps.map((step, index) => (
-            <li><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.label}</strong><code>{step.calculation}</code><p>{step.explanation}</p></div></li>
+            <li><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{step.label}</strong><code>{step.calculation}</code><p><KnowledgeText segments={annotate(step.explanation, "example")} language={language} mode={mode} base={base} /></p></div></li>
           ))}
         </ol>
         <p class="worked-result"><strong>{labels.result}</strong>{chapter.workedExample.result}</p>
@@ -56,14 +64,14 @@ const blocks = chapter.narrative ?? [];
   ) : block.type === "equations" ? (
     chapter.equations.length ? (
       <section id="equations" class="lesson-section" aria-labelledby="equations-title">
-        <h2 id="equations-title">{labels.equationsTitle}</h2>
-        <div class="longform-prose section-lead"><p>{labels.equationLead}</p></div>
+        <LinkedHeading id="equations-title" hash="equations" label={labels.equationsTitle} copyLabel={language === "zh" ? "复制本节链接" : "Copy link to this section"}>{labels.equationsTitle}</LinkedHeading>
+        <div class="longform-prose section-lead"><p><KnowledgeText segments={annotate(labels.equationLead, "equations")} language={language} mode={mode} base={base} /></p></div>
         <div class="formula-list">
           {chapter.equations.map((equation) => (
             <article>
               <div class="formula-render" set:html={katex.renderToString(equation.latex, { displayMode: true, throwOnError: true })} />
-              <p><strong>{equation.read}</strong></p>
-              <p>{equation.meaning}</p>
+              <p><strong><KnowledgeText segments={annotate(equation.read, "equations")} language={language} mode={mode} base={base} /></strong></p>
+              <p><KnowledgeText segments={annotate(equation.meaning, "equations")} language={language} mode={mode} base={base} /></p>
             </article>
           ))}
         </div>
@@ -71,8 +79,8 @@ const blocks = chapter.narrative ?? [];
     ) : null
   ) : (
     <section id="boundary" class="lesson-section boundary-section" aria-labelledby="boundary-title">
-      <h2 id="boundary-title">{chapter.boundary.title}</h2>
-      <div class="longform-prose">{chapter.boundary.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div>
+      <LinkedHeading id="boundary-title" hash="boundary" label={chapter.boundary.title} copyLabel={language === "zh" ? "复制本节链接" : "Copy link to this section"}>{chapter.boundary.title}</LinkedHeading>
+      <div class="longform-prose">{chapter.boundary.paragraphs.map((paragraph) => <p><KnowledgeText segments={annotate(paragraph, "boundary")} language={language} mode={mode} base={base} /></p>)}</div>
     </section>
   )
 ))}

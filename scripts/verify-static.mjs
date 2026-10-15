@@ -27,7 +27,7 @@ const requiredPages = [
   ["zh/index.html", "一套沿着决策与证据链展开的强化学习指南", "九个相连部分"],
   ["en/learn/rl-panorama/index.html", "The Long Way from One Choice to Reinforcement Learning", "Seven questions that locate almost any reinforcement-learning problem"],
   ["zh/learn/rl-panorama/index.html", "从一次选择，走到整个强化学习", "用七个问题，给几乎任何强化学习项目定位"],
-  ["bilingual/learn/rl-panorama/index.html", "language-pair", "强化学习（reinforcement learning, RL）"],
+  ["bilingual/learn/rl-panorama/index.html", "language-pair", 'data-knowledge-term="reinforcement-learning"', "reinforcement learning, RL"],
   ["en/learn/before-rl/index.html", "decide whether learning from consequences is needed", "No prior RL vocabulary required"],
   ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
   ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
@@ -64,7 +64,11 @@ for (const page of englishLessonPages) {
   assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
   assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
   assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert(!html.includes("<astro-island"), `${name} must not depend on an interactive learning island`);
+  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
+  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
+  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its chapter term guide`);
+  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
+  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
 }
 
 for (const page of chineseLessonPages) {
@@ -79,7 +83,11 @@ for (const page of chineseLessonPages) {
   assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
   assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
   assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert(!html.includes("<astro-island"), `${name} must not depend on an interactive learning island`);
+  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
+  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
+  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its chapter term guide`);
+  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
+  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
 }
 
 for (const page of bilingualLessonPages) {
@@ -90,7 +98,11 @@ for (const page of bilingualLessonPages) {
   assert(html.includes('lang="en"') && html.includes('lang="zh-CN"'), `${name} does not mark both passage languages`);
   assert(html.includes("chapter-outline-desktop") && html.includes("chapter-outline-mobile"), `${name} is missing responsive chapter outlines`);
   assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert(!html.includes("<astro-island"), `${name} must remain a static reading page`);
+  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
+  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
+  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its bilingual chapter term guide`);
+  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
+  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
 }
 
 const brokenLinks = [];

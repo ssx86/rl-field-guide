@@ -1,10 +1,13 @@
 ---
 import GuideHeader from "@/components/GuideHeader.astro";
+import KnowledgeText from "@/components/KnowledgeText.astro";
+import LinkedHeading from "@/components/LinkedHeading.astro";
 import PanoramaParagraph from "@/components/PanoramaParagraph.astro";
 import PanoramaRoute from "@/components/PanoramaRoute.astro";
 import type { Language } from "@/content/bilingual-course";
 import { getPanoramaArticle } from "@/content/panorama-article";
 import { getLocalizedCurriculum } from "@/content/localized-curriculum";
+import { createKnowledgeAnnotator } from "@/content/knowledge-text";
 import { READING_MODES, languageDestinations, type ReadingMode } from "@/content/reading-mode";
 import GuideLayout from "@/layouts/GuideLayout.astro";
 
@@ -51,9 +54,12 @@ const t = zh ? {
   map: "Return to the field map",
 };
 const pair = <T, U>(left: readonly T[], right: readonly U[]) => Array.from({ length: Math.max(left.length, right.length) }, (_, index) => ({ left: left[index], right: right[index] }));
+const annotateEn = createKnowledgeAnnotator("en");
+const annotateZh = createKnowledgeAnnotator("zh");
+const annotate = language === "zh" ? annotateZh : annotateEn;
 ---
 
-<GuideLayout title={`${article.title} · ${t.brand}`} description={article.deck} mode={mode} canonicalPath={canonicalPath} alternatePaths={alternatePaths} languageHashMode="all">
+<GuideLayout title={`${article.title} · ${t.brand}`} description={article.deck} mode={mode} canonicalPath={canonicalPath} alternatePaths={alternatePaths} languageHashMode="all" knowledgeSlug="rl-panorama">
   <GuideHeader mode={mode} brand={bilingual ? "RL 学习指南" : t.brand} homeHref={homeHref} themeLabel={bilingual ? "Theme / 主题" : t.theme} languageLinks={languageLinks} />
 
   <main id="main-content" class="panorama-shell" tabindex="-1">
@@ -75,7 +81,7 @@ const pair = <T, U>(left: readonly T[], right: readonly U[]) => Array.from({ len
         <p class="panorama-deck">{article.deck}</p>
         {bilingual ? <p class="panorama-deck" lang="zh-CN"><span class="language-marker" aria-hidden="true">中</span>{chineseArticle.deck}</p> : null}
         <div class={`panorama-opening ${bilingual ? "bilingual-prose" : ""}`}>
-          {bilingual ? pair(englishArticle.opening, chineseArticle.opening).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><p lang="en">{left}</p></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><p lang="zh-CN">{right}</p></> : null}</div>) : article.opening.map((paragraph) => <p>{paragraph}</p>)}
+          {bilingual ? pair(englishArticle.opening, chineseArticle.opening).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><p lang="en"><KnowledgeText segments={annotateEn(left, "opening")} language="en" mode={mode} base={base} /></p></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><p lang="zh-CN"><KnowledgeText segments={annotateZh(right, "opening")} language="zh" mode={mode} base={base} /></p></> : null}</div>) : article.opening.map((paragraph) => <p><KnowledgeText segments={annotate(paragraph, "opening")} language={language} mode={mode} base={base} /></p>)}
         </div>
         <PanoramaRoute movements={article.movements} label={t.route} />
       </header>
@@ -90,26 +96,26 @@ const pair = <T, U>(left: readonly T[], right: readonly U[]) => Array.from({ len
           <header>
             <span>{movement.number}</span>
             <div>
-              <h2 id={`${movement.id}-title`}>{movement.title}</h2>
+              <LinkedHeading id={`${movement.id}-title`} hash={movement.id} label={movement.title} copyLabel={zh ? "复制本节链接" : "Copy link to this section"}>{movement.title}</LinkedHeading>
               {bilingual ? <h3 lang="zh-CN">{chineseArticle.movements[movementIndex].title}</h3> : null}
             </div>
           </header>
           <div class="panorama-prose">
-            {bilingual ? <><div class="language-pair compact"><span class="language-marker" aria-hidden="true">EN</span><p class="panorama-turn" lang="en">{movement.turn}</p><span class="language-marker" aria-hidden="true">中</span><p class="panorama-turn" lang="zh-CN">{chineseArticle.movements[movementIndex].turn}</p></div>{pair(movement.paragraphs, chineseArticle.movements[movementIndex].paragraphs).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><div lang="en"><PanoramaParagraph text={left} base={base} language="bilingual" /></div></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><div lang="zh-CN"><PanoramaParagraph text={right} base={base} language="bilingual" /></div></> : null}</div>)}<div class="language-pair compact"><span class="language-marker" aria-hidden="true">EN</span><p class="panorama-coda" lang="en">{movement.coda}</p><span class="language-marker" aria-hidden="true">中</span><p class="panorama-coda" lang="zh-CN">{chineseArticle.movements[movementIndex].coda}</p></div></> : <><p class="panorama-turn">{movement.turn}</p>{movement.paragraphs.map((paragraph) => <PanoramaParagraph text={paragraph} base={base} language={language} />)}<p class="panorama-coda">{movement.coda}</p></>}
+            {bilingual ? <><div class="language-pair compact"><span class="language-marker" aria-hidden="true">EN</span><p class="panorama-turn" lang="en"><KnowledgeText segments={annotateEn(movement.turn, movement.id)} language="en" mode={mode} base={base} /></p><span class="language-marker" aria-hidden="true">中</span><p class="panorama-turn" lang="zh-CN"><KnowledgeText segments={annotateZh(chineseArticle.movements[movementIndex].turn, movement.id)} language="zh" mode={mode} base={base} /></p></div>{pair(movement.paragraphs, chineseArticle.movements[movementIndex].paragraphs).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><div lang="en"><PanoramaParagraph segments={annotateEn(left, movement.id)} base={base} mode={mode} language="en" /></div></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><div lang="zh-CN"><PanoramaParagraph segments={annotateZh(right, movement.id)} base={base} mode={mode} language="zh" /></div></> : null}</div>)}<div class="language-pair compact"><span class="language-marker" aria-hidden="true">EN</span><p class="panorama-coda" lang="en"><KnowledgeText segments={annotateEn(movement.coda, movement.id)} language="en" mode={mode} base={base} /></p><span class="language-marker" aria-hidden="true">中</span><p class="panorama-coda" lang="zh-CN"><KnowledgeText segments={annotateZh(chineseArticle.movements[movementIndex].coda, movement.id)} language="zh" mode={mode} base={base} /></p></div></> : <><p class="panorama-turn"><KnowledgeText segments={annotate(movement.turn, movement.id)} language={language} mode={mode} base={base} /></p>{movement.paragraphs.map((paragraph) => <PanoramaParagraph segments={annotate(paragraph, movement.id)} base={base} mode={mode} language={language} />)}<p class="panorama-coda"><KnowledgeText segments={annotate(movement.coda, movement.id)} language={language} mode={mode} base={base} /></p></>}
           </div>
         </section>
       ))}
 
-      <section class="panorama-diagnostic" aria-labelledby="diagnostic-title">
+      <section id="diagnostic" class="panorama-diagnostic" aria-labelledby="diagnostic-title">
         <p class="instrument-label">{t.diagnosis}</p>
-        <h2 id="diagnostic-title">{article.diagnosticTitle}</h2>
+        <LinkedHeading id="diagnostic-title" hash="diagnostic" label={article.diagnosticTitle} copyLabel={zh ? "复制本节链接" : "Copy link to this section"}>{article.diagnosticTitle}</LinkedHeading>
         {bilingual ? <h3 lang="zh-CN">{chineseArticle.diagnosticTitle}</h3> : null}
-        <p>{article.diagnosticIntro}</p>{bilingual ? <p lang="zh-CN">{chineseArticle.diagnosticIntro}</p> : null}
-        <ol>{article.diagnosticQuestions.map((question, index) => <li><span>{String(index + 1).padStart(2, "0")}</span><div><p>{question}</p>{bilingual ? <p lang="zh-CN">{chineseArticle.diagnosticQuestions[index]}</p> : null}</div></li>)}</ol>
+        <p><KnowledgeText segments={(bilingual ? annotateEn : annotate)(article.diagnosticIntro, "diagnostic")} language={bilingual ? "en" : language} mode={mode} base={base} /></p>{bilingual ? <p lang="zh-CN"><KnowledgeText segments={annotateZh(chineseArticle.diagnosticIntro, "diagnostic")} language="zh" mode={mode} base={base} /></p> : null}
+        <ol>{article.diagnosticQuestions.map((question, index) => <li><span>{String(index + 1).padStart(2, "0")}</span><div><p><KnowledgeText segments={(bilingual ? annotateEn : annotate)(question, "diagnostic")} language={bilingual ? "en" : language} mode={mode} base={base} /></p>{bilingual ? <p lang="zh-CN"><KnowledgeText segments={annotateZh(chineseArticle.diagnosticQuestions[index], "diagnostic")} language="zh" mode={mode} base={base} /></p> : null}</div></li>)}</ol>
       </section>
 
       <footer class="panorama-closing">
-        {bilingual ? pair(englishArticle.closing, chineseArticle.closing).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><p lang="en">{left}</p></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><p lang="zh-CN">{right}</p></> : null}</div>) : article.closing.map((paragraph) => <p>{paragraph}</p>)}
+        {bilingual ? pair(englishArticle.closing, chineseArticle.closing).map(({ left, right }) => <div class="language-pair">{left ? <><span class="language-marker" aria-hidden="true">EN</span><p lang="en"><KnowledgeText segments={annotateEn(left, "closing")} language="en" mode={mode} base={base} /></p></> : null}{right ? <><span class="language-marker" aria-hidden="true">中</span><p lang="zh-CN"><KnowledgeText segments={annotateZh(right, "closing")} language="zh" mode={mode} base={base} /></p></> : null}</div>) : article.closing.map((paragraph) => <p><KnowledgeText segments={annotate(paragraph, "closing")} language={language} mode={mode} base={base} /></p>)}
         <div class="panorama-next-actions">
           <div><p class="instrument-label">{t.continue}</p><h2>{t.continueTitle}</h2><p>{t.continueCopy}</p></div>
           <div><a class="primary-link" href={`${base}/${mode}/learn/${firstChapter.slug}/`}>{bilingual ? "Open Chapter 01 / 进入第 01 章" : t.start}<span>→</span></a><a class="text-link" href={homeHref}>{t.map}<span>↑</span></a></div>

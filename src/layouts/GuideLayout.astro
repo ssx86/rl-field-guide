@@ -2,6 +2,7 @@
 import "@/styles/guide-base.css";
 import "@/styles/guide.css";
 import "katex/dist/katex.min.css";
+import { KnowledgeLayer } from "@/components/KnowledgeLayer";
 import type { ReadingMode } from "@/content/reading-mode";
 
 interface Props {
@@ -11,11 +12,13 @@ interface Props {
   canonicalPath: string;
   alternatePaths?: readonly { hreflang: string; path: string }[];
   languageHashMode?: "shared" | "all";
+  knowledgeSlug?: string;
 }
 
-const { title, description, mode, canonicalPath, alternatePaths = [], languageHashMode = "shared" } = Astro.props;
+const { title, description, mode, canonicalPath, alternatePaths = [], languageHashMode = "shared", knowledgeSlug } = Astro.props;
 const htmlLang = mode === "zh" ? "zh-CN" : "en";
 const canonical = new URL(canonicalPath, Astro.site);
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <!doctype html>
@@ -42,6 +45,7 @@ const canonical = new URL(canonicalPath, Astro.site);
   <body data-language-hash-mode={languageHashMode}>
     <a class="skip-link" href="#main-content">{mode === "zh" ? "跳到主要内容" : mode === "bilingual" ? "Skip to content / 跳到正文" : "Skip to main content"}</a>
     <slot />
+    {knowledgeSlug ? <KnowledgeLayer mode={mode} currentSlug={knowledgeSlug} base={base} client:load /> : null}
     <script is:inline>
       const syncLanguageToggleHashes = () => document.querySelectorAll("[data-language-toggle]").forEach((link) => {
         const sharedChapterAnchors = new Set(["#diagram", "#example", "#equations", "#boundary"]);
@@ -71,6 +75,16 @@ const canonical = new URL(canonicalPath, Astro.site);
         button.setAttribute("aria-pressed", String(isDark));
         const label = isDark ? button.dataset.lightLabel : button.dataset.darkLabel;
         if (label) { button.setAttribute("aria-label", label); button.textContent = label; }
+      });
+      document.addEventListener("click", (event) => {
+        const anchor = event.target instanceof Element ? event.target.closest("[data-heading-anchor]") : null;
+        if (!(anchor instanceof HTMLAnchorElement)) return;
+        const url = new URL(anchor.href);
+        try {
+          navigator.clipboard?.writeText(url.toString());
+          anchor.dataset.copied = "true";
+          window.setTimeout(() => { delete anchor.dataset.copied; }, 1200);
+        } catch {}
       });
     </script>
   </body>

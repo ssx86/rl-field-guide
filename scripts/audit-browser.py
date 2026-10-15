@@ -74,7 +74,7 @@ with sync_playwright() as p:
 
     page.goto(f"{BASE}/en/learn/rl-panorama/#models", wait_until="networkidle")
     assert page.locator(".panorama-movement").count() == 9
-    assert page.locator(".panorama-deep-link").count() >= 20
+    assert page.locator(".knowledge-link-chapter").count() >= 20
     assert page.locator(".panorama-diagnostic li").count() == 7
     assert page.locator(".panorama-prose > .panorama-turn").count() == 9
     assert page.locator(".panorama-prose > .panorama-coda").count() == 9
@@ -106,7 +106,10 @@ with sync_playwright() as p:
         assert page.locator("main .static-evidence").count() == 1
         assert page.locator("main .longform-prose").count() >= 2
         assert page.locator("main button, main input, main select, main textarea").count() == 0
-        assert page.locator("astro-island").count() == 0
+        assert page.locator("astro-island").count() == 1
+        assert page.locator("[data-knowledge-term]").count() >= 1
+        assert page.locator(".knowledge-tip-definition").count() == 1
+        assert page.locator("[data-heading-anchor]").count() >= 4
         assert page.locator(".static-evidence-steps li").count() >= 3
         assert page.locator(".lesson-references a").count() >= 2
         assert page.locator("#mechanism .mechanism-passage").count() == 4
@@ -123,7 +126,10 @@ with sync_playwright() as p:
         assert page.locator(".narrative-section").count() >= 2
         assert page.locator("main .longform-prose").count() >= 2
         assert page.locator("main button, main input, main select, main textarea").count() == 0
-        assert page.locator("astro-island").count() == 0
+        assert page.locator("astro-island").count() == 1
+        assert page.locator("[data-knowledge-term]").count() >= 1
+        assert page.locator(".knowledge-tip-definition").count() == 1
+        assert page.locator("[data-heading-anchor]").count() >= 4
         assert page.locator(".lesson-references a").count() >= 2
         navigation = page.locator(".chapter-outline-desktop a")
         assert navigation.count() >= 4
@@ -145,9 +151,23 @@ with sync_playwright() as p:
         assert page.locator(".chapter-outline-desktop a").count() >= 5
         assert page.locator(".chapter-outline-mobile").count() == 1
         assert page.locator(".katex-error").count() == 0
-        assert page.locator("astro-island").count() == 0
+        assert page.locator("astro-island").count() == 1
+        assert page.locator("[data-knowledge-term]").count() >= 2
+        assert page.locator(".knowledge-tip-definition").count() == 1
+        assert page.locator("[data-heading-anchor]").count() >= 4
 
     page.goto(f"{BASE}/en/learn/tabular-control/", wait_until="networkidle")
+    first_term = page.locator("[data-knowledge-term]").first
+    first_term.hover()
+    page.locator(".knowledge-hover-card[data-state='open']").wait_for(state="visible")
+    assert page.locator(".knowledge-card-definition").count() == 1
+    page.locator("h1").hover()
+    first_term.focus()
+    page.locator(".knowledge-hover-card[data-state='open']").wait_for(state="visible")
+    page.keyboard.press("Escape")
+    heading_anchor = page.locator("[data-heading-anchor]").first
+    heading_anchor.click()
+    assert heading_anchor.get_attribute("data-copied") == "true"
     assert page.locator(".diagram-formula-compare .diagram-items > li").count() == 4
     assert page.locator(".diagram-formula-compare .katex-display").count() == 4
     assert page.locator(".diagram-formula-compare .katex-error").count() == 0
@@ -174,6 +194,16 @@ with sync_playwright() as p:
 
     assert_formula_cards_are_readable(page, f"{BASE}/en/learn/method-selection/")
     assert_formula_cards_are_readable(page, f"{BASE}/zh/learn/method-selection/")
+
+    mobile_context = browser.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    mobile_page = mobile_context.new_page()
+    mobile_page.goto(f"{BASE}/bilingual/learn/tabular-control/", wait_until="networkidle")
+    mobile_page.locator("[data-knowledge-term]").first.click()
+    mobile_page.locator(".knowledge-sheet-content[data-state='open']").wait_for(state="visible")
+    assert mobile_page.locator(".knowledge-sheet-content .knowledge-card-definition [lang='en']").count() == 1
+    assert mobile_page.locator(".knowledge-sheet-content .knowledge-card-definition [lang='zh-CN']").count() == 1
+    assert mobile_page.evaluate("document.documentElement.scrollWidth === document.documentElement.clientWidth")
+    mobile_context.close()
 
     page.goto(f"{BASE}/zh/learn/continuous-control/#diagram", wait_until="networkidle")
     language_toggle = page.get_by_role("link", name="Read this chapter in English")
