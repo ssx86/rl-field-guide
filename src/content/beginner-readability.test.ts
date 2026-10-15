@@ -23,6 +23,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "dqn-family",
   "reinforce-policy-gradient",
   "actor-critic-gae",
+  "trpo-ppo",
+  "continuous-control",
+  "distributed-rl",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
