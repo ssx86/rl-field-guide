@@ -10,6 +10,10 @@ const REWRITTEN_FOR_BEGINNERS = [
   "return-horizon",
   "probability-expectation",
   "bandits-contextual-bandits",
+  "mdp-state-design",
+  "value-bellman",
+  "dynamic-programming",
+  "monte-carlo",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
