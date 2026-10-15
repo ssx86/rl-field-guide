@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readdirSync } from "node:fs";
+import { resolve } from "node:path";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
@@ -12,6 +14,16 @@ describe("bilingual chapter corpus", () => {
   it("requires an individually authored Chinese manuscript for every chapter", () => {
     expect(AUTHORED_CHINESE_SLUGS).toHaveLength(46);
     expect(new Set(AUTHORED_CHINESE_SLUGS)).toEqual(new Set(CURRICULUM.map((chapter) => chapter.slug)));
+  });
+
+  it("stores every Chinese manuscript in its own chapter-local source file", () => {
+    const files = readdirSync(resolve("src/content/zh-manuscripts/chapters"))
+      .filter((file) => file.endsWith(".ts") && file !== "index.ts")
+      .map((file) => file.replace(/\.ts$/, ""))
+      .sort();
+
+    expect(files).toHaveLength(46);
+    expect(files).toEqual(CURRICULUM.map((chapter) => chapter.slug).sort());
   });
 
   it("contains no legacy generator scaffolding or duplicated teaching paragraphs", () => {

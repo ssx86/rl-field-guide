@@ -2,24 +2,8 @@ import type { ChapterArticle } from "@/content/chapter-article";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { CURRICULUM } from "@/content/curriculum";
 import type { Language } from "@/content/bilingual-course";
-import { PART_ONE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-1";
-import { PART_TWO_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-2";
-import { PART_THREE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-3";
-import { PART_FOUR_FIVE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-4-5";
-import { PART_SIX_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-6";
-import { PART_SEVEN_EIGHT_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-7-8";
-import { PART_NINE_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/part-9";
-import { applyChineseManuscript, type ChineseManuscript } from "@/content/zh-manuscripts/types";
-
-const AUTHORED_MANUSCRIPTS: Readonly<Record<string, ChineseManuscript>> = {
-  ...PART_ONE_CHINESE_MANUSCRIPTS,
-  ...PART_TWO_CHINESE_MANUSCRIPTS,
-  ...PART_THREE_CHINESE_MANUSCRIPTS,
-  ...PART_FOUR_FIVE_CHINESE_MANUSCRIPTS,
-  ...PART_SIX_CHINESE_MANUSCRIPTS,
-  ...PART_SEVEN_EIGHT_CHINESE_MANUSCRIPTS,
-  ...PART_NINE_CHINESE_MANUSCRIPTS,
-};
+import { AUTHORED_CHINESE_MANUSCRIPTS as AUTHORED_MANUSCRIPTS } from "@/content/zh-manuscripts/chapters";
+import { applyChineseManuscript } from "@/content/zh-manuscripts/types";
 
 export const AUTHORED_CHINESE_SLUGS = Object.keys(AUTHORED_MANUSCRIPTS);
 
