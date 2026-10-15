@@ -14,6 +14,9 @@ const REWRITTEN_FOR_BEGINNERS = [
   "value-bellman",
   "dynamic-programming",
   "monte-carlo",
+  "td-traces",
+  "tabular-control",
+  "off-policy-deadly-triad",
 ] as const;
 
 function visibleProse(chapter: ChapterArticle): string[] {
