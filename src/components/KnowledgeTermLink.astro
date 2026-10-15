@@ -1,0 +1,25 @@
+---
+import { KNOWLEDGE_TERMS_BY_ID, knowledgeTermHref, type KnowledgeLanguage } from "@/content/knowledge-graph";
+import type { ReadingMode } from "@/content/reading-mode";
+
+interface Props {
+  readonly termId: string;
+  readonly text: string;
+  readonly language: KnowledgeLanguage;
+  readonly mode: ReadingMode;
+  readonly base: string;
+}
+
+const { termId, text, language, mode, base } = Astro.props;
+const term = KNOWLEDGE_TERMS_BY_ID[termId];
+if (!term) throw new Error(`Unknown knowledge term: ${termId}`);
+const accessibleDefinition = language === "zh" ? term.definition.zh : term.definition.en;
+const separator = language === "zh" ? "：" : ": ";
+---
+
+<a
+  class="knowledge-term"
+  href={knowledgeTermHref(base, mode, term)}
+  data-knowledge-term={term.id}
+  aria-label={`${text}${separator}${accessibleDefinition}`}
+>{text}</a>
