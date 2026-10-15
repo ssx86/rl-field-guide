@@ -16,6 +16,8 @@ describe("bilingual chapter corpus", () => {
       "return-horizon",
       "probability-expectation",
       "bandits-contextual-bandits",
+      "mdp-state-design",
+      "value-bellman",
       "tabular-control",
     ];
 
