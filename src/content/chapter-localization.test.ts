@@ -22,6 +22,11 @@ describe("bilingual chapter corpus", () => {
       "monte-carlo",
       "td-traces",
       "tabular-control",
+      "off-policy-deadly-triad",
+      "linear-approximation",
+      "neural-approximation",
+      "dqn",
+      "dqn-family",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
