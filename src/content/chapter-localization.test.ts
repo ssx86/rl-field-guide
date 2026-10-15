@@ -1,66 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { readdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { CHAPTER_ARTICLES } from "@/content/chapter-articles";
 import { AUTHORED_CHINESE_SLUGS, ZH_CHAPTER_ARTICLES } from "@/content/chapter-localization";
 import { CURRICULUM } from "@/content/curriculum";
-import { AUTHORED_NARRATIVE_SLUGS } from "@/content/zh-manuscripts/chapter-narrative";
-import { AUTHORED_CHAPTER_PROSE } from "@/content/zh-manuscripts/chapter-prose";
 import { AUTHORED_CHINESE_MANUSCRIPTS } from "@/content/zh-manuscripts/chapters";
 
 describe("bilingual chapter corpus", () => {
-  it("keeps completed rewrites in their chapter-local manuscript instead of the central prose map", () => {
-    const completedChapterLocalRewrites = [
-      "before-rl",
-      "interaction-loop",
-      "return-horizon",
-      "probability-expectation",
-      "bandits-contextual-bandits",
-      "mdp-state-design",
-      "value-bellman",
-      "dynamic-programming",
-      "monte-carlo",
-      "td-traces",
-      "tabular-control",
-      "off-policy-deadly-triad",
-      "linear-approximation",
-      "neural-approximation",
-      "dqn",
-      "dqn-family",
-      "reinforce-policy-gradient",
-      "actor-critic-gae",
-      "trpo-ppo",
-      "continuous-control",
-      "distributed-rl",
-      "pomdp-memory",
-      "deep-exploration",
-      "long-horizon-credit",
-      "mcts-alphazero",
-      "dyna-mpc",
-      "latent-world-models",
-      "behavior-cloning-dagger",
-      "inverse-rl-gail",
-      "offline-rl",
-      "decision-transformer",
-      "off-policy-evaluation",
-      "hierarchical-rl",
-      "multi-agent-rl",
-      "transfer-meta-generalization",
-      "reward-design",
-      "safe-robust-risk",
-      "evaluation-reproducibility",
-      "rl-systems",
-      "llm-as-rl",
-      "rlhf-ppo",
-      "direct-preference",
-      "rlaif-judges",
-      "rlvr-grpo",
-      "test-time-compute",
-      "method-selection",
-    ];
+  it("requires every rewrite to live in its chapter file without a shared-prose fallback", () => {
+    for (const { slug } of CURRICULUM) {
+      const manuscript = AUTHORED_CHINESE_MANUSCRIPTS[slug];
+      const source = readFileSync(resolve("src/content/zh-manuscripts/chapters", `${slug}.ts`), "utf8");
 
-    for (const slug of completedChapterLocalRewrites) {
-      expect(AUTHORED_CHINESE_MANUSCRIPTS[slug].narrative, slug).toBeDefined();
+      expect(manuscript.narrative, slug).toBeDefined();
+      expect(source, slug).toMatch(/["']?narrative["']?\s*:/);
+      expect(source, slug).not.toMatch(/chapter-(?:narrative|prose)/);
     }
   });
 
@@ -85,8 +39,6 @@ describe("bilingual chapter corpus", () => {
   });
 
   it("gives every Chinese chapter an authored, non-uniform narrative flow", () => {
-    expect(new Set(AUTHORED_NARRATIVE_SLUGS)).toEqual(new Set(CURRICULUM.map((chapter) => chapter.slug)));
-
     const signatures = new Set<string>();
     for (const chapter of ZH_CHAPTER_ARTICLES) {
       expect(chapter.narrative, chapter.slug).toBeDefined();
@@ -107,25 +59,22 @@ describe("bilingual chapter corpus", () => {
   });
 
   it("renders the independently rewritten prose for every narrative section and boundary", () => {
-    const curriculumSlugs = CURRICULUM.map((chapter) => chapter.slug);
-    expect(Object.keys(AUTHORED_CHAPTER_PROSE).sort()).toEqual([...curriculumSlugs].sort());
-
     let renderedParagraphs = 0;
     for (const chapter of ZH_CHAPTER_ARTICLES) {
-      const authored = AUTHORED_CHAPTER_PROSE[chapter.slug];
-      const chapterLocalNarrative = AUTHORED_CHINESE_MANUSCRIPTS[chapter.slug].narrative;
-      expect(authored, chapter.slug).toBeDefined();
+      const manuscript = AUTHORED_CHINESE_MANUSCRIPTS[chapter.slug];
+      const chapterLocalNarrative = manuscript.narrative;
 
       const renderedSections = (chapter.narrative ?? []).filter((block) => block.type === "section");
-      const expectedSections = (chapterLocalNarrative ?? []).filter((block) => block.type === "section");
+      const expectedSections = chapterLocalNarrative.filter((block) => block.type === "section");
       expect(renderedSections.map((block) => block.type === "section" ? block.id : ""), chapter.slug)
-        .toEqual(chapterLocalNarrative ? expectedSections.map((block) => block.type === "section" ? block.id : "") : Object.keys(authored.sections));
+        .toEqual(expectedSections.map((block) => block.type === "section" ? block.id : ""));
 
       for (const block of renderedSections) {
         if (block.type !== "section") continue;
         const chapterLocalSection = expectedSections.find((candidate) => candidate.type === "section" && candidate.id === block.id);
+        expect(chapterLocalSection?.type, `${chapter.slug}: ${block.id}`).toBe("section");
         expect(block.paragraphs, `${chapter.slug}: ${block.id}`).toEqual(
-          chapterLocalNarrative && chapterLocalSection?.type === "section" ? chapterLocalSection.paragraphs : authored.sections[block.id],
+          chapterLocalSection?.type === "section" ? chapterLocalSection.paragraphs : [],
         );
         expect(block.paragraphs.length, `${chapter.slug}: ${block.id}`).toBeGreaterThanOrEqual(2);
         for (const paragraph of block.paragraphs) {
@@ -134,7 +83,7 @@ describe("bilingual chapter corpus", () => {
         }
       }
 
-      expect(chapter.boundary, chapter.slug).toEqual(chapterLocalNarrative ? AUTHORED_CHINESE_MANUSCRIPTS[chapter.slug].boundary : authored.boundary);
+      expect(chapter.boundary, chapter.slug).toEqual(manuscript.boundary);
       expect(chapter.boundary.paragraphs, `${chapter.slug}: boundary`).toHaveLength(2);
       renderedParagraphs += chapter.boundary.paragraphs.length;
     }
@@ -153,13 +102,10 @@ describe("bilingual chapter corpus", () => {
       "值得注意的是",
     ];
 
-    for (const [slug, authored] of Object.entries(AUTHORED_CHAPTER_PROSE)) {
-      const prose = [
-        ...Object.values(authored.sections).flat(),
-        ...authored.boundary.paragraphs,
-      ].join("\n");
+    for (const chapter of ZH_CHAPTER_ARTICLES) {
+      const prose = JSON.stringify(chapter);
       for (const phrase of disallowedPhrases) {
-        expect(prose, `${slug}: ${phrase}`).not.toContain(phrase);
+        expect(prose, `${chapter.slug}: ${phrase}`).not.toContain(phrase);
       }
     }
   });
@@ -181,6 +127,7 @@ describe("bilingual chapter corpus", () => {
         chapter.bridge,
         ...chapter.situation.paragraphs,
         ...chapter.mechanism.sections.flatMap((section) => section.paragraphs),
+        ...(chapter.narrative ?? []).flatMap((block) => block.type === "section" ? block.paragraphs : []),
         ...chapter.boundary.paragraphs,
         chapter.nextBridge,
       );
