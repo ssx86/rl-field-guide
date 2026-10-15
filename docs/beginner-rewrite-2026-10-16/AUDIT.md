@@ -33,8 +33,9 @@
 6. 第五部分三章：`mcts-alphazero`、`dyna-mpc` 与 `latent-world-models` 已完成中英文重写，并加入同一回归测试。
 7. 第六部分五章：`behavior-cloning-dagger`、`inverse-rl-gail`、`offline-rl`、`decision-transformer` 与 `off-policy-evaluation` 已完成中英文重写，并加入同一回归测试。
 8. 第七部分三章：`hierarchical-rl`、`multi-agent-rl` 与 `transfer-meta-generalization` 已完成中英文重写，并加入同一回归测试。
-9. 第八部分起：继续按课程顺序处理奖励、安全、评估、系统与语言模型后训练。
-10. 全部完成后重新进行中英文对齐、术语、公式、移动端和公开页面验收。
+9. 第八部分四章：`reward-design`、`safe-robust-risk`、`evaluation-reproducibility` 与 `rl-systems` 已完成中英文重写，并加入同一回归测试。
+10. 第九部分七章：继续按课程顺序处理语言模型后训练、偏好学习、可验证奖励与测试时计算。
+11. 全部完成后重新进行中英文对齐、术语、公式、移动端和公开页面验收。
 
 ## 验收线
 

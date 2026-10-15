@@ -44,6 +44,8 @@ const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "meta 82 > baseline 80": "元学习方法 82 > 常规基线 80",
   "report full curve, variance, and data cost": "报告完整适应曲线、方差与数据成本",
   "mean prefers B; tail criterion prefers A": "均值指标偏好 B；尾部风险指标偏好 A",
+  "median=80": "中位数=80",
+  "2/5=40% below 50": "2/5=40% 低于 50",
   "mean=median=60; failure rate=0": "均值=中位数=60；失败率=0",
   "store terminated=false, truncated=true": "存储 terminated=false、truncated=true",
   "sample '5','.'; reward=0": "采样得到 ‘5’、‘.’；奖励=0",

@@ -159,6 +159,7 @@ describe("bilingual chapter corpus", () => {
       "multi-agent-rl": ["QMIX", "MADDPG"],
       "reward-design": ["势能", "塑形后的奖励"],
       "safe-robust-risk": ["CMDP", "拉格朗日目标"],
+      "evaluation-reproducibility": ["置信区间", "四分位均值"],
       "rl-systems": ["终止掩码", "实验的身份"],
       "llm-as-rl": ["token", "SFT"],
       "direct-preference": ["DPO", "SimPO"],

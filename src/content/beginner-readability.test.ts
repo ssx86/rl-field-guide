@@ -40,12 +40,20 @@ const REWRITTEN_FOR_BEGINNERS = [
   "hierarchical-rl",
   "multi-agent-rl",
   "transfer-meta-generalization",
+  "reward-design",
+  "safe-robust-risk",
+  "evaluation-reproducibility",
+  "rl-systems",
 ] as const;
 
 const FORMULA_TERMS_TO_DEFINE_FIRST: Readonly<Record<string, readonly string[]>> = {
   "hierarchical-rl": ["选项（Option）"],
   "multi-agent-rl": ["Value-Decomposition Networks", "Multi-Agent Deep Deterministic Policy Gradient"],
   "transfer-meta-generalization": ["Meta-Learning", "Domain Randomization"],
+  "reward-design": ["势函数奖励塑形（Potential-Based Reward Shaping）"],
+  "safe-robust-risk": ["约束马尔可夫决策过程（Constrained Markov Decision Process，CMDP）", "拉格朗日方法（Lagrangian Method）"],
+  "evaluation-reproducibility": ["置信区间（Confidence Interval，CI）", "四分位均值（Interquartile Mean，IQM）"],
+  "rl-systems": ["终止（Termination）", "哈希值（Hash）"],
 };
 
 function visibleProse(chapter: ChapterArticle): string[] {
