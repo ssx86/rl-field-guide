@@ -43,6 +43,8 @@ describe("bilingual chapter corpus", () => {
       "offline-rl",
       "decision-transformer",
       "off-policy-evaluation",
+      "hierarchical-rl",
+      "multi-agent-rl",
     ];
 
     for (const slug of completedChapterLocalRewrites) {
