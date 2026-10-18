@@ -1,0 +1,43 @@
+---
+// 纯中文教程目录页
+import { CH1 } from "../../content/zh-chapters/ch01";
+
+const chapters = [CH1];
+const base = "/rl-field-guide";
+const parts = [...new Set(chapters.map(c => c.part))];
+---
+
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>强化学习指南 · 纯中文版</title>
+  <meta name="description" content="从零到实践的强化学习中文教程" />
+</head>
+<body>
+  <div style="max-width:680px;margin:0 auto;padding:40px 24px;font-family:Georgia,serif;line-height:1.8;color:#1a1d2e">
+    <p style="font-family:monospace;font-size:11px;letter-spacing:.3em;color:#a85c04">强化学习指南</p>
+    <h1 style="font-size:32px;font-weight:800;letter-spacing:-.02em;margin:8px 0 12px">从零到实践</h1>
+    <p style="color:#66706b;font-size:16px">一篇一章，读完就能懂。</p>
+
+    <div style="margin-top:32px">
+      {parts.map(p => (
+        <div style="margin-bottom:28px">
+          <p style="font-family:monospace;font-size:12px;color:#a85c04;letter-spacing:.2em;margin-bottom:8px">
+            第 {p} 部分 · {chapters.find(c => c.part === p)?.partTitle}
+          </p>
+          {chapters.filter(c => c.part === p).map(c => (
+            <a
+              href={`${base}/zh/${c.slug}`}
+              style="display:block;padding:12px 16px;border:1px solid #dfe4e1;border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;transition:border-color .2s"
+            >
+              <b style="font-size:16px">{c.title}</b>
+              <span style="display:block;font-size:13px;color:#66706b;margin-top:2px">{c.intro}</span>
+            </a>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</body>
+</html>
