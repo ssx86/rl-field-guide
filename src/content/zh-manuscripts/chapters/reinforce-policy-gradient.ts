@@ -78,7 +78,7 @@ export const ZH_MANUSCRIPT = {
     { type: "worked-example" },
     { type: "equations" },
     { type: "section", id: "entropy-keeps-options-open", title: "别让几次偶然成功过早关掉其他选择", paragraphs: [
-      "有限样本可能让策略很快把大部分概率压到一个动作上。其他动作一旦几乎不再出现，就失去了提供反证的机会。熵奖励（Entropy Bonus）会暂时鼓励较宽的概率分布，为探索保留空间。",
+      "有限样本可能让策略很快把大部分概率压到一个动作上。其他动作一旦几乎不再出现，就失去了提供反证的机会。熵加成（Entropy Bonus）会暂时鼓励较宽的概率分布，为探索保留空间。", // <!-- Li Wei fix -->
       "熵系数表达的是任务回报与探索宽度之间的真实取舍。系数太小，策略可能过早收缩；系数太大，策略又迟迟不肯作出明确选择。它只能改变采样，不能修复错误奖励或缺失的状态信息。",
     ] },
     { type: "boundary" },

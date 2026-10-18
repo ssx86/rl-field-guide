@@ -22,7 +22,7 @@ export const PART_ONE_ARTICLES = [
     },
     diagram: {
       title: "Ask four questions before choosing RL",
-      caption: "A number called reward is not enough. RL becomes a candidate only when the system must improve a chain of choices from their results.",
+      caption: "A number called reward — the score we have been discussing — is not enough on its own. RL becomes a candidate only when the system must improve a chain of choices from their results.", // Marcus P1 fix
       items: [
         { label: "Is the correct answer already supplied?", value: "Yes → try supervised learning", note: "A labeled example tells the system what answer it should have given." },
         { label: "Are all the rules already known?", value: "Yes → try planning", note: "The system can search the known model instead of learning the rules by trial and error." },
@@ -45,10 +45,15 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "What changes when a problem really does need RL?",
       sections: [
-        { title: "A policy, not a prediction", paragraphs: ["A predictor gives an estimate, such as 'this road will take ten minutes.' A policy chooses what to do, such as 'take this road.' That choice changes where the robot goes and what data it sees next."] },
-        { title: "Results, not answer keys", paragraphs: ["After a turn, the robot may lose one minute, reach a new place, and finish the delivery much later. The world does not mark the turn as correct or wrong. The learner has to work out which earlier actions helped the final result. This is called credit assignment."] },
-        { title: "Trying changes what you will see", paragraphs: ["If the robot never tries an unfamiliar street, it will never learn whether that street is faster. Trying it may hurt today's delivery and help tomorrow's choices. This is why exploration has a real cost."] },
-        { title: "The trip matters more than any single turn", paragraphs: ["One turn can earn a small reward and still ruin the delivery. RL therefore often adds rewards across a sequence. That total is called return. A return is useful for learning, but people must still check whether the number matches the result they truly care about."] },
+        { title: "From predictions to decisions", paragraphs: [
+          "A predictor tells you what will happen. A policy tells you what to do. The difference sounds small, but it changes everything about how the system learns. When a robot decides to turn left, that decision moves it to a new part of the building, changes its battery level, and determines what options remain open for the next choice. A prediction can be wrong and nothing else changes. A policy decision, once executed, reshapes the world the learner will face.",
+          "Because the world does not come with answer keys, the learner has to work backward from outcomes. If a delivery took forty minutes and the robot made seven turns, which of those turns helped, and which wasted time? Nobody marks each turn as correct or incorrect. The learner must distribute credit across the whole sequence — a problem so fundamental it has its own name: credit assignment.",
+          "And here is the twist that separates reinforcement learning from every other kind of machine learning: the robot's own choices determine what data it will see. If it never turns onto Maple Street, it will never know whether Maple Street is faster. To find out, it has to risk a slower delivery today. That trade-off — the cost of gathering information versus the cost of using what you already know — is the exploration problem, and it has no counterpart in supervised learning.",
+        ]},
+        { title: "Judging a chain, not a single step", paragraphs: [
+          "One more shift in perspective completes the picture. A single turn might look good — the robot moves, it feels productive — and still ruin the delivery because it led into a dead end. Conversely, a turn that feels wasteful now might be the only path to a much better route three steps later. Reinforcement learning therefore evaluates choices by their long-term consequences, not their immediate rewards. The sum of rewards across an entire trip is called the return, and maximizing return — not any single reward — is the goal.",
+          "But be careful. A return is just a number. It is useful for learning, but it does not automatically equal what people actually care about. If you design the rewards poorly — say, giving one point per package delivered — the system may learn to deliver many tiny packages and ignore the urgent ones. The gap between what you can measure and what you truly want is the reward design problem, and we will return to it in Part 8.",
+        ]},
       ],
     },
     equations: [],
@@ -94,7 +99,7 @@ export const PART_ONE_ARTICLES = [
       setup: "The robot is in hallway A with 40% battery. It chooses right. The move costs one energy point. It reaches hallway B 80% of the time and slips in place 20% of the time.",
       prediction: "Which facts were known before the choice, and which facts appeared only after it?",
       steps: [
-        { label: "Write down what was known", calculation: "Sₜ = (corridor A, battery 0.40)", explanation: "The robot uses this information to choose. If speed or a hidden obstacle also changes the result, this pair is not enough to be a full state." },
+        { label: "Write down what was known", calculation: "Sₜ = (hallway A, battery 0.40)", explanation: "The robot uses this information to choose. If speed or a hidden obstacle also changes the result, this pair is not enough to be a full state." }, // Marcus P1 fix
         { label: "Write down the choice", calculation: "Aₜ = right", explanation: "The policy chose 'right.' It did not choose 'arrive at B,' because slipping is outside its control." },
         { label: "Let the world produce one result", calculation: "P(B | A, right)=0.8; P(A | A, right)=0.2", explanation: "The same action can lead to B or leave the robot in A. The record contains the one result that happened this time." },
         { label: "Put the cost after the action", calculation: "Rₜ₊₁ = −1", explanation: "The energy cost appears because the robot tried the move. We therefore record it after Aₜ, together with the next state." },
@@ -268,7 +273,7 @@ export const PART_ONE_ARTICLES = [
       title: "Four rules choose what to try next",
       caption: "Each rule uses the current reward estimates. They differ in how they make room for choices that are still uncertain.",
       items: [
-        { label: "Greedy", value: "choose max Q", note: "Always uses the largest current estimate and can get stuck after an early lucky result." },
+        { label: "Greedy", value: "choose max Q", note: "Q(a) is the current estimate of option a's average reward. Always uses the largest current estimate and can get stuck after an early lucky result." }, // Marcus P1 fix
         { label: "Epsilon-greedy", value: "random with probability ε", note: "Usually uses the winner and sometimes chooses a random option." },
         { label: "Upper Confidence Bound (UCB)", value: "estimate + uncertainty bonus", note: "Favors an option when it looks good or has not been tested much." },
         { label: "Thompson sampling", value: "sample a possible model, then act", note: "Tries each option as often as the current evidence makes it look best." },

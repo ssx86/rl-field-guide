@@ -5,7 +5,7 @@ const CHINESE_CALCULATION_COPY: Readonly<Record<string, string>> = {
   "features → estimated minutes": "特征 → 预计分钟数",
   "route choice → new location and traffic exposure → later choices": "路线选择 → 新位置与拥堵暴露 → 后续选择",
   "compare against rule, prediction-plus-planning, and contextual-bandit baselines": "分别与固定规则、预测后规划、情境赌博机基线比较",
-  "Sₜ = (corridor A, battery 0.40)": "Sₜ =（走廊 A，电量 0.40）",
+  "Sₜ = (hallway A, battery 0.40)": "Sₜ =（走廊 A，电量 0.40）", // Marcus P1 fix: key follows the en corridor→hallway rename
   "sample mean = (r₁ + … + rₙ)/n": "样本均值 = (r₁ + … + rₙ)/n",
   "S = (temperature, trend)": "S =（温度，变化趋势）",
   "π(stop|80,rising) may exceed π(stop|80,falling)": "π(停止|80,上升) 可能大于 π(停止|80,下降)",

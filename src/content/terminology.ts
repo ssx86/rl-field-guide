@@ -9,7 +9,7 @@ export const CHAPTER_TERMS: Readonly<Record<string, readonly ChapterTerm[]>> = {
   "interaction-loop": [{ zh: "智能体—环境交互", en: "agent–environment interaction" }],
   "return-horizon": [{ zh: "回报", en: "return" }, { zh: "折扣因子", en: "discount factor" }],
   "probability-expectation": [{ zh: "期望", en: "expectation" }, { zh: "随机策略", en: "stochastic policy" }],
-  "bandits-contextual-bandits": [{ zh: "多臂老虎机", en: "multi-armed bandit", acronym: "MAB" }, { zh: "情境老虎机", en: "contextual bandit" }],
+  "bandits-contextual-bandits": [{ zh: "多臂老虎机", en: "multi-armed bandit", acronym: "MAB" }, { zh: "上下文老虎机", en: "contextual bandit" }], // Marcus P1 fix
   "mdp-state-design": [{ zh: "马尔可夫决策过程", en: "Markov decision process", acronym: "MDP" }],
   "value-bellman": [{ zh: "贝尔曼方程", en: "Bellman equation" }, { zh: "动作价值", en: "action value" }],
   "dynamic-programming": [{ zh: "动态规划", en: "dynamic programming", acronym: "DP" }],
@@ -145,7 +145,7 @@ export const CHAPTER_TERMS: Readonly<Record<string, readonly ChapterTerm[]>> = {
     { zh: "在线强化学习", en: "online reinforcement learning", acronym: "online RL" },
     { zh: "离线强化学习", en: "offline reinforcement learning", acronym: "offline RL" },
     { zh: "行为克隆", en: "behavior cloning", acronym: "BC" },
-    { zh: "情境赌博机", en: "contextual bandit" },
+    { zh: "上下文老虎机", en: "contextual bandit" }, // Marcus P1 fix
   ],
 };
 

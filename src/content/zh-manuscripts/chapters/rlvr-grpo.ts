@@ -47,7 +47,7 @@ export const ZH_MANUSCRIPT = {
         "如果过程评审器只喜欢整齐的解释，模型可能学会表演推理，而不是真正算对。中间分数要与最终结果、步骤扰动和独立检查一起验证。",
       ] },
       { title: "GRPO 用同一道题的其他回答作为基线", paragraphs: [
-        "组相对策略优化（Group Relative Policy Optimization，GRPO）会为同一题采样多份回答，再把每份奖励与组内奖励比较。不同题目的难度因此不会直接混在一起。",
+        "组相对策略优化（Group Relative Policy Optimization，GRPO）会为同一题采样多份回答，再把每个奖励与组内奖励比较。不同题目的难度因此不会直接混在一起。", // <!-- Li Wei fix -->
         "这种做法通常不需要单独训练评价器。正式目标还会用库尔贝克—莱布勒散度（Kullback–Leibler Divergence，KL Divergence）限制策略漂移，但组太小、奖励全相同或方差很小，仍会让更新变弱。",
       ] },
       { title: "策略可能学会骗过检查器，而不是解决任务", paragraphs: [

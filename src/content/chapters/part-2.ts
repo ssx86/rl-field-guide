@@ -86,7 +86,7 @@ export const PART_TWO_ARTICLES = [
     },
     workedExample: {
       title: "Give both possible door results their proper weight",
-      setup: "A robot stands at position A. Moving right usually reaches the charging dock worth 5 points, but 20% of the time it slips to a waiting area worth 1. The move itself costs nothing. Gamma is 0.9.",
+      setup: "A robot stands at position A. Moving right usually reaches the charging dock, but 20% of the time it slips to a waiting area. The move itself costs nothing: the transition reward for reaching the dock is 0, and v(dock)=5 (the dock is an absorbing state where the robot stays to charge). The waiting area likewise has v(waiting)=1. Gamma is 0.9.", // Marcus P0 fix: clarify reward vs value so 0.8×(0+0.9×5)=3.6 is reconstructible
       prediction: "Should we use only the common result, average the two results equally, or use their chances?",
       steps: [
         { label: "Goal result", calculation: "0.8×(0+0.9×5)=3.6", explanation: "The goal is common, so it gets weight 0.8. Its later value also gets the discount 0.9." },
@@ -97,7 +97,7 @@ export const PART_TWO_ARTICLES = [
       result: "The value 3.78 is an average forecast. A real trip will reach one result, not 3.78 points of a place.",
     },
     mechanism: {
-      introduction: "The symbols are easier when each one is tied to a question.",
+      introduction: "The symbols are easier when each one is tied to a question. Convention: lowercase v_π, q_π denote true values under policy π; uppercase V, Q denote the learner's current estimates. This book uses uppercase from the next chapter onward.", // Marcus P1 fix
       sections: [
         { title: "State value asks, 'How good is it to be here?'", paragraphs: ["The answer depends on the policy that acts from here. Change the policy and the robot may choose different routes. The state value changes too."] },
         { title: "Action value asks, 'How good is this first move?'", paragraphs: ["We fix the first action, then follow the policy. Comparing action values helps the robot choose. Advantage is the action value minus the usual state value."] },

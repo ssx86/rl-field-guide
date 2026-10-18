@@ -8,7 +8,7 @@ export const PART_FIVE_ARTICLES = [
     title: "Let a search check a few futures before the next move",
     deck: "A game may have clear rules and far too many possible futures. Search spends extra time on the current choice. A learned network helps it decide which futures deserve that time.",
     openingQuestion: "A chess program cannot inspect every possible game. Which moves should it examine first?",
-    bridge: "Learning after the trip ended is safe but slow. What if the agent could plan dened. Exact game rules offer another choice. Before moving, the agent can try possible moves inside the rules. It can spend more thought on useful branches and ignore most others.",
+    bridge: "Learning after the trip ended is safe but slow. What if the agent could plan before acting? Exact game rules offer another choice. Before moving, the agent can try possible moves inside the rules. It can spend more thought on useful branches and ignore most others.", // Marcus P0 fix: repair corrupted sentence "plan dened." -> "plan before acting?"
     situation: {
       title: "The rules fit on a page, but the future does not",
       paragraphs: [

@@ -34,7 +34,7 @@ export const PART_SIX_ARTICLES = [
       steps: [
         { label: "Check one step", calculation: "P(correct)=0.99", explanation: "For one familiar state, a 99% success rate looks excellent." },
         { label: "Check the whole trip", calculation: "P(all correct)=0.99¹⁰⁰≈0.366", explanation: "All 100 steps must be correct. Their combined chance is only about 36.6%." },
-        { label: "Remember the changed states", calculation: "errors need not remain 1% after leaving dexpert", explanation: "After the first mistake, later states may be unfamiliar. The next error rate can become larger than 1%." },
+        { label: "Remember the changed states", calculation: "errors need not remain 1% after leaving the expert's state distribution", explanation: "After the first mistake, later states may be unfamiliar. The next error rate can become larger than 1%." }, // Marcus P0 fix: typo "dexpert" -> "the expert's state distribution"
         { label: "Add recovery lessons", calculation: "add (learner state, expert recovery action)", explanation: "DAgger asks the expert what to do in states produced by the learner's mistakes." },
       ],
       result: "Even the friendly calculation gives only a 36.6% chance of a perfect trip. Real driving may be worse because one error changes the later pictures. A one-step score is therefore not a long-trip guarantee.",
@@ -237,7 +237,7 @@ export const PART_SIX_ARTICLES = [
         { label: "Ask", value: "R̂ₜ", note: "State how much reward is still desired." },
         { label: "Observe", value: "Sₜ", note: "Add the current information from the environment." },
         { label: "Act", value: "Aₜ", note: "Predict an action from the sequence seen so far." },
-        { label: "Reduce", value: "R̂ₜ₊₁=R̂ₜ−rₜ₊₁", note: "Subtract the reward that was actually received." },
+        { label: "Reduce", value: "R̂ₜ₊₁=R̂ₜ−rₜ", note: "Subtract the reward that was actually received." }, // Marcus P0 fix: off-by-one, align with R̂ₜ=Σ_{k=t}^T r_k (−rₜ, not −rₜ₊₁)
       ],
     },
     workedExample: {
