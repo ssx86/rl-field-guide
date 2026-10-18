@@ -1,5 +1,7 @@
 ---
 import { CH1 } from "../../content/zh-chapters/ch01";
+import { renderChapterHtml } from "../../content/zh-chapters/render";
+import "katex/dist/katex.min.css";
 const chapter = CH1;
 const base = "/rl-field-guide";
 ---
@@ -12,16 +14,18 @@ const base = "/rl-field-guide";
 </head>
 <body>
   <div style="max-width:680px;margin:0 auto;padding:40px 24px 80px;font-family:Georgia,'Noto Serif SC',serif;line-height:1.95;color:#1a1d2e">
-    <p style="font-family:monospace;font-size:11px;letter-spacing:.3em;color:#a85c04">第 1 部分 · 认识问题</p>
+    <p style="font-family:monospace;font-size:11px;letter-spacing:.3em;color:#a85c04">第 {chapter.part} 部分 · {chapter.partTitle}</p>
     <h1 style="font-size:clamp(28px,4vw,40px);font-weight:800;margin:8px 0 12px;letter-spacing:-.02em">{chapter.title}</h1>
     <p style="color:#66706b;font-size:16px">{chapter.intro}</p>
-    <div style="margin-top:32px" set:html={chapter.content.split("\n\n").map(b => {
-      if (b.startsWith("## ")) return `<h2>${b.slice(3)}</h2>`;
-      return `<p>${b}</p>`;
-    }).join("")} />
-    <nav style="display:flex;justify-content:space-between;margin-top:48px;padding-top:20px;border-top:1px solid #dfe4e1">
-      <span></span>
-      <a href={`${base}/zh/`} style="color:#a85c04;font-weight:600;text-decoration:none">返回目录 →</a>
+    <div style="margin-top:32px" set:html={renderChapterHtml(chapter.content)} />
+    <nav style="display:flex;justify-content:space-between;align-items:center;margin-top:48px;padding-top:20px;border-top:1px solid #dfe4e1">
+      {chapter.prev
+        ? <a href={`${base}/zh/${chapter.prev}`} style="color:#a85c04;font-weight:600;text-decoration:none">← 上一章</a>
+        : <span></span>}
+      <a href={`${base}/zh/`} style="color:#a85c04;font-weight:600;text-decoration:none">目录</a>
+      {chapter.next
+        ? <a href={`${base}/zh/${chapter.next}`} style="color:#a85c04;font-weight:600;text-decoration:none">下一章 →</a>
+        : <span></span>}
     </nav>
   </div>
 </body>
