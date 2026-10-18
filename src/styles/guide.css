@@ -217,20 +217,20 @@
 .lesson-intro { border-bottom: 1px solid var(--border); padding-bottom: 48px; }
 .lesson-meta { display: flex; gap: 10px; }
 .lesson-meta span { border: 1px solid var(--border); border-radius: 999px; padding: 5px 9px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-.lesson-intro h1 { max-width: 790px; margin: 24px 0 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
-.lesson-title-translation { max-width: 760px; margin: 12px 0 0; color: var(--muted-foreground); font-size: clamp(24px, 3vw, 34px); line-height: 1.25; letter-spacing: -.025em; }
+.lesson-intro h1 { max-width: 680px; margin: 24px 0 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
+.lesson-title-translation { max-width: 680px; margin: 12px 0 0; color: var(--muted-foreground); font-size: clamp(24px, 3vw, 34px); line-height: 1.25; letter-spacing: -.025em; }
 .lesson-subtitle { margin: 18px 0 0; color: var(--muted-foreground); font-size: 17px; line-height: 1.6; }
-.lesson-opening-question { max-width: 68ch; margin: 28px 0 0; color: var(--foreground); font-size: 18px; font-weight: 650; line-height: 1.72; text-wrap: pretty; }
+.lesson-opening-question { max-width: 680px; margin: 28px 0 0; color: var(--foreground); font-size: 18px; font-weight: 650; line-height: 1.72; text-wrap: pretty; }
 .lesson-contract { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 40px 0 0; border: 1px solid var(--border); border-radius: 12px; background: var(--border); overflow: hidden; }
 .lesson-contract div { padding: 18px; background: var(--card); }
 .lesson-contract dt { color: var(--primary); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .lesson-contract dd { margin: 7px 0 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.6; }
 
-.lesson-section { padding: 78px 0 0; }
-.lesson-section > h2 { max-width: 760px; margin: 10px 0 0; font-size: clamp(27px, 3.5vw, 36px); line-height: 1.2; letter-spacing: -.035em; text-wrap: balance; }
-.lesson-section > h3 { max-width: 720px; margin: 10px 0 0; color: var(--muted-foreground); font-size: clamp(20px, 2.5vw, 27px); line-height: 1.35; }
-.longform-prose { max-width: 72ch; margin-top: 24px; }
-.longform-prose p { margin: 0 0 1.25em; color: var(--muted-foreground); font-size: 16px; line-height: 1.88; text-wrap: pretty; }
+.lesson-section { padding: 44px 0 0; }
+.lesson-section > h2 { max-width: 680px; margin: 10px 0 0; font-size: clamp(27px, 3.5vw, 36px); line-height: 1.2; letter-spacing: -.035em; text-wrap: balance; }
+.lesson-section > h3 { max-width: 680px; margin: 10px 0 0; color: var(--muted-foreground); font-size: clamp(20px, 2.5vw, 27px); line-height: 1.35; }
+.longform-prose { max-width: 680px; margin-top: 24px; }
+.longform-prose p { margin: 0 0 1.4em; color: var(--muted-foreground); font-size: 16px; line-height: 1.88; text-wrap: pretty; }
 .longform-prose .chapter-bridge { color: var(--foreground); font-size: 18px; line-height: 1.75; }
 .section-lead { margin-top: 18px; }
 .mechanism-prose { margin-top: 28px; }
@@ -256,7 +256,7 @@
 
 .formula-list { display: grid; min-width: 0; gap: 14px; margin-top: 28px; }
 .formula-list article { min-width: 0; border: 1px solid var(--border); border-radius: 12px; padding: clamp(20px, 4vw, 34px); background: var(--card); }
-.formula-render { max-width: 100%; padding: 18px 0 28px; overflow-x: auto; color: var(--foreground); font-size: clamp(13px, 2.2vw, 19px); }
+.formula-render { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 18px 0 28px; overflow-x: auto; color: var(--foreground); font-size: clamp(13px, 2.2vw, 19px); }
 .formula-list p { margin: 6px 0 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.65; }
 .formula-list p strong { color: var(--foreground); }
 
@@ -276,7 +276,7 @@
 .transfer-card > p { margin: 18px 0 0; border-top: 1px solid var(--border); padding-top: 18px; color: var(--muted-foreground); font-size: 13px; line-height: 1.75; }
 
 .lesson-next { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 72px; border-top: 1px solid var(--border); padding-top: 28px; }
-.lesson-transition { max-width: 68ch; margin: 64px 0 0; color: var(--foreground); font-size: 18px; font-weight: 600; line-height: 1.75; text-wrap: pretty; }
+.lesson-transition { max-width: 680px; margin: 64px 0 0; color: var(--foreground); font-size: 18px; font-weight: 600; line-height: 1.75; text-wrap: pretty; }
 .lesson-references { margin-top: 48px; border-top: 1px solid var(--border); padding-top: 28px; }
 .lesson-references h2 { margin: 8px 0 0; font-size: 20px; }
 .lesson-references ul { display: grid; gap: 8px; margin: 18px 0 0; padding: 0; list-style: none; }
@@ -873,3 +873,11 @@
   .panorama-closing { padding-top: 64px; }
   .panorama-next-actions { grid-template-columns: 1fr; padding: 24px; }
 }
+
+/* ── 防换行修补 ── */
+.static-evidence-steps code { overflow-wrap: break-word; word-break: break-all; hyphens: auto; max-width: 100%; display: inline-block; }
+.diagram-item-value { overflow-wrap: anywhere; }
+.lesson-contract dd { overflow-wrap: anywhere; }
+.longform-prose p { overflow-wrap: break-word; }
+
+.instrument-label { letter-spacing: .06em; text-transform: none; font-size: 13px; color: var(--faint, var(--muted-foreground)); font-weight: 500; margin-bottom: 6px; }

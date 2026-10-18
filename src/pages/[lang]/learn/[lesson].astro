@@ -49,10 +49,10 @@ const alternatePaths = [{ hreflang: "en", path: `${base}/en/learn/${slug}/` }, {
 const sentenceLead = (title: string) => /[。！？.!?]$/.test(title) ? `${title} ` : `${title}${zh ? "。" : ". "}`;
 const t = zh ? {
   brand: "RL 学习指南", theme: "切换颜色主题", alternate: "English", map: "完整课程地图", part: "部分", chapter: "第", openPart: "打开本部分", noPrior: "无需任何 RL 前置术语", builds: "前置基础", why: "为什么此处学习", sections: "章节目录",
-  nav: ["情境", "图解", "算例", "机制", "公式", "边界"], diagram: "把关系摊开", example: "跟着数字走一遍", pause: "先别往下看：你会怎样算？", result: "算完以后", equationsTitle: "把刚才的关系写成公式", equationLead: "公式不是另一套故事。它只是把刚才已经看见的关系压缩到一行里。", sourcesTitle: "沿着原始资料继续追", previous: "上一章", next: "下一章", returnMap: "返回课程地图", revisit: "选择一条路线重新学习",
+  nav: ["情境", "图解", "算例", "机制", "公式", "边界"], diagram: "", example: "", pause: "先想一下：你会怎么算？", result: "", equationsTitle: "把关系写成公式", equationLead: "公式把刚才看见的关系压缩到一行里。", sourcesTitle: "沿着原始资料继续追", previous: "上一章", next: "下一章", returnMap: "返回课程地图", revisit: "选择一条路线重新学习",
 } : {
   brand: "RL FIELD GUIDE", theme: "Switch color theme", alternate: "中文", map: "Complete field map", part: "Part", chapter: "Chapter", openPart: "Open this part", noPrior: "No prior RL vocabulary required", builds: "Builds on", why: "Why it is here", sections: "Chapter sections",
-  nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], diagram: "Lay the relationship out", example: "Follow the numbers", pause: "Stop here: what would you calculate?", result: "After the calculation", equationsTitle: "Write the relationship as an equation", equationLead: "The equation is not a second story. It compresses the relationship you have already seen into one line.", sourcesTitle: "Follow the argument into the primary sources", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
+  nav: ["Situation", "Diagram", "Example", "Mechanism", "Equations", "Boundary"], diagram: "", example: "", pause: "Think first: what would you calculate?", result: "", equationsTitle: "The equation", equationLead: "The equation compresses what you just saw into one line.", sourcesTitle: "Follow the argument into the primary sources", previous: "Previous", next: "Next", returnMap: "Return to field map", revisit: "Choose a route to revisit",
 };
 const outline = bilingual || !chapter.narrative
   ? [
@@ -106,7 +106,7 @@ const relationColon = zh ? "：" : ":";
         ))}
       </nav>
       <div class="chapter-outline-desktop">
-        <p class="instrument-label">{bilingual ? "IN THIS CHAPTER / 本章" : t.sections}</p>
+        
         <nav aria-label={bilingual ? "In this chapter / 本章目录" : t.sections}>{outline.map((item) => <a href={`#${item.id}`}><span aria-hidden="true">•</span><em>{item.label}</em></a>)}</nav>
       </div>
       <div class="lesson-mobile-current">
