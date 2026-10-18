@@ -52,7 +52,7 @@ export function HomeScreen({ theme, progress, onToggleTheme, onOpenLesson }: Hom
               <CompassTool size={17} aria-hidden="true" />
               An interactive learning atlas
             </p>
-            <h1 className="max-w-[680px] text-4xl font-bold leading-[1.03] tracking-[-0.045em] sm:text-5xl lg:text-6xl">
+            <h1 className="max-w-[680px] text-3xl font-bold leading-[1.08] tracking-[-0.03em] sm:text-4xl lg:text-5xl">
               Learn reinforcement learning by making it change.
             </h1>
             <p className="mt-5 max-w-[58ch] text-base leading-7 text-muted-foreground">

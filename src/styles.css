@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  font-family: Arial, "Noto Sans", system-ui, sans-serif;
+  font-family: "Inter", "Segoe UI Variable Display", "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  --mono: "JetBrains Mono", "Cascadia Code", Consolas, Menlo, monospace;
   --background: #f5f6f4;
   --foreground: #17201c;
   --card: #ffffff;

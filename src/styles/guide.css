@@ -109,7 +109,7 @@
 }
 
 .language-gate-card .guide-brand-mark { margin: 0 auto 24px; }
-.language-gate-card h1 { margin: 18px 0 24px; font-size: clamp(34px, 7vw, 62px); line-height: 1.02; letter-spacing: -.05em; }
+.language-gate-card h1 { margin: 18px 0 24px; font-size: clamp(28px, 5vw, 44px); line-height: 1.12; letter-spacing: -.02em; }
 .language-gate-card h1 span { color: var(--primary); }
 .language-gate-card > p:not(.instrument-label) { margin: 6px auto; max-width: 58ch; color: var(--muted-foreground); font-size: 14px; line-height: 1.7; }
 .language-gate-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
@@ -217,7 +217,7 @@
 .lesson-intro { border-bottom: 1px solid var(--border); padding-bottom: 48px; }
 .lesson-meta { display: flex; gap: 10px; }
 .lesson-meta span { border: 1px solid var(--border); border-radius: 999px; padding: 5px 9px; color: var(--muted-foreground); font-family: "Cascadia Code", Consolas, monospace; font-size: 9px; font-weight: 800; text-transform: uppercase; }
-.lesson-intro h1 { max-width: 790px; margin: 24px 0 0; font-size: clamp(38px, 5vw, 58px); line-height: 1.06; letter-spacing: -.045em; text-wrap: balance; }
+.lesson-intro h1 { max-width: 790px; margin: 24px 0 0; font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
 .lesson-title-translation { max-width: 760px; margin: 12px 0 0; color: var(--muted-foreground); font-size: clamp(24px, 3vw, 34px); line-height: 1.25; letter-spacing: -.025em; }
 .lesson-subtitle { margin: 18px 0 0; color: var(--muted-foreground); font-size: 17px; line-height: 1.6; }
 .lesson-opening-question { max-width: 68ch; margin: 28px 0 0; color: var(--foreground); font-size: 18px; font-weight: 650; line-height: 1.72; text-wrap: pretty; }
@@ -482,7 +482,7 @@
   .language-chip { min-width: 34px; min-height: 34px; padding-inline: 7px; }
   .course-home { padding: 0 16px 64px; }
   .course-hero { min-height: auto; padding: 52px 0; }
-  .course-hero-copy h1 { font-size: clamp(40px, 12vw, 60px); }
+  .course-hero-copy h1 { font-size: clamp(28px, 8vw, 40px); }
   .loop-visual { min-height: 420px; }
   .loop-orbit { inset: 55px 38px; }
   .loop-node { width: 112px; grid-template-columns: 22px 1fr; font-size: 9px; }
@@ -498,7 +498,7 @@
   .roadmap-index { display: block; }
   .roadmap-index small { display: none; }
   .lesson-article { padding: 44px 18px 72px; }
-  .lesson-intro h1 { font-size: clamp(38px, 12vw, 58px); }
+  .lesson-intro h1 { font-size: clamp(26px, 8vw, 36px); }
   .lesson-contract,
   .boundary-grid,
   .lesson-next { grid-template-columns: 1fr; }
@@ -622,7 +622,7 @@
   .lesson-mobile-current { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 8px; }
   .lesson-mobile-current > a, .lesson-mobile-current > span { display: grid; min-width: 44px; min-height: 44px; place-items: center; border: 1px solid var(--border); border-radius: 8px; color: var(--foreground); text-decoration: none; }
   .lesson-mobile-current > strong { min-width: 0; color: var(--primary); font-family: "Cascadia Code", Consolas, monospace; font-size: 10px; text-align: center; }
-  .lesson-mobile-current small { display: block; margin-top: 4px; overflow: hidden; color: var(--foreground); font-family: Arial, sans-serif; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+  .lesson-mobile-current small { display: block; margin-top: 4px; overflow: hidden; color: var(--foreground); font-family: var(--mono, "JetBrains Mono", Consolas, monospace); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
   .lesson-mobile-menu { display: block; margin-top: 8px; }
   .lesson-mobile-menu summary { min-height: 44px; border-radius: 8px; padding: 12px 14px; background: var(--surface-subtle); color: var(--muted-foreground); font-size: 11px; font-weight: 800; cursor: pointer; }
   .lesson-mobile-menu nav { display: grid; max-height: 50vh; margin-top: 8px; overflow-y: auto; }
