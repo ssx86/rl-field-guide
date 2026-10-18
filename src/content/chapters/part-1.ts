@@ -11,14 +11,13 @@ export const PART_ONE_ARTICLES = [
     slug: "before-rl",
     title: "Before using RL, ask whether you need it",
     deck: "A system does not need reinforcement learning just because it receives a score. First check where the correct answer comes from and whether one action changes what can happen later.",
-    openingQuestion: "A photo classifier and a warehouse robot can both gain points. Why might only the robot need reinforcement learning?",
-    bridge: "We will not begin by choosing an algorithm. We will first look at the job. Does someone already provide the correct answer? Are the rules of the world already known? Does one choice change the choices that follow? These questions often lead to a simpler solution than reinforcement learning.",
+    openingQuestion: "If a photo classifier and a warehouse robot both receive scores, what makes the robot special?",
+    bridge: "Before picking an algorithm, look at the job itself. Where does the correct answer come from? Are the rules already known? Does one choice change what can happen next? Most of the time, these questions lead somewhere simpler than RL.",
     situation: {
-      title: "Three machines can earn points for very different jobs",
+      title: "Not every scoring system needs RL",
       paragraphs: [
-        "An automatic door opens when its sensor sees a person. An engineer can write that rule directly. A photo classifier studies pictures that already have correct labels. It can compare each answer with the supplied label.",
-        "A warehouse robot has a different job. When it turns left, its position changes. Its battery changes too. The next choice now starts from a new situation. No teacher stands beside every crossing and tells it the correct turn.",
-        "All three machines can receive a score. The score alone does not make a problem reinforcement learning. RL becomes a useful candidate when the system must choose through time and learn from what those choices cause.",
+        "An automatic door opens when its sensor detects a person — a rule an engineer can write in one line. A photo classifier studies labelled pictures and compares each guess against the supplied answer. Both systems have a source of truth that exists outside themselves.",
+        "A warehouse robot faces a different world. When it turns left, its position shifts, its battery drains, and the next decision starts from a situation its previous action helped create. Nobody stands at each intersection to say which turn was correct. The robot must learn from what its choices cause over time — that gap is where reinforcement learning lives.",
       ],
     },
     diagram: {
@@ -46,10 +45,10 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "What changes when a problem really does need RL?",
       sections: [
-        { title: "A policy chooses an action", paragraphs: ["A predictor gives an estimate, such as 'this road will take ten minutes.' A policy chooses what to do, such as 'take this road.' That choice changes where the robot goes and what data it sees next."] },
-        { title: "The world gives a result, not an answer key", paragraphs: ["After a turn, the robot may lose one minute, reach a new place, and finish the delivery much later. The world does not mark the turn as correct or wrong. The learner has to work out which earlier actions helped the final result. This is called credit assignment."] },
-        { title: "Trying something changes the future data", paragraphs: ["If the robot never tries an unfamiliar street, it will never learn whether that street is faster. Trying it may hurt today's delivery and help tomorrow's choices. This is why exploration has a real cost."] },
-        { title: "A whole trip matters more than one point", paragraphs: ["One turn can earn a small reward and still ruin the delivery. RL therefore often adds rewards across a sequence. That total is called return. A return is useful for learning, but people must still check whether the number matches the result they truly care about."] },
+        { title: "A policy, not a prediction", paragraphs: ["A predictor gives an estimate, such as 'this road will take ten minutes.' A policy chooses what to do, such as 'take this road.' That choice changes where the robot goes and what data it sees next."] },
+        { title: "Results, not answer keys", paragraphs: ["After a turn, the robot may lose one minute, reach a new place, and finish the delivery much later. The world does not mark the turn as correct or wrong. The learner has to work out which earlier actions helped the final result. This is called credit assignment."] },
+        { title: "Trying changes what you will see", paragraphs: ["If the robot never tries an unfamiliar street, it will never learn whether that street is faster. Trying it may hurt today's delivery and help tomorrow's choices. This is why exploration has a real cost."] },
+        { title: "The trip matters more than any single turn", paragraphs: ["One turn can earn a small reward and still ruin the delivery. RL therefore often adds rewards across a sequence. That total is called return. A return is useful for learning, but people must still check whether the number matches the result they truly care about."] },
       ],
     },
     equations: [],
@@ -70,10 +69,10 @@ export const PART_ONE_ARTICLES = [
     slug: "interaction-loop",
     title: "Draw one turn of the decision loop",
     deck: "Put one step in order: the learner sees information, chooses an action, and only then receives a result. This order tells us what the learner was allowed to know.",
-    openingQuestion: "A robot says 'move right.' Did it choose to reach the next hallway, or did it only choose the motor command?",
-    bridge: "The last chapter decided when RL may be useful. Now we must describe one turn clearly. What can the learner see before it chooses? What action can it send? What does the world return afterward? Every later method depends on this order.",
+    openingQuestion: "When a robot sends the command 'move right,' what exactly did it choose — the destination, or just the motor signal?",
+    bridge: "Suppose the problem does need RL. The next task is to describe one turn with enough precision that nothing important is left vague. What does the learner see? What can it choose? What comes back?",
     situation: {
-      title: "A cleaning robot can choose an action, not its result",
+      title: "What the robot chose, and what the world decided",
       paragraphs: [
         "A cleaning robot sees walls, dirt, and its battery level. It sends the command 'move right.' The floor then decides whether the wheels slip. The move may use power, reach a new place, and clean some dirt.",
         "The robot chose the command. It did not choose whether the wheels would slip. The line between what the learner chooses and what the world produces is called the agent-environment boundary.",
@@ -134,7 +133,7 @@ export const PART_ONE_ARTICLES = [
     openingQuestion: "If a shortcut gives two points now but blocks the robot later, was it really the better choice?",
     bridge: "One turn of the loop gives one reward. A route gives many rewards. We now need one number that describes the future from a chosen moment. We also need to know whether the task truly ended or whether the recording simply stopped.",
     situation: {
-      title: "A quick reward can lead to a bad ending",
+      title: "Why the last reward matters most",
       paragraphs: [
         "A robot can take a narrow shortcut and earn +2 now. The gate may then close and trap it. A wider hallway gives 0 now but reaches the destination two steps later for +10. Looking only at the next reward chooses the shortcut. Looking at the full route can choose the hallway.",
         "The total of future rewards is called return. We may give later rewards a smaller weight by multiplying them by a number called gamma, written γ. This is called discounting. Gamma is a design choice, not a rule that far-away results are morally less important.",
@@ -196,7 +195,7 @@ export const PART_ONE_ARTICLES = [
     openingQuestion: "An action gives +5 most of the time and +1 the rest of the time. How can its average be 4.2 when a robot never receives 4.2?",
     bridge: "One route gives one return, but the same policy can produce many routes. We need a way to describe all possible results and their chances. Then we can compare choices without confusing an average with a promise.",
     situation: {
-      title: "The same hallway can produce two results",
+      title: "When the same action gives different answers",
       paragraphs: [
         "A robot crosses a glass hallway. On most trips it reaches the next room and earns +5. On 20% of trips, glare confuses its sensor. It must recover and earns only +1. The robot took the same action, but the world produced different results.",
         "Expected reward is a weighted average. We multiply each possible reward by its chance, then add the products. If the robot repeats the trip many times, its average reward may move toward 4.2. One trip still gives either +5 or +1.",

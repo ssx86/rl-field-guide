@@ -8,7 +8,7 @@ export const PART_FIVE_ARTICLES = [
     title: "Let a search check a few futures before the next move",
     deck: "A game may have clear rules and far too many possible futures. Search spends extra time on the current choice. A learned network helps it decide which futures deserve that time.",
     openingQuestion: "A chess program cannot inspect every possible game. Which moves should it examine first?",
-    bridge: "The last chapter learned after a long trip had already happened. Exact game rules offer another choice. Before moving, the agent can try possible moves inside the rules. It can spend more thought on useful branches and ignore most others.",
+    bridge: "Learning after the trip ended is safe but slow. What if the agent could plan dened. Exact game rules offer another choice. Before moving, the agent can try possible moves inside the rules. It can spend more thought on useful branches and ignore most others.",
     situation: {
       title: "The rules fit on a page, but the future does not",
       paragraphs: [
@@ -79,7 +79,7 @@ export const PART_FIVE_ARTICLES = [
     title: "A learned model can help the agent think, but it can also lie",
     deck: "A model lets the agent try actions in imagination. Short imagined trips can save real experience. Long ones may turn a tiny prediction error into a completely false future.",
     openingQuestion: "If a robot's model is slightly wrong at every step, how many imagined steps should it trust?",
-    bridge: "Game search had exact rules. A robot usually has only a model learned from past data. The agent must now solve two problems. It must learn what actions do, and it must decide how much planning that learned model can safely support.",
+    bridge: "Chess has exact rules. A robot has only an approximate model learned from past data. The agent must now solve two problems. It must learn what actions do, and it must decide how much planning that learned model can safely support.",
     situation: {
       title: "A car that misses a little on each step can miss the whole road",
       paragraphs: [
@@ -150,7 +150,7 @@ export const PART_FIVE_ARTICLES = [
     title: "A useful world model does not need to redraw every pixel",
     deck: "Some picture details do not change the next good action. A latent model keeps a compact inner state instead. Dreamer learns behavior in imagined states, while MuZero uses them for search.",
     openingQuestion: "Must a warehouse robot predict every shadow, or only the facts that change where it should drive?",
-    bridge: "The last chapter imagined future states. Predicting a full camera image can waste effort on wall color, flickering light, and other details that do not affect control. The agent can instead build a smaller internal description of the useful parts.",
+    bridge: "Imagining full future trajectories is expensive. A full camera image can waste effort on wall color, flickering light, and other details that do not affect control. The agent can instead build a smaller internal description of the useful parts.",
     situation: {
       title: "The robot needs the shelf edge, not a perfect picture of the wall",
       paragraphs: [

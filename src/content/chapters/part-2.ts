@@ -65,7 +65,7 @@ export const PART_TWO_ARTICLES = [
     title: "Give each situation a useful forecast",
     deck: "A value is a forecast of the rewards still ahead. We can calculate it one step at a time: what happens next, plus what may happen after that.",
     openingQuestion: "A robot can reach the same door by many routes. How can one number help it compare what comes next?",
-    bridge: "The previous chapter described the current situation. Now the robot must compare situations and actions. Listing every possible future would be too much. We need a smaller summary.",
+    bridge: "Now the robot must compare situations and actions. Listing every possible future would be too much. We need a smaller summary.",
     situation: {
       title: "The number belongs to a plan for acting",
       paragraphs: [
@@ -175,7 +175,7 @@ export const PART_TWO_ARTICLES = [
     title: "Learn from a complete game or trip",
     deck: "When the rules are unknown, the learner can wait for a run to finish. The rewards from that real run become one example of what the earlier choices were worth.",
     openingQuestion: "If we do not know the rules of a card game, what can we learn by playing it many times?",
-    bridge: "The last chapter used a complete model. Now the model is gone. The learner can still follow a policy, record what happens, and learn after the ending is known.",
+    bridge: "The model is gone. The learner can still follow a policy, record what happens, and learn after the ending is known.",
     situation: {
       title: "One finished card game gives one answer",
       paragraphs: ["A player has a total of 18 and chooses to stop drawing cards. The game later ends in a win worth +1 or a loss worth −1. We do not need to know every hidden card probability first.", "One game gives one result. Many games from similar situations give many results. Their average estimates how good that situation is under the player's policy.", "Learning this way is called Monte Carlo learning, or MC learning. The name means we use repeated random trials. Here, each complete game is one trial."],
@@ -326,7 +326,7 @@ export const PART_TWO_ARTICLES = [
     title: "Check whether an old log can answer a new question",
     deck: "A log from one policy can sometimes help judge another. It works only when the log contains the actions the new policy needs, and a few rare records may receive too much weight.",
     openingQuestion: "If the old policy almost never chose route B, can its log tell us whether a new policy should choose B most of the time?",
-    bridge: "The last chapter separated the policy that collects data from the policy being judged. That separation creates a new duty. Before reusing the log, we must check what it actually saw.",
+    bridge: "Separating the data-collecting policy from the judged policy creates a new duty. Before reusing the log, we must check what it actually saw.",
     situation: {
       title: "The old route chooser rarely tried B",
       paragraphs: ["The old behavior policy chooses route A with chance 0.9 and B with chance 0.1. A proposed target policy reverses the chances. It wants B most of the time." ,"A rare B record matters a lot to the new policy. We can give it more weight. But making one record nine times heavier does not turn it into nine independent trips." ,"If the old policy never chose B, the log contains no B result. No weighting formula can create the missing trip. New data or an extra model assumption is required."],

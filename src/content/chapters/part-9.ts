@@ -79,7 +79,7 @@ export const PART_NINE_ARTICLES = [
     title: "Turn human choices into a reward, without mistaking that reward for truth",
     deck: "People compare answers. A reward model learns from those choices. Another training loop then uses that learned score to change the language model.",
     openingQuestion: "If a learned judge gives an answer 8.4 points, does 8.4 mean that people will truly like it?",
-    bridge: "The last chapter needed a result after the model acted. People can often choose the better of two answers, even when they cannot write a perfect formula for quality. We can learn a scoring model from those choices.",
+    bridge: "Sometimes a numeric reward is hard to define. People can often choose the better of two answers, even when they cannot write a perfect formula for quality. We can learn a scoring model from those choices.",
     situation: {
       title: "A human click becomes a learned score",
       paragraphs: [
@@ -292,7 +292,7 @@ export const PART_NINE_ARTICLES = [
     title: "A test can give a clear reward and still miss the real failure",
     deck: "Math checkers and program tests can score answers automatically. They reduce one kind of ambiguity, but they cannot check behavior outside their own rules.",
     openingQuestion: "If a program passes the visible tests, do we know that the program is truly correct?",
-    bridge: "The last chapter used a model to judge answers. A unit test or exact-answer checker can be less subjective. Yet every checker sees only what it was built to check.",
+    bridge: "Judgment models help, but a unit test or exact-answer checker can be less subjective. Yet every checker sees only what it was built to check.",
     situation: {
       title: "The program passes by exploiting the test",
       paragraphs: [

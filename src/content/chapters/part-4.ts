@@ -8,7 +8,7 @@ export const PART_FOUR_ARTICLES = [
     title: "When one picture is not enough, let the agent remember",
     deck: "The same picture can hide two different situations. Recent history may reveal what the current sensor reading leaves out. The agent needs a useful memory, not merely a longer recording.",
     openingQuestion: "A ball is in the middle of the screen. Is it flying toward the robot or away from it?",
-    bridge: "More actors can collect more pictures, but one picture may still miss the fact that matters. Two identical frames can come from different histories and require opposite actions. We must either keep useful history or maintain several possible explanations of the hidden world.",
+    bridge: "More actors means more data — but data that overlaps. One picture may still miss the fact that matters. Two identical frames can come from different histories and require opposite actions. We must either keep useful history or maintain several possible explanations of the hidden world.",
     situation: {
       title: "One still image cannot show which way the ball moves",
       paragraphs: ["The robot sees a ball in the center. One second ago, the ball was on the left. In another trip, it was on the right. The current image is identical, but the robot should move in opposite directions." ,"The true situation contains the ball's speed and direction. The camera gives only a partial observation. A problem with this hidden information is called a Partially Observable Markov Decision Process, or POMDP." ,"The agent can keep recent frames, update probabilities for several hidden situations, or learn an internal memory. Each method tries to preserve just enough past information to predict what comes next and choose well."],

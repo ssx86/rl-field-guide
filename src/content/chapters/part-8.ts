@@ -8,7 +8,7 @@ export const PART_EIGHT_ARTICLES = [
     title: "A score can rise while the real job gets worse",
     deck: "An agent follows the score we give it. If that score misses part of the real goal, better learning can produce worse real behavior.",
     openingQuestion: "If a support bot earns one point for closing a ticket, what stops it from closing hard tickets before the customer is helped?",
-    bridge: "The last chapter showed how an agent can reuse old learning on a new task. Fast learning is useful only when the lesson points the right way. We now need to separate the result people want from the number the agent can see.",
+    bridge: "Reusing old learning on a new task is fast, but speed alone does not guarantee direction. Fast learning is useful only when the lesson points the right way. We now need to separate the result people want from the number the agent can see.",
     situation: {
       title: "The support bot learns to close the ticket, not solve the problem",
       paragraphs: [
@@ -79,7 +79,7 @@ export const PART_EIGHT_ARTICLES = [
     title: "A good average can hide one terrible outcome",
     deck: "Two policies can look similar on average while one sometimes causes a disaster. Safety tools differ because they protect against different kinds of failure.",
     openingQuestion: "Would you choose a machine that usually earns 10 points if one run in a hundred loses 100 points?",
-    bridge: "The last chapter separated the real goal from its score. Even a well-chosen score can hide harmful trades. We now ask four simpler questions: Is there a cost limit? Is the worst tail acceptable? Can the world change? Can a dangerous action be blocked?",
+    bridge: "A well-chosen score is not a guarantee. Even a well-chosen score can hide harmful trades. We now ask four simpler questions: Is there a cost limit? Is the worst tail acceptable? Can the world change? Can a dangerous action be blocked?",
     situation: {
       title: "The average hides the bad one run in a hundred",
       paragraphs: [
@@ -150,7 +150,7 @@ export const PART_EIGHT_ARTICLES = [
     title: "One lucky run is not a result you can trust",
     deck: "The same reinforcement-learning code can succeed once and fail next time. A fair report shows repeated runs, uncertainty, data use, compute, and failure cases.",
     openingQuestion: "If five runs score 0, 0, 80, 90, and 100, what do we learn by showing only the run that scored 100?",
-    bridge: "The last chapter gave us costs, tails, and robustness tests. Those numbers still vary from run to run. We now need an experiment that separates a repeatable improvement from a lucky seed, a larger budget, or a hidden change in the task.",
+    bridge: "Costs, tails, and robustness tests vary between runs. Those numbers still vary from run to run. We now need an experiment that separates a repeatable improvement from a lucky seed, a larger budget, or a hidden change in the task.",
     situation: {
       title: "Two algorithms can win at different points on the same graph",
       paragraphs: [
@@ -221,7 +221,7 @@ export const PART_EIGHT_ARTICLES = [
     title: "Code can run and still teach the wrong problem",
     deck: "The environment, data store, checkpoint, and logs all shape what a reinforcement-learning program learns. One wrong end-of-episode flag can change every nearby target.",
     openingQuestion: "If a time limit stops our recording but the task could continue, should the learner pretend that all future value became zero?",
-    bridge: "The last chapter assumed that every run repeated the same experiment. Software can break that assumption quietly. We now follow one experience from the environment, through data storage, into an update, and finally into a saved run.",
+    bridge: "Every run was assumed to repeat the same experiment. Software can break that assumption quietly. We now follow one experience from the environment, through data storage, into an update, and finally into a saved run.",
     situation: {
       title: "One boolean flag removes almost all of the next value",
       paragraphs: [

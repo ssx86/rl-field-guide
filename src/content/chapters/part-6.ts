@@ -8,7 +8,7 @@ export const PART_SIX_ARTICLES = [
     title: "Copy an expert, then learn how to recover from your own mistakes",
     deck: "An expert can show a robot what to do on a good route. The robot also needs examples of what to do after it drifts away from that route.",
     openingQuestion: "If a robot copies the expert correctly 99 times out of 100, why can a long trip still fail so often?",
-    bridge: "The previous chapters let an agent learn from rewards or from an imagined world. Sometimes we already have recordings of good behavior. We can begin by copying them. The difficulty starts when the copy makes one small mistake and reaches a place that the expert never showed.",
+    bridge: "Rewards and imagined worlds are not the only teachers. Sometimes we already have recordings of good behavior. We can begin by copying them. The difficulty starts when the copy makes one small mistake and reaches a place that the expert never showed.",
     situation: {
       title: "The driving lesson contains the center of the lane, but not the edge",
       paragraphs: [
@@ -150,7 +150,7 @@ export const PART_SIX_ARTICLES = [
     title: "When the agent cannot try again, missing data must stay unknown",
     deck: "A fixed log records what happened after chosen actions. It says little about actions that were never tried. Offline methods differ mainly in how carefully they handle that blank space.",
     openingQuestion: "If action B never appears in the log, why should we trust a network that suddenly gives B the highest score?",
-    bridge: "The previous chapter learned from expert behavior. A real log may instead contain a mixture of good, ordinary, and bad decisions. We would like to learn a better policy from it. We are not allowed to run new experiments when the policy becomes curious about an unrecorded action.",
+    bridge: "Expert behavior is ideal, but real logs are messy. A recording may contain a mixture of good, ordinary, and bad decisions. We would like to learn a better policy from it. We are not allowed to run new experiments when the policy becomes curious about an unrecorded action.",
     situation: {
       title: "A medical record contains outcomes only for treatments that were actually used",
       paragraphs: [

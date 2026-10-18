@@ -8,7 +8,7 @@ export const PART_SEVEN_ARTICLES = [
     title: "Let a long action have a beginning, a middle, and an end",
     deck: "A delivery robot should not plan every wheel movement from scratch. It can reuse a longer skill, such as go to the elevator, while another policy decides which skill to use next.",
     openingQuestion: "If a robot already knows how to reach a door, why should every new delivery plan rediscover all the small turns on the way there?",
-    bridge: "The last chapters asked what can be learned from recorded data. Now suppose the agent can act, but the job lasts a very long time. Many parts of the job repeat. We need a way to save and reuse those parts without forgetting what happens inside them.",
+    bridge: "Recorded data has limits. Now suppose the agent can act, but the job lasts a very long time. Many parts of the job repeat. We need a way to save and reuse those parts without forgetting what happens inside them.",
     situation: {
       title: "A delivery plan can speak in rooms instead of wheel movements",
       paragraphs: [
@@ -150,7 +150,7 @@ export const PART_SEVEN_ARTICLES = [
     title: "Starting well and learning fast are two different abilities",
     deck: "A policy may work on a new task before any update, or it may improve quickly after seeing a few examples. One final score cannot tell us which ability it has.",
     openingQuestion: "If one robot starts a new task at 60 points, while another starts at 40 but jumps to 70 after one try, which robot learned the more reusable lesson?",
-    bridge: "The last chapter changed the other agents. We can also change the room, the goal, the physics, or the reward. Each change asks a different question. We must first decide whether the policy may learn from the new task before we name its ability.",
+    bridge: "Changing the other agents is one option. We can also change the room, the goal, the physics, or the reward. Each change asks a different question. We must first decide whether the policy may learn from the new task before we name its ability.",
     situation: {
       title: "A robot trained on ten floors enters an eleventh",
       paragraphs: [
