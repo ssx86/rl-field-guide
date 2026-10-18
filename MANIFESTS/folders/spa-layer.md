@@ -1,5 +1,7 @@
 # rl-guide/ 遗留交互 SPA 层（src 根 5 + domain 10 + hooks 2 + lib 1 + test 1）
 
+> 🪦 **本层已于 2026-10-19 随纯中文重写版整体删除**（决策：REBUILD-PROMPT.md；恢复：`git checkout 1bc75f0 -- src/ index.html`）。2026-10-13 审计的"keep / extract / remove"待决事项至此结案：remove。以下为删除前的走查记录，仅供考古。
+
 > ⚠️ 设计债警示（2026-10-13 审计）：以下文件属于**已被取代的交互式课程层**——
 > 2026-10-12 审计决定产品为"阅读优先、课内零交互控件/零 astro-island"（docs/audit-2026-10-12/comprehensive-coverage-plan.md、verification.md），
 > 构建产物 dist/ 不含任何 astro-island，.astro 页面也不引用任何 .tsx 组件。

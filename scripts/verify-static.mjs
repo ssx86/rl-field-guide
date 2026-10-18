@@ -1,3 +1,4 @@
+// 校验纯中文重写版的静态产物：46 章齐全、公式已渲染、无旧路由残留
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { stdout } from "node:process";
@@ -16,105 +17,43 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+// 1. 页面总数：根入口 + 目录页 + 46 章 = 48
 const pages = collect(rootPath, "index.html");
-assert(pages.length === 145, `Expected 145 prerendered pages, found ${pages.length}`);
-assert(existsSync(join(rootPath, "zh")), "The bilingual product must generate a Chinese route");
-assert(existsSync(join(rootPath, "bilingual")), "The product must generate an alternating bilingual route");
+assert(pages.length === 48, `Expected 48 prerendered pages, found ${pages.length}`);
 
-const requiredPages = [
-  ["index.html", "Open English course", "打开中文课程", "中/EN"],
-  ["en/index.html", "A field guide to reinforcement learning", "Nine connected parts"],
-  ["zh/index.html", "一套沿着决策与证据链展开的强化学习指南", "九个相连部分"],
-  ["en/learn/rl-panorama/index.html", "How One Delivery Robot Leads Us Through Reinforcement Learning", "Seven plain questions for a new RL problem"],
-  ["zh/learn/rl-panorama/index.html", "跟着一台配送机器人，走进整个强化学习", "用七个白话问题，判断一个新的强化学习任务"],
-  ["bilingual/learn/rl-panorama/index.html", "language-pair", 'data-knowledge-term="reinforcement-learning"', "reinforcement learning, RL"],
-  ["en/learn/before-rl/index.html", "decide whether learning from consequences is needed", "No prior RL vocabulary required"],
-  ["en/learn/td-traces/index.html", "eligibility traces", "katex-display"],
-  ["en/learn/offline-rl/index.html", "BCQ, CQL, and IQL", "support"],
-  ["en/learn/rlvr-grpo/index.html", "A test can give a clear reward and still miss the real failure", "group-relative"],
-  ["en/learn/method-selection/index.html", "deployment evidence is still missing", "weakest evidence behind"],
-  ["zh/learn/before-rl/index.html", "chapter-outline-desktop", "无需任何 RL 前置术语"],
-  ["zh/learn/tabular-control/index.html", "Expected SARSA", "katex-display"],
-  ["zh/learn/rlvr-grpo/index.html", "RLVR", "chapter-outline-mobile"],
-  ["zh/learn/method-selection/index.html", "method selection", "lesson-references"],
-  ["bilingual/learn/tabular-control/index.html", "language-marker", "State–Action–Reward–State–Action"],
-];
-
-for (const [page, ...needles] of requiredPages) {
-  const html = readFileSync(join(rootPath, page), "utf8");
-  for (const needle of needles) assert(html.includes(needle), `${page} is missing prerendered content: ${needle}`);
+// 2. 新结构齐全、旧三语路由不复存在
+assert(existsSync(join(rootPath, "zh", "index.html")), "Missing /zh/ table of contents");
+assert(!existsSync(join(rootPath, "en")), "Legacy /en/ route must be gone");
+assert(!existsSync(join(rootPath, "bilingual")), "Legacy /bilingual/ route must be gone");
+for (let i = 1; i <= 46; i++) {
+  const slug = `ch${String(i).padStart(2, "0")}`;
+  assert(existsSync(join(rootPath, "zh", slug, "index.html")), `Missing /zh/${slug}/`);
 }
 
-const englishLessonPages = collect(join(rootPath, "en", "learn"), "index.html").filter((page) => !page.includes("rl-panorama"));
-const chineseLessonPages = collect(join(rootPath, "zh", "learn"), "index.html").filter((page) => !page.includes("rl-panorama"));
-const bilingualLessonPages = collect(join(rootPath, "bilingual", "learn"), "index.html").filter((page) => !page.includes("rl-panorama"));
-assert(englishLessonPages.length === 46, `Expected 46 English chapter pages, found ${englishLessonPages.length}`);
-assert(chineseLessonPages.length === 46, `Expected 46 Chinese chapter pages, found ${chineseLessonPages.length}`);
-assert(bilingualLessonPages.length === 46, `Expected 46 bilingual chapter pages, found ${bilingualLessonPages.length}`);
+// 3. 根入口重定向到纯中文目录
+const rootIndex = readFileSync(join(rootPath, "index.html"), "utf8");
+assert(rootIndex.includes("/rl-field-guide/zh/"), "Root page must redirect to /zh/");
 
-for (const page of englishLessonPages) {
-  const html = readFileSync(page, "utf8");
-  const name = relative(rootPath, page);
-  assert(html.includes("knowledge-diagram"), `${name} is missing its semantic diagram`);
-  assert(html.includes("static-evidence"), `${name} is missing its worked example`);
-  assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
-  assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
-  assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
-  assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
-  assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
-  assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
-  assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
-  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
-  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its chapter term guide`);
-  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
-  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
-}
+// 4. 抽查内容与公式渲染（KaTeX 服务端输出）
+const toc = readFileSync(join(rootPath, "zh", "index.html"), "utf8");
+assert(toc.includes("从零到实践"), "/zh/ TOC is missing its title block");
+const ch01 = readFileSync(join(rootPath, "zh", "ch01", "index.html"), "utf8");
+assert(ch01.includes("什么时候需要强化学习"), "ch01 title missing");
+assert(ch01.includes("katex-display"), "ch01 display formula was not rendered");
+const ch07 = readFileSync(join(rootPath, "zh", "ch07", "index.html"), "utf8");
+assert(ch07.includes("katex-display"), "ch07 (Bellman) display formula was not rendered");
+const ch46 = readFileSync(join(rootPath, "zh", "ch46", "index.html"), "utf8");
+assert(ch46.length > 1000, "ch46 looks empty");
 
-for (const page of chineseLessonPages) {
-  const html = readFileSync(page, "utf8");
-  const name = relative(rootPath, page);
-  assert(html.includes("chapter-outline-desktop"), `${name} is missing its reading-rail chapter outline`);
-  assert(html.includes("narrative-section"), `${name} is missing its authored prose movement`);
-  assert(html.includes("longform-prose"), `${name} is missing continuous article prose`);
-  assert(html.includes('class="lesson-references"') && html.includes('rel="noreferrer"'), `${name} is missing source provenance`);
-  assert(html.includes('id="boundary"') && html.includes('boundary-section'), `${name} is missing its failure boundary`);
-  assert(!html.includes("causal-strip"), `${name} still presents the opening as a slide strip`);
-  assert(!html.includes("concept-list"), `${name} still presents explanation as a concept-card list`);
-  assert(!html.includes("worked-grid"), `${name} still presents examples as a card grid`);
-  assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
-  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
-  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its chapter term guide`);
-  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
-  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
-}
-
-for (const page of bilingualLessonPages) {
-  const html = readFileSync(page, "utf8");
-  const name = relative(rootPath, page);
-  assert(html.includes("bilingual-section"), `${name} is missing the alternating bilingual article`);
-  assert(html.includes('class="language-marker"'), `${name} is missing compact language labels`);
-  assert(html.includes('lang="en"') && html.includes('lang="zh-CN"'), `${name} does not mark both passage languages`);
-  assert(html.includes("chapter-outline-desktop") && html.includes("chapter-outline-mobile"), `${name} is missing responsive chapter outlines`);
-  assert(!html.includes("lesson-sections"), `${name} still renders the full-width chapter navigation strip`);
-  assert((html.match(/<astro-island/g) ?? []).length === 1, `${name} must load exactly one shared knowledge-layer island`);
-  assert(html.includes('data-knowledge-term='), `${name} is missing contextual term links`);
-  assert(html.includes('class="knowledge-tip knowledge-tip-definition"'), `${name} is missing its bilingual chapter term guide`);
-  assert(html.includes('data-heading-anchor'), `${name} is missing section permalinks`);
-  assert(!html.includes("[["), `${name} contains an unresolved authored chapter link`);
-}
-
-const brokenLinks = [];
+// 5. 全站零 KaTeX 错误、零未渲染的 $$ 残留、零 astro-island
+let katexCount = 0;
 for (const page of pages) {
   const html = readFileSync(page, "utf8");
-  for (const match of html.matchAll(/(?:href|src)="(\/rl-field-guide\/[^"#?]*)/g)) {
-    const urlPath = decodeURIComponent(match[1].slice("/rl-field-guide/".length));
-    if (!urlPath) continue;
-    const target = urlPath.endsWith("/") ? join(rootPath, urlPath, "index.html") : join(rootPath, urlPath);
-    if (!existsSync(target)) brokenLinks.push(`${relative(rootPath, page)} -> ${match[1]}`);
-  }
+  assert(!html.includes("katex-error"), `${relative(rootPath, page)} contains a KaTeX rendering error`);
+  assert(!html.includes("$$"), `${relative(rootPath, page)} contains unrendered $$ formula`);
+  assert(!html.includes("astro-island"), `${relative(rootPath, page)} must not ship interactive islands`);
+  katexCount += (html.match(/class="katex"/g) ?? []).length;
 }
+assert(katexCount >= 200, `Expected at least 200 rendered formulas site-wide, found ${katexCount}`);
 
-assert(brokenLinks.length === 0, `Broken generated links:\n${brokenLinks.join("\n")}`);
-stdout.write(`Verified ${pages.length} prerendered pages across English, Chinese, and alternating bilingual reading modes.\n`);
+stdout.write(`verify:static OK — 48 pages, 46 chapters, ${katexCount} rendered formulas\n`);

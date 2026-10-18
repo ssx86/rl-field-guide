@@ -19,4 +19,12 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  {
+    // Node 脚本（scripts/*.mjs）使用 Node 全局
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: { process: "readonly", console: "readonly" },
+    },
+  },
 );

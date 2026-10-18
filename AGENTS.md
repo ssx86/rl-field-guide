@@ -1,81 +1,58 @@
 # AGENTS.md — rl-field-guide (rl-guide)
 
-Legislated 2026-10-14 by repo-cartographer from the workspace audit reports
-(`../MANIFESTS/reports/2026-10-13-audit.md`, `2026-10-13-status-audit.md`).
+ Originally legislated 2026-10-14 by repo-cartographer; **rewritten 2026-10-19** after the
+pure-Chinese rebuild (decision record: `REBUILD-PROMPT.md`; deletion tombstones:
+`MANIFESTS/folders/rebuild-2026-10-19.md`). The old bilingual laws below the history line
+are void.
 
 ## Project Focus
 
-- 本项目只做: publishing the **bilingual, reading-first RL Field Guide** — a
-  matched English/Chinese 46-chapter / 9-part reading course built as a static Astro site
-  (https://ssx86.github.io/rl-field-guide). Shipped product = `src/pages/` +
-  `src/content/curriculum.ts` + `src/content/chapters/part-1..9.ts`, deployed from
-  `dist/` by CI with `verify:static` + `audit-browser.py` gates.
-- 属于本项目的工作流（层，不是独立目标）: the audit decision archive
-  (`docs/audit-2026-10-12/`), the archived founding prototype
-  (`docs/RL_GUIDE_PROTOTYPE.md` — historical, do not implement from it),
-  verification scripts (`scripts/`), the cognitive ledger (`brain.md`),
-  CI + GitHub Pages deployment.
-- 不属于本项目的事情（发现即向用户提出，不静默吸收）:
-  - Interactive lesson UI in the shipped product — the 2026-10-12 audit decided
-    reading-first: lesson pages carry zero interactive controls / zero
-    astro-islands (enforced by `scripts/verify-static.mjs`). Runnable experiments
-    belong in the sibling `qlearning` repo.
-  - Locale drift — `/en/` and `/zh/` must keep identical route order, formula
-    LaTeX, worked calculations, and source URLs. Chinese teaching copy may be
-    adapted for clarity, but it must not silently change the mathematical claim.
-  - Chapter content that bypasses `CURRICULUM` / `CHAPTER_ARTICLES` — the 46-count,
-    ordering, and depth contracts are enforced by `curriculum.test.ts` /
-    `chapter-article.test.ts`; change them consciously, never accidentally.
-- **Focus violation awaiting user decision (pending user decision)**: the legacy
-  interactive SPA layer (~50 files: `src/App.tsx`, `src/components/*.tsx` (28),
-  `src/domain/`, bilingual `src/content/bilingual-course.ts` zh+en track,
-  `index.html`, `src/styles.css`) is superseded by the reading-first course —
-  no `.astro` page mounts it and `dist/` contains zero astro-islands. Three
-  options were proposed 2026-10-13: keep as test asset / extract / remove.
-  Until decided: it stays test-covered, carries the design-debt notice in
-  `src/App.tsx`, and nothing new may be built on it.
+- 本项目只做：publishing the **pure-Chinese, reading-first RL Field Guide** — 46 章 / 9 部分
+  叙事式教程，Astro 静态站（https://ssx86.github.io/rl-field-guide/zh/）。
+  Shipped product = `src/content/zh-chapters/ch01..46.ts` + `src/pages/zh/*.astro` +
+  `render.ts`（KaTeX 构建期服务端渲染），由 CI 以 `test → lint → build → verify:static`
+  四道门部署到 GitHub Pages。
+- 属于本项目的工作流：校验脚本（`scripts/verify-static.mjs`、`check-zh-chapter.mjs`、
+  `fix-zh-backslashes.mjs`）、认知账本（`brain.md`）、MANIFESTS 墓碑体系、CI 部署。
+- 不属于本项目的事情（发现即向用户提出，不静默吸收）：
+  - 页面内交互控件 / astro-island —— 产品是纯阅读静态页（verify-static 断言零 island）
+  - 旧三语架构的任何复活 —— `/en/`、`/bilingual/`、六区块模板已删除，恢复需用户明示
+  - 未经用户决策改动 `src/styles/` 与 `astro.config.mjs`（视觉与构建配置冻结）
 
 ## Structure Contract
 
-- 目录权威: `MANIFESTS/INDEX.md` — new top-level folders must be registered there
-  (with a summary) in the same change that creates them.
-- 放置规则: new chapters → add a part module in `src/content/chapters/` +
-  `CURRICULUM` entry (same change updates the count in `chapter-article.test.ts`);
-  static page/layout work → `src/pages/` + `.astro` components; styles →
-  `src/styles/guide*.css`; audit/decision docs → `docs/<topic>-<date>/`.
-- 根目录禁放: one-off screenshots (use `artifacts/` for audit evidence), manual
-  backups, scratch exports. `index.html` + `tsconfig.app.json` currently serve
-  only the legacy layer — their fate is tied to the pending SPA decision.
+- 内容权威：`src/content/zh-chapters/`。新增/修改章节 = 改对应 `chXX.ts`（纯文本，
+  `\n\n` 分段、`## ` 二级标题、`**加粗**`、`$$公式$$`/`$公式$`；LaTeX 反斜杠在模板字符串里
+  必须双写 `\\theta`——写完跑 `node scripts/check-zh-chapter.mjs <file>` 与
+  `node scripts/fix-zh-backslashes.mjs --check`）。
+- 页面：每章一个静态页 `src/pages/zh/chXX.astro`（模板复制自 ch01.astro，只改 import 与
+  常量名）；目录页 `src/pages/zh/index.astro` 需导入全部章节；根 `src/pages/index.astro`
+  重定向到 `/zh/`。**不用动态路由**（Windows 上曾出问题）。
+- 墓碑：任何 `git rm` 在 `MANIFESTS/folders/*.md` 记录 what/why/how-to-restore。
+- 根目录禁放临时文件；生成目录（dist/.astro）已在 .gitignore。
 
 ## File Hygiene Rules
 
-From the 2026-10-13 audit findings — these are "do it right at creation time" laws:
+- **换路必清旧路**：替换方案时同一变更内退役旧面（2026-10-19 重建是完整范例：内容、
+  路由、测试、CI 校验一次切换，不留双轨）。
+- **未提交的工作不悬空**：会话结束前提交或显式 stash 并留言。
+- **CI 必须绿**：push 前本地跑全链路 `npm test && npm run lint && npm run build &&
+  npm run verify:static`。verify-static 断言 48 页（根 + 目录 + 46 章）——改页面数量
+  必须同步改脚本。
+- **删除留墓碑**、**无游离文件**、**分支指针同步**（push 后同会话内对齐本地/远端指针）。
 
-- **换路必清旧路**: when an approach is replaced, retire the old surface in the
-  same change — delete it, or banner it (SUPERSEDED notice pointing to the new
-  path) and consciously decide its tests' fate. Audit finding F1: the
-  SPA→reading-course switch left the entire interactive layer in place with its
-  tests green, which is exactly the double-track residue this law exists to
-  prevent. (True retirement of that layer needs explicit user authorization.)
-- **未提交的工作不悬空**: end a working session with changes committed or
-  explicitly stashed with a note. Audit finding F2: an unexplained uncommitted
-  trim dangled on a published branch.
-- **浏览器审计产物即产即清**: `test-results/` Playwright profiles are regenerable
-  scratch — delete after audit runs, don't let 18MB accumulate (finding F6);
-  generated dirs (`dist/`, `.astro/`) are gitignored the moment they exist.
-- **分支指针同步**: after publishing a feature branch to `origin/main`,
-  fast-forward the local `main` pointer in the same session (finding F5).
-- **双语同构内容法**: English and Chinese ship together. Tests enforce matched
-  slugs plus identical formula LaTeX, calculations, and source provenance.
-- **无游离文件**: every new file is committed or gitignored within its working
-  session. (Finding F4: the founding prototype floated at the workspace root
-  outside any repo until archived into `docs/`.)
-- **删除留墓碑**: any `git rm` records what/why/how-to-restore in
-  `MANIFESTS/folders/*.md`.
+## Zero-Test Constraint
+
+旧结构测试已全部删除。内容质量由三道程序化门槛把关（禁用词/字数/链接完整性、KaTeX
+逐公式渲染、全站产物断言）。若未来恢复测试，需用户决策并更新本文件。
 
 ## Last Audit
 
-- 2026-10-13 repo-cartographer: reports at `../MANIFESTS/reports/2026-10-13-audit.md`
-  and `2026-10-13-status-audit.md`; 遗留用户决策 2 项: (1) legacy SPA layer
-  retirement (keep / extract / remove), (2) fate of the uncommitted
-  `src/content/chapters.ts` trim (commit or discard).
+- 2026-10-13 repo-cartographer：报告在 `../MANIFESTS/reports/`。两项遗留决策均已结案：
+  (1) legacy SPA layer → 2026-10-19 随重建整体删除；(2) chapters.ts 未提交裁剪 → 随旧
+  内容层一并消失。
+
+## History
+
+- 2026-10-14 立法时的双语架构规则已被 2026-10-19 纯中文重写取代，原文见
+  `git show 1bc75f0:AGENTS.md`。

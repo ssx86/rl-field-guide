@@ -1,20 +1,18 @@
 ---
-import GuideLayout from "@/layouts/GuideLayout.astro";
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+// 站点根路径：纯中文版入口，直接跳转到 /zh/
 ---
 
-<GuideLayout title="RL Field Guide · 强化学习指南" description="A complete, example-first bilingual reinforcement learning reading course. 一套以例子和证据为先的中英双语强化学习课程。" mode="en" canonicalPath={`${base}/`}>
-  <main id="main-content" class="language-gate" tabindex="-1">
-    <div class="language-gate-card">
-      <span class="guide-brand-mark" aria-hidden="true">RL</span>
-      <p class="instrument-label">RL FIELD GUIDE · 强化学习指南 · CHAPTER 00 + 46 DEEP CHAPTERS · 9 PARTS</p>
-      <h1>Learn reinforcement learning as a chain of decisions and evidence.<br /><span lang="zh-CN">沿着决策与证据链学习强化学习。</span></h1>
-      <p>Choose English, Chinese, or an alternating bilingual reading mode.<br /><span lang="zh-CN">请选择英文、中文，或中英逐段对照的双语模式。</span></p>
-      <div class="language-gate-actions">
-        <a class="primary-link" href={`${base}/en/`}>Open English course <span>→</span></a>
-        <a class="primary-link" href={`${base}/zh/`} lang="zh-CN">打开中文课程 <span>→</span></a>
-        <a class="primary-link" href={`${base}/bilingual/`} aria-label="Open bilingual English and Chinese course"><span aria-hidden="true">中/EN</span> Bilingual <span>→</span></a>
-      </div>
-    </div>
-  </main>
-</GuideLayout>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="refresh" content="0;url=/rl-field-guide/zh/" />
+  <title>强化学习指南</title>
+  <link rel="canonical" href="https://ssx86.github.io/rl-field-guide/zh/" />
+</head>
+<body>
+  <p style="font-family:Georgia,'Noto Serif SC',serif;margin:40px auto;max-width:680px;padding:0 24px">
+    强化学习指南已迁往 <a href="/rl-field-guide/zh/" style="color:#a85c04">/zh/</a>
+  </p>
+</body>
+</html>

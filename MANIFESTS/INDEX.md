@@ -1,18 +1,17 @@
 # rl-guide/ MANIFESTS 索引 — RL Field Guide（rl-field-guide@0.1.0）
 
-英文-only 46 章/9 部 RL 阅读课程（Astro 静态站 + React 遗留交互层），部署于 ssx86.github.io/rl-field-guide。
-HEAD d6f85b0（feature/comprehensive-reading-course == origin/main；本地 main 落后 10 提交；工作树含 src/content/chapters.ts 未提交修改，2026-10-13）。
+纯中文 46 章/9 部分 RL 阅读课程（Astro 静态站），部署于 ssx86.github.io/rl-field-guide。
+2026-10-19 纯中文重写版上线：旧三语架构与 SPA 遗留层整体删除（墓碑见 [folders/rebuild-2026-10-19.md](folders/rebuild-2026-10-19.md)，恢复基线 `git checkout 1bc75f0`）；现行权威内容 = `src/content/zh-chapters/ch01..46.ts`，页面 = `src/pages/zh/`。
 
 ## 源码/文档文件夹
 
 | 文件夹 | 文件数 | 模式 | 摘要 |
 |---|---|---|---|
-| (root) | 14 | per-file | [root.md](folders/root.md) — 审计/认知账本/配置；index.html 与 tsconfig.app.json 为遗留孤儿候选 |
-| .github · docs/audit-2026-10-12 · scripts | 7 | per-file | [docs-and-scripts.md](folders/docs-and-scripts.md) — 部署工作流、四份审计决策文档、静态+浏览器校验脚本 |
-| src（根）· src/domain · src/hooks · src/lib · src/test | 20 | per-file | [spa-layer.md](folders/spa-layer.md) — **已停用的交互 SPA 层**（有测试守护；类型仍被线上引用） |
-| src/components | 34 | **folder-level** | [components.md](folders/components.md) — 6 个 .astro 线上在用 + 28 个 .tsx 属 SPA 层；抽样 3 + ui/button |
-| src/content | 17 + 9 | per-file | [content.md](folders/content.md) — 线上权威（curriculum + part-1..9）与遗留内容（旧 10 章库/双语 16 课/实验文案）混居 |
-| src/layouts · src/pages · src/styles | 6 | per-file | [astro-site.md](folders/astro-site.md) — 线上站点层（布局/三组页面/样式） |
+| (root) | 12 | per-file | [root.md](folders/root.md) — 审计/认知账本/配置 + REBUILD-PROMPT.md（2026-10-19 重写任务书） |
+| .github · docs/audit-2026-10-12 · scripts | 6 | per-file | [docs-and-scripts.md](folders/docs-and-scripts.md) — 部署工作流、审计决策文档、校验脚本（verify-static.mjs 已按新结构重写） |
+| src/content/zh-chapters（现行权威） | 48 | per-file | 46 章纯中文内容 + render.ts（KaTeX 服务端渲染）+ zh-guide.ts（内容模型） |
+| src/pages · src/styles | 50 | per-file | [astro-site.md](folders/astro-site.md) — 纯中文站点层：根重定向 + /zh/ 目录 + 46 章静态页 + 保留样式 |
+| 🪦 已删除 | — | tombstone | [rebuild-2026-10-19.md](folders/rebuild-2026-10-19.md) — 2026-10-19 删除的三语路由/双语内容/SPA 层/旧测试（含各目录考古走查：[spa-layer.md](folders/spa-layer.md)、[content.md](folders/content.md)、[components.md](folders/components.md)） |
 | artifacts · public | 2 | binary | 首页截图审计证据 + favicon（见 root.md 尾） |
 
 ## Gitignored 产物目录（folder-level，永不逐文件走查）

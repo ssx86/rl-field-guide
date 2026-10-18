@@ -2,7 +2,6 @@
 // 用法: node scripts/check-zh-chapter.mjs src/content/zh-chapters/ch02.ts [...]
 import { renderToString } from "katex";
 import { pathToFileURL } from "node:url";
-import { readFileSync } from "node:fs";
 
 const files = process.argv.slice(2);
 if (files.length === 0) {

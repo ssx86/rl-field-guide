@@ -10,7 +10,7 @@
     "check": "astro check",
     "verify:static": "node scripts/verify-static.mjs",
     "lint": "eslint .",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
   "dependencies": {

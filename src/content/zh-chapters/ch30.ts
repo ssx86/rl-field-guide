@@ -22,13 +22,13 @@ export const CH30 = {
 
 保守 Q 学习（CQL）把谨慎放进数字本身：当许多候选动作的 Q 普遍高于日志动作时，惩罚把这些可疑高值往下压。
 
-$$\alpha\left(\log\sum_a e^{Q(s,a)}-\mathbb{E}_{a\sim D}[Q(s,a)]\right)$$
+$$\\alpha\\left(\\log\\sum_a e^{Q(s,a)}-\\mathbb{E}_{a\\sim D}[Q(s,a)]\\right)$$
 
 惩罚太弱，虚假乐观活下来；太强，真实但少见的改进被一起压低。$\\alpha$ 是一个真旋钮，必须对着实际数据调。
 
 隐式 Q 学习（IQL）干脆不朝日志外看：只用日志动作的 Q 拟合状态价值，期望分位回归是一种偏向较大值的加权平均，再让策略更强地模仿优势高的日志动作。
 
-$$L_V=\mathbb{E}_{(s,a)\sim D}[|\tau-\mathbf{1}(Q(s,a)-V(s)<0)|(Q(s,a)-V(s))^2]$$
+$$L_V=\\mathbb{E}_{(s,a)\\sim D}[|\\tau-\\mathbf{1}(Q(s,a)-V(s)<0)|(Q(s,a)-V(s))^2]$$
 
 从头到尾不对未见动作取最大值，堵掉虚假乐观的一条路；可它也变不出数据从未支持的好动作。
 
