@@ -152,7 +152,7 @@ export const PART_ONE_ARTICLES = [
     },
     workedExample: {
       title: "Add the same three rewards in two ways",
-      setup: "From now on, a route gives rewards 2, 0, and 10. First use γ = 1. Then use γ = 0.9. Finally, imagine that the record stops early.",
+      setup: "A delivery route gives three rewards in sequence: a quick stop earns 2, a detour earns 0, and the final delivery earns 10. Compare γ = 1 and γ = 0.9. Then imagine the record stops before the last reward.",
       prediction: "The reward 10 is two steps away. Should it be multiplied by γ zero times, once, or twice?",
       steps: [
         { label: "Use no discount", calculation: "Gₜ = 2 + 0 + 10 = 12", explanation: "When γ equals 1, all three rewards keep their full size." },
@@ -214,7 +214,7 @@ export const PART_ONE_ARTICLES = [
     },
     workedExample: {
       title: "Two choices can have the same average and different risks",
-      setup: "Safe always gives 4. Risky gives 10 with chance 0.4 and 0 with chance 0.6. A policy chooses Safe 75% of the time and Risky 25% of the time.",
+      setup: "A game offers two buttons. The Safe button always pays 4 points. The Risky button pays 10 points with probability 0.4 and 0 with probability 0.6. A policy chooses Safe 75% of the time and Risky 25% of the time.",
       prediction: "Work out the average for Risky and for the whole policy. Does the same average make Safe and Risky the same choice?",
       steps: [
         { label: "Average for Safe", calculation: "E[R | Safe] = 1×4 = 4", explanation: "Safe has only one possible reward, so its average is 4." },
@@ -276,7 +276,7 @@ export const PART_ONE_ARTICLES = [
     },
     workedExample: {
       title: "Update one average without forgetting the first ten trials",
-      setup: "Tea has been chosen 10 times and averages 7.0. The eleventh Tea reward is 9. Coffee averages 7.1 after 100 trials. There have been 111 choices in total.",
+      setup: "Think of a drinks stall that only serves Tea and Coffee, and scores each cup from 0 to 10. Tea has been chosen 10 times and averages 7.0. The eleventh Tea reward is 9. Coffee averages 7.1 after 100 trials. There have been 111 choices in total.",
       prediction: "Will Tea's estimate jump to 9, stay at 7, or move part of the way? Which drink is less certain?",
       steps: [
         { label: "Find how surprising the new reward is", calculation: "9 − 7.0 = 2.0", explanation: "The new Tea reward is two points above the old estimate." },

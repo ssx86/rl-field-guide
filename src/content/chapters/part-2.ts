@@ -86,7 +86,7 @@ export const PART_TWO_ARTICLES = [
     },
     workedExample: {
       title: "Give both possible door results their proper weight",
-      setup: "Moving right from A reaches a goal worth 5 with chance 0.8. It reaches a waiting place worth 1 with chance 0.2. The immediate reward is 0 and gamma is 0.9.",
+      setup: "A robot stands at position A. Moving right usually reaches the charging dock worth 5 points, but 20% of the time it slips to a waiting area worth 1. The move itself costs nothing. Gamma is 0.9.",
       prediction: "Should we use only the common result, average the two results equally, or use their chances?",
       steps: [
         { label: "Goal result", calculation: "0.8×(0+0.9×5)=3.6", explanation: "The goal is common, so it gets weight 0.8. Its later value also gets the discount 0.9." },
@@ -141,7 +141,7 @@ export const PART_TWO_ARTICLES = [
     },
     workedExample: {
       title: "Watch the goal's value move backward",
-      setup: "A path is S₀→S₁→Goal. Entering the goal gives +1. Other moves give 0. Gamma is 0.9, and both starting values are 0.",
+      setup: "A robot walks a corridor: start → middle → exit. Reaching the exit earns +1. Every other step earns 0. Gamma is 0.9, and both starting values are 0.",
       prediction: "Which state learns about the goal on the first round? What can S₀ know on the second round?",
       steps: [
         { label: "Before calculation", calculation: "V₀(S₀)=V₀(S₁)=0", explanation: "No room knows about the goal yet. The +1 arrives only when the robot enters it." },
@@ -241,7 +241,7 @@ export const PART_TWO_ARTICLES = [
     },
     workedExample: {
       title: "Compare a quick update with a more patient update",
-      setup: "Starting at S₀, the next two rewards are 2 and 3. Gamma is 0.9. Current forecasts are V(S₁)=5 and V(S₂)=8. The trip continues after S₂.",
+      setup: "A courier leaves the depot. The next two stops earn 2 and 3. Gamma is 0.9. The forecast for stop one is V=5 and for stop two is V=8. The trip continues after that.",
       prediction: "Which target uses more rewards that really happened? Which one relies more on the current value table?",
       steps: [
         { label: "One-step target", calculation: "G₀:₁=2+0.9×5=6.5", explanation: "We see reward 2, then let V(S₁) stand for everything later." },
