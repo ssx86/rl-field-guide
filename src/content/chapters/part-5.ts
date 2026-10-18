@@ -12,9 +12,8 @@ export const PART_FIVE_ARTICLES = [
     situation: {
       title: "The rules fit on a page, but the future does not",
       paragraphs: [
-        "In chess or Go, the program knows every legal move. It also knows exactly how each move changes the board. The problem is the huge number of possible move sequences. Checking all of them would take far too long.",
-        "Monte Carlo Tree Search, or MCTS, grows only a small tree of possible futures. It chooses a branch, adds one new position, estimates that position, and sends the result back up the branch. Repeating these four jobs makes the useful part of the tree larger.",
-        "AlphaZero adds a learned network. The network suggests moves and estimates new positions. Search checks those suggestions against simulated futures. Self-play then uses the search results to train the network again.",
+        "In chess or Go, the program knows every legal move and exactly how each move changes the board — the rules fit on a page. The future does not: the number of possible move sequences grows so quickly that checking all of them would take far longer than the game deserves. Monte Carlo Tree Search, or MCTS, grows only a small tree of possible futures instead. It chooses a branch, adds one new position, estimates that position, and sends the result back up; repeating those four jobs makes the useful part of the tree larger.",
+        "AlphaZero adds a learned network to this loop. The network suggests moves and estimates new positions, so search does not begin from nothing; search then checks those suggestions against simulated futures and produces better targets; self-play uses the search results to train the network again. Each side sharpens the other, which raises the question this chapter keeps in view: what exactly does the network contribute, what does the tree contribute, and where can each still be wrong?",
       ],
     },
     diagram: {
@@ -42,21 +41,14 @@ export const PART_FIVE_ARTICLES = [
     mechanism: {
       introduction: "The network and the tree do different jobs. Keeping those jobs separate makes AlphaZero easier to understand.",
       sections: [
-        { title: "The tree keeps evidence for this one decision", paragraphs: [
-          "Each edge keeps three numbers. N counts visits. W adds the returned results. Q is their average. These numbers belong to the current search, so a larger search budget can change them.",
-          "A two-player game also changes viewpoint after every move. A good result for one player is bad for the other. The program must flip the value at the right places while sending it back up the tree.",
+        { title: "How a search spends its attention", paragraphs: [
+          "Each edge in the tree keeps three numbers: N counts visits, W adds the returned results, and Q is their average — local evidence assembled for this one decision, discarded or rebuilt when the position changes. A two-player game adds a twist of perspective: a good result for one player is bad for the other, so the program must flip the value at the right places while sending it back up. These numbers belong to the current search; a larger budget can rewrite them.",
+          "The learned suggestion decides where that attention begins. The network gives each legal move a prior probability P, so moves it likes receive early visits — and the selection rule, called Predictor plus Upper Confidence Bounds applied to Trees, or PUCT, adds a bonus that shrinks as an edge gathers visits. The worked example above showed the balance in action: move B scored higher than the better-looking move A purely because B still lacked evidence. The search can still reject the network's favorite once simulations return worse numbers.",
+          "The value estimate is what makes a fixed budget stretch across the tree. A new leaf may sit hundreds of moves from any final result, and the value head estimates that result without playing the branch to the end, so each simulation covers new ground instead of finishing old games. Treat the estimate as a prior, not an oracle: search can repair a small error when other branches supply better evidence, but a repeated bias guides the whole search confidently in the wrong direction.",
         ] },
-        { title: "A learned suggestion decides where search begins", paragraphs: [
-          "The network gives each legal move a prior probability P. A larger P sends early attention toward that move. The search can still reject the suggestion when later simulations give worse evidence.",
-          "This score is called Predictor + Upper Confidence Bounds applied to Trees, or PUCT. Its bonus falls as one edge receives more visits.",
-        ] },
-        { title: "A value estimate saves many trips to the end of the game", paragraphs: [
-          "A new leaf may be hundreds of moves from the final result. The value head estimates that result without playing every branch to the end. This makes a fixed search budget useful over more branches.",
-          "The estimate can be wrong. Search may repair a small error when other branches supply better evidence. A repeated bias can instead guide the whole search in the wrong direction.",
-        ] },
-        { title: "Search teaches the network, and the network guides the next search", paragraphs: [
-          "After many simulations, root visit counts form a move distribution. AlphaZero trains its policy output toward this distribution. It trains its value output toward the final self-play result.",
-          "The updated network guides later games. Root noise keeps self-play from repeating only familiar openings. Tests against fixed and older opponents are still needed, because beating the latest self may hide a cycle.",
+        { title: "How search and network improve each other", paragraphs: [
+          "After many simulations, the root's visit counts form a move distribution — a distillation of everything the search learned about this position. AlphaZero trains its policy output toward that distribution and its value output toward the final self-play result, so the network is always chasing a slightly stronger teacher: its own searching self. The updated network then guides later games, and the loop tightens. Root noise keeps self-play from repeating only familiar openings, since some exploration must survive to feed the search new positions.",
+          "A loop that trains on itself needs external referees. Beating your latest self can hide a cycle — version A beats B, B beats C, C beats A — while each step looks like progress. Tests against fixed opponents and against older checkpoints give the loop something solid to lean on. Keep this caution in your pocket; it returns in the next part when the rules being searched are themselves learned from data, and the referee problem becomes harder.",
         ] },
       ],
     },
@@ -83,9 +75,8 @@ export const PART_FIVE_ARTICLES = [
     situation: {
       title: "A car that misses a little on each step can miss the whole road",
       paragraphs: [
-        "Suppose a model predicts where a car will be after one steering action. A small direction error may barely matter after one step. Reuse that wrong direction twenty times, and the imagined car can leave the road.",
-        "Model Predictive Control, or MPC, limits this problem. It plans several steps, performs only the first action, reads the real sensors, and plans again. Each new observation replaces an imagined state with a real one.",
-        "Other methods use imagination for training. Dyna adds model-made transitions to ordinary learning. Model-Based Policy Optimization, or MBPO, begins short imagined trips from real stored states. Both gain cheap practice, but that practice contains model error.",
+        "Suppose a model predicts where a car will be after one steering action. A small direction error barely matters after one step — but reuse that wrong direction twenty times, and the imagined car has left the road entirely. Model Predictive Control, or MPC, limits the damage: plan several steps, perform only the first action, read the real sensors, and plan again. Each new observation replaces an imagined state with a real one, so error never accumulates without correction — at the price of constant replanning.",
+        "Other methods use imagination for training rather than deciding. Dyna adds model-made transitions to ordinary learning, so one real experience becomes several practice updates. Model-Based Policy Optimization, or MBPO, begins short imagined trips from real stored states, buying cheap practice while keeping the repeated-model-error bill small. Both gain data efficiency; both now learn from futures the model invented. The question underneath every choice is the same — how far into imagination should the agent be allowed to run?",
       ],
     },
     diagram: {
@@ -113,21 +104,13 @@ export const PART_FIVE_ARTICLES = [
     mechanism: {
       introduction: "A useful model must be judged by the decisions it supports. One average prediction score cannot answer that question alone.",
       sections: [
-        { title: "Dyna turns one real experience into extra practice", paragraphs: [
-          "A real transition updates both the model and the learner. Dyna then asks the model for additional transitions and applies the usual learning update to them. The agent can therefore learn more between costly real actions.",
-          "The extra transitions are not new real evidence. If the model is wrong in one area, many imagined updates can repeat the same error. The amount and starting place of imagined practice must be recorded.",
+        { title: "Practice from imagination: Dyna and MBPO", paragraphs: [
+          "Watch one real experience travel through Dyna. The transition updates both the model and the learner as usual; then Dyna asks the model for additional transitions and applies the same learning update to those as well, so the agent extracts more learning between costly real actions. The extra transitions are not new real evidence — they are the model's beliefs replayed back at you. If the model is wrong in one region, many imagined updates repeat the same error with total confidence, which is why the amount and starting places of imagined practice belong in your experiment log.",
+          "MBPO turns that caution into a design rule. Its imagined trips start from states drawn from real stored experience, and each trip runs only a short continuation before a model-free learner trains on the mix of real and imagined transitions. The trade is explicit: shorter trips carry less repeated model error, while longer trips create more cheap data — and the best length shifts as the model improves and the agent's visited states change. Nothing here fixes a bad model; it merely prices how far you lean on it.",
         ] },
-        { title: "MPC makes a new plan after every real action", paragraphs: [
-          "MPC compares action sequences over a limited distance. It can sample many sequences and keep improving the promising ones. The Cross-Entropy Method, or CEM, is one common way to do that.",
-          "The controller performs only the first action. Then it measures the real result and solves the problem again. This feedback reduces long open-loop drift, but the repeated planning adds delay at deployment time.",
-        ] },
-        { title: "Several models can show where knowledge is weak", paragraphs: [
-          "Probabilistic Ensembles with Trajectory Sampling, or PETS, trains several prediction models. When they disagree about an action's result, the agent has a warning that its data may be weak there.",
-          "Agreement is not proof. All models may share the same missing data or wrong assumption. Their common answer can still be wrong, especially outside the experience used for training.",
-        ] },
-        { title: "MBPO keeps imagined trips short on purpose", paragraphs: [
-          "MBPO starts from states that came from real stored experience. It asks the model for only a short continuation. A model-free learner trains on a mix of real and imagined transitions.",
-          "Shorter trips carry less repeated model error. Longer trips create more cheap data. The best length can change as the model and the agent's visited states change.",
+        { title: "Planning with feedback, and knowing where knowledge is weak", paragraphs: [
+          "MPC is the discipline of never trusting imagination for long. It compares action sequences over a limited distance — sampling many and improving the promising ones, with the Cross-Entropy Method, or CEM, as one common recipe — then performs only the first action, measures the real result, and solves the problem again. That feedback loop is what keeps a slightly wrong model usable: the error has one step to mislead you, not twenty. The bill arrives at deployment, where the repeated planning costs real time on every single action.",
+          "Probabilistic Ensembles with Trajectory Sampling, or PETS, trains several prediction models and reads their disagreement as a map of ignorance: where the models agree, planning proceeds boldly; where they diverge, the agent learns its data may be weak there. Do not mistake agreement for proof. All the models may share the same missing data or the same wrong assumption, and their confident common answer can still be wrong — especially outside the experience used for training. Ensembles warn; they do not certify.",
         ] },
       ],
     },
@@ -154,9 +137,8 @@ export const PART_FIVE_ARTICLES = [
     situation: {
       title: "The robot needs the shelf edge, not a perfect picture of the wall",
       paragraphs: [
-        "A warehouse camera sees shelves, floor marks, shadows, and dust. The robot must preserve shelf position, speed, and hazards. It may not need the exact color of every pixel. A compact internal description is called a latent state.",
-        "Dreamer learns how latent states change after actions. It begins from real experience, then trains an actor and critic on short imagined trips. Its model also predicts rewards and whether a trip continues.",
-        "MuZero learns a different model. It turns observation history into a hidden state. From there it predicts the next hidden state, reward, policy, and value for tree search. It does not have to draw the next camera image.",
+        "A warehouse camera sees shelves, floor marks, shadows, and dust; the robot must preserve shelf position, speed, and hazards, but it hardly needs the exact color of every pixel. A compact internal description is called a latent state, and it is the same compression idea you used in Part 3 with features — except now the useful clues are learned instead of hand-drawn. Dreamer learns how latent states change after actions and trains an actor and critic on short imagined trips; its model also predicts rewards and whether a trip continues.",
+        "MuZero learns a different model for a different purpose. It turns observation history into a hidden state and, from there, predicts the next hidden state, reward, policy, and value — everything AlphaZero's search needs, and not one pixel more. Where Dreamer's world supports acting by imagining, MuZero's world supports thinking by searching. Both raise the same quiet question, which this chapter takes seriously: if the model only keeps what its training asked for, what happens to the facts nobody asked about?",
       ],
     },
     diagram: {
@@ -184,21 +166,13 @@ export const PART_FIVE_ARTICLES = [
     mechanism: {
       introduction: "Compression helps only when the hidden state keeps every fact needed for later choices. Dreamer and MuZero test that idea in different ways.",
       sections: [
-        { title: "Dreamer keeps a memory and a changing guess", paragraphs: [
-          "Dreamer's Recurrent State-Space Model, or RSSM, has two parts. A repeating memory carries information from the past. A random latent variable represents uncertainty about what the current hidden situation may be.",
-          "During training, a posterior state can use the new real observation. A prior state must predict without that observation. A matching penalty helps the prior learn to make a useful guess before the future arrives.",
+        { title: "Dreamer's memory and its imagination", paragraphs: [
+          "Dreamer's Recurrent State-Space Model, or RSSM, has two parts that answer two needs. A repeating memory carries information from the past, and a random latent variable represents uncertainty about what the current hidden situation may be. During training, a posterior state may use the new real observation, but a prior state must predict without it; a matching penalty teaches the prior to make a useful guess before the future arrives. This is the belief-state idea from Part 4 rebuilt in learned form.",
+          "The actor then practises inside this learned world. Dreamer starts imagination from hidden states built on real data, rolls the model forward, and trains the actor and critic with predicted rewards and values — no new environment action is spent on those updates. A longer dream is cheaper than a longer real trip, but it trusts the model for more steps, and the actor may learn to exploit an error in the imagined physics. Real-data starts and limited imagined distance are the guardrails that keep training grounded.",
         ] },
-        { title: "Dreamer lets the actor practise inside the learned model", paragraphs: [
-          "Dreamer starts its imagination from hidden states built from real data. It rolls the learned model forward and trains the actor and critic with predicted rewards and values. No new environment action is needed for those updates.",
-          "A longer dream is cheaper than a longer real trip, but it trusts the model for more steps. The actor may learn to exploit an error. Real-data starts and limited imagined distance help keep training grounded.",
-        ] },
-        { title: "MuZero keeps only what its search targets ask for", paragraphs: [
-          "MuZero separates representation, dynamics, and prediction functions. Training asks them to match rewards, values, and search policies across several steps. It does not ask the hidden state to resemble a human-readable physical state.",
-          "Two pictures may share one hidden state when they support the same future decisions. That saves capacity. It also makes missing information hard to notice when no current target asks for it.",
-        ] },
-        { title: "Search can fix one bad guess or repeat a bad hidden rule", paragraphs: [
-          "Monte Carlo Tree Search can compare many hidden futures. Extra branches may correct the network's first action suggestion. This is useful when the hidden dynamics remain accurate over those branches.",
-          "Search also spends more effort on futures with high predicted reward. A systematic model error can therefore become more attractive after more search. Chosen plans must be checked against held-out real experience.",
+        { title: "MuZero's economy, and what search does to a bad model", paragraphs: [
+          "MuZero separates representation, dynamics, and prediction functions, and training asks them only to match rewards, values, and search policies across several steps — never to resemble a human-readable physical state. Two pictures may share one hidden state when they support the same future decisions, which saves capacity. The economy has a blind spot built in: missing information is hard to notice when no current target asks for it. Compression is only harmless while the questions you train on cover the facts you will later need.",
+          "Search cuts both ways on top of such a model. Monte Carlo Tree Search compares many hidden futures, and extra branches can correct the network's first action suggestion — genuinely useful when the hidden dynamics stay accurate across those branches. But search also spends its effort on futures with high predicted reward, so a systematic model error becomes more attractive the longer you search, not less. Chosen plans must therefore be checked against held-out real experience; the boundary section below makes that requirement concrete for safety-critical facts.",
         ] },
       ],
     },

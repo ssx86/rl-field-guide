@@ -12,9 +12,8 @@ export const PART_SEVEN_ARTICLES = [
     situation: {
       title: "A delivery plan can speak in rooms instead of wheel movements",
       paragraphs: [
-        "Imagine a robot leaving a mailroom, taking an elevator, crossing a corridor, and docking at a desk. Each step still needs wheel commands. Yet the delivery planner would be easier to use if it could choose reach the elevator as one longer action.",
-        "The policy that chooses a longer action is often called the manager. A lower policy, often called the worker, performs the small actions until the longer action ends. Learning with these two time scales is called Hierarchical Reinforcement Learning, or HRL.",
-        "One formal kind of longer action is called an option. An option says where it may start, what policy runs while it is active, and when it stops. It can last one step or many, so the manager must remember how much time passed.",
+        "Imagine a robot leaving a mailroom, riding an elevator, crossing a corridor, and docking at a desk. At the level of motors, every one of those phases is a stream of wheel commands. Yet you would never give a friend directions that way — you would say 'take the elevator to three, then second door on the left'. The same economy is available to a learning agent: a manager policy chooses a longer action such as reach the elevator, and a worker policy performs the small actions until that longer action ends. Learning with these two time scales is called Hierarchical Reinforcement Learning, or HRL.",
+        "One formal kind of longer action is called an option, and its three parts are worth memorizing because everything else in this chapter hangs on them. An option says where it may start (the initiation set), what policy runs while it is active (the option policy), and when it stops (the termination rule). An option can last one step or many, which means the manager must remember how much time passed before choosing again — a small bookkeeping change with large mathematical consequences, as you are about to see.",
       ],
     },
     diagram: {
@@ -42,21 +41,13 @@ export const PART_SEVEN_ARTICLES = [
     mechanism: {
       introduction: "A hierarchy helps only when each longer action has a clear job and a clear handoff back to the manager.",
       sections: [
-        { title: "An option is a three-part promise", paragraphs: [
-          "The first part is the initiation set: the states where the option may begin. The second is the option policy: the small actions it chooses. The third is the termination rule: the chance that it stops in each state.",
-          "A one-step action also fits this definition because it stops immediately. Options therefore add longer actions without removing ordinary actions. The manager can still use a small action when no larger skill fits.",
+        { title: "The option framework and the manager's new clock", paragraphs: [
+          "The three parts of an option answer three practical questions: where can this skill start, what does it do while it runs, and when does the manager get control back? Notice that a one-step action fits the same definition — it simply stops immediately — so options add longer actions without removing ordinary ones, and the manager can still take a small step when no larger skill fits. The framework extends what you already know rather than replacing it. What genuinely changes is the clock.",
+          "In an ordinary Markov Decision Process, or MDP, the policy chooses again after every step. With options, the next choice may come after one step or ten, and the setting has its own name: a Semi-Markov Decision Process, or SMDP. A reward received three steps later must be discounted three times, because the manager truly waited three steps; pretending every option lasts one step makes a slow skill look better than it is. When you evaluate a hierarchy, count the small steps inside every long action — their rewards and waiting time still belong in the value.",
         ] },
-        { title: "Different lengths change the manager's clock", paragraphs: [
-          "In an ordinary Markov Decision Process, or MDP, the policy chooses again after every step. With options, the next choice may come after one step or ten. This is called a Semi-Markov Decision Process, or SMDP.",
-          "The name matters less than the bookkeeping. A reward received three steps later must be discounted three times. Pretending that every option lasts one step can make a slow skill look better than it is.",
-        ] },
-        { title: "A task tree turns a large job into named smaller jobs", paragraphs: [
-          "MAXQ value-function decomposition draws a task tree. A parent job, such as deliver the parcel, can call children such as reach the elevator and cross the corridor. Each child can learn from its own part of the trip.",
-          "The tree also limits what the agent may do. If the tree leaves out a necessary move, the manager cannot invent it. The best policy allowed by the tree may therefore be worse than the best policy using all small actions freely.",
-        ] },
-        { title: "A goal can be an input instead of a separate skill", paragraphs: [
-          "A goal-conditioned policy receives both the current state and a desired result. One worker may then learn reach door A, reach door B, and reach the charger. The manager changes the goal instead of loading a different worker each time.",
-          "Other methods discover skills by rewarding different behaviors. Different does not always mean useful. Spinning left and spinning right are easy to distinguish, but neither may help deliver a parcel. Discovered skills need a real downstream test.",
+        { title: "Ways to build the family of skills", paragraphs: [
+          "Where do the options come from? One answer is to draw a task tree, as MAXQ value-function decomposition does: a parent job such as deliver the parcel calls children such as reach the elevator and cross the corridor, and each child learns from its own part of the trip. The tree is powerful and dangerous in the same gesture, because it limits what the agent may do. If the tree leaves out a necessary move, the manager cannot invent it, and the best policy the tree allows may be worse than the best policy over all small actions used freely.",
+          "Two softer answers exist. A goal-conditioned policy receives both the current state and a desired result, so a single worker can learn reach door A, reach door B, and reach the charger, while the manager simply changes the goal instead of loading a different worker each time. Other methods discover skills automatically by rewarding behaviors that differ from each other — but different does not always mean useful. Spinning left and spinning right are easy to tell apart, and neither delivers a parcel. A discovered skill earns its place only after a downstream test shows that having it actually helps.",
         ] },
       ],
     },
@@ -83,9 +74,8 @@ export const PART_SEVEN_ARTICLES = [
     situation: {
       title: "Two warehouse robots are part of each other's environment",
       paragraphs: [
-        "Two robots share a narrow aisle. Robot A learns to wait when Robot B passes on the left. If B later learns to pass on the right, A's old lesson may cause a crash. The same local picture and action no longer have the same likely result.",
-        "Learning with several decision-makers is called Multi-Agent Reinforcement Learning, or MARL. The agents may share one reward, compete for opposite rewards, or have a mixture. We must state which case we mean before choosing an algorithm.",
-        "A common design lets training see both robots, while each deployed robot acts from its own allowed information. This is Centralized Training with Decentralized Execution, or CTDE. The extra view is a teaching aid, not information the robot may secretly use later.",
+        "Two robots share a narrow aisle. Robot A learns a polite habit: wait when B passes on the left. Weeks later, B's own training settles on passing on the right — and A's old lesson now causes a crash. Nothing about the physical room changed; what changed is another learner. This is the defining discomfort of Multi-Agent Reinforcement Learning, or MARL: from each agent's point of view, the environment includes the other agents, and they keep moving. The agents may share one reward, compete for opposite rewards, or mix the two — and you must say which case you mean before choosing an algorithm.",
+        "A common design softens the problem during training only. The training judge may see both robots' views and actions, while each deployed robot still acts from its own camera and its allowed messages. This is Centralized Training with Decentralized Execution, or CTDE, and its central discipline is honesty about information: the extra view is a teaching aid, not a crutch the robot may secretly lean on after graduation. Every channel that will not exist at deployment must be closed before you claim a result.",
       ],
     },
     diagram: {
@@ -113,21 +103,13 @@ export const PART_SEVEN_ARTICLES = [
     mechanism: {
       introduction: "Before reading an algorithm name, ask four questions: who acts, who sees what, who receives the reward, and what information remains available after training?",
       sections: [
-        { title: "Other learners make old experience go stale", paragraphs: [
-          "A single-agent method usually expects the world's response rules to stay roughly fixed. In MARL, those rules include the other policies. When another agent updates, yesterday's recorded transition may describe a policy that no longer exists.",
-          "Independent learners ignore this change. They train as if each other agent were ordinary environment noise. The approach is simple, but a replay buffer can mix incompatible versions of teammates. Shorter buffers or current-policy data reduce, but do not explain, the change.",
+        { title: "A world that keeps learning, and scores that must add up", paragraphs: [
+          "A single-agent method usually expects the world's response rules to stay roughly fixed while it learns. In MARL those rules include the other policies, so when another agent updates, yesterday's recorded transition describes a teammate that no longer exists. Independent learners simply ignore this: each agent trains as if the others were ordinary environment noise. The approach is appealingly simple and widely used, but a replay buffer can mix incompatible versions of teammates in one batch. Shorter buffers or current-policy data reduce the damage without explaining it away.",
+          "Value decomposition attacks the coordination side of the problem. Value-Decomposition Networks, or VDN, learn one score per agent and add them to predict the team score, so each agent can simply choose its own highest-scoring action; the sum, however, is too rigid for every kind of teamwork. QMIX loosens it with a more flexible mixing network while keeping one rule: the team score must rise whenever any local score rises. That monotonicity keeps greedy local choices compatible with the team choice, but it pays a real price — it cannot represent cooperation that needs a locally unattractive sacrifice.",
         ] },
-        { title: "Value decomposition gives each teammate a local score", paragraphs: [
-          "Value-Decomposition Networks, or VDN, add one learned score from each agent to predict the team score. Each agent can then choose the action with its own highest score. The simple sum cannot express every kind of teamwork.",
-          "QMIX uses a more flexible mixing network. It still requires the team score to rise when any local score rises. That rule keeps local greedy choices compatible with the team choice, but it cannot represent cooperation that needs a locally unattractive sacrifice.",
-        ] },
-        { title: "A centralized critic can separate my action from your action", paragraphs: [
-          "Multi-Agent Deep Deterministic Policy Gradient, or MADDPG, gives each agent a local actor and a centralized critic during training. The actor chooses an action. The critic evaluates that action while also seeing the other agents.",
-          "The critic can explain interactions more clearly than a local score. Its input also grows as more agents join, and the other policies still move. Most importantly, the actor must work after the centralized information is removed.",
-        ] },
-        { title: "Self-play needs unfamiliar partners and opponents", paragraphs: [
-          "In self-play, an agent learns by playing against copies or earlier versions of learning agents. It can discover strong responses without a hand-written opponent. It can also cycle between strategies or learn a private convention with one familiar population.",
-          "Cross-play pairs agents trained in different runs or populations. Success there is stronger evidence than success with one training partner. Competitive systems may also need exploitability tests that ask how badly a new opponent can take advantage of them.",
+        { title: "Judging jointly, testing separately", paragraphs: [
+          "Multi-Agent Deep Deterministic Policy Gradient, or MADDPG, gives the critic the joint view instead. Each agent keeps a local actor for deployment, but during training its centralized critic also sees the other agents' observations and actions, so it can explain interactions that a local score cannot. Two cautions travel with the design: the critic's input grows as more agents join, and the other policies keep moving underneath it. And the actor must still work after the centralized information is removed — the teaching aid cannot become a hidden crutch.",
+          "The deepest question is whether an agent can handle partners it did not grow up with. In self-play, an agent learns against copies or earlier versions of itself and can reach impressive skill — or cycle between strategies, or settle into a private convention with one familiar population. Cross-play pairs agents trained in different runs, and success there is much stronger evidence than success with a training partner. For competitive systems, add exploitability tests that ask how badly a fresh opponent could take advantage of the learned policy.",
         ] },
       ],
     },
@@ -154,9 +136,8 @@ export const PART_SEVEN_ARTICLES = [
     situation: {
       title: "A robot trained on ten floors enters an eleventh",
       paragraphs: [
-        "Suppose one policy learns on ten office floors at the same time. This is multi-task learning. Doing well on those ten floors shows that one policy can serve several known tasks. It does not yet show what happens on an unseen floor.",
-        "If the policy works on floor eleven before any update, that is zero-shot generalization. If we let it learn from floor eleven, we are testing transfer and adaptation. A method trained to become good after only a little new experience is doing meta-learning.",
-        "Moving from a simulator to a real robot creates another gap. Sensors, delays, friction, and lighting may all differ. This is called simulation-to-reality transfer, or sim-to-real. A wide simulator is useful only if it includes the differences that matter outside it.",
+        "Train one policy on ten office floors at once — this is multi-task learning — and it may serve all ten well. That proves one model can hold several known tasks; it says nothing about the eleventh floor. Now walk that policy into a building it has never seen. If it works before any update, you are watching zero-shot generalization. If instead you let it learn from the new floor, you are testing transfer and adaptation, and a method specifically trained to become good after only a little new experience is doing meta-learning. Same robot, same floor — different experiments, different claims.",
+        "Moving from a simulator to real hardware opens a second gap of a different kind. Sensors, delays, friction, and lighting all differ from the simulated world, and the crossing is called simulation-to-reality transfer, or sim-to-real. Hold one uncomfortable question as you read: a simulator that varies widely is useful only if it includes the differences that actually matter outside it. Randomness is not coverage. The gap between two abilities — starting well and learning fast — is the real subject of this chapter.",
       ],
     },
     diagram: {
@@ -184,21 +165,13 @@ export const PART_SEVEN_ARTICLES = [
     mechanism: {
       introduction: "Claims about new tasks become clear when we state what changed, what stayed hidden during training, and how much new data the learner received.",
       sections: [
-        { title: "Multi-task learning shares one model across known tasks", paragraphs: [
-          "A shared model may reuse useful parts, such as the same camera features on every floor. This positive transfer can reduce the data needed for each task. Sharing can also cause negative transfer when two tasks push the same parameters in conflicting directions.",
-          "An average score can hide both effects. Compare each task with a model trained only for that task. Then we can see which tasks helped one another and which tasks became worse because they were forced to share.",
+        { title: "Sharing, transferring, and learning the act of adapting", paragraphs: [
+          "Start with sharing, the mildest form of reuse. A multi-task model may reuse useful parts across its training tasks — the same camera features serve every floor — and this positive transfer can reduce the data each task needs. But sharing has a dark twin: negative transfer, when two tasks push the same parameters in conflicting directions. An average score hides both effects, so compare each task against a model trained only for that task. Only then can you see which tasks helped one another and which were made worse by being forced to share.",
+          "Transfer learning and meta-learning differ in a way one score hides. A transferred model starts from parameters, data, or skills learned elsewhere and adapts them to a named target task; a method that starts high has a useful prior. A meta-learner — Meta-RL — trains across a task family so that adapting itself becomes the learned skill: Model-Agnostic Meta-Learning, or MAML, learns parameters that improve after a few gradient steps; memory-based variants infer the task from recent experience. Report the score before and after each update budget. Both can memorize a small task family; unseen structure remains the real exam.",
         ] },
-        { title: "Transfer uses old knowledge on a named new task", paragraphs: [
-          "Transfer learning starts with parameters, data, or skills learned elsewhere. It then adapts them to a target task. The report should include the score before adaptation, the amount of target data, and the score after each update budget.",
-          "A method that starts high has a useful prior. A method that rises quickly is an efficient learner. Those strengths can belong to different methods, as the numerical example shows.",
-        ] },
-        { title: "Meta-learning trains the act of adapting", paragraphs: [
-          "Meta-Reinforcement Learning, or Meta-RL, trains across a family of tasks. The outer training process rewards a learner that can change its behavior after a small amount of task-specific experience.",
-          "Model-Agnostic Meta-Learning, or MAML, learns parameters that can improve after a few gradient steps. Other methods keep recent experience in memory and infer the current task. Both can memorize a small task family, so unseen task structure still matters.",
-        ] },
-        { title: "Sim-to-real asks whether the simulator covered reality", paragraphs: [
-          "Domain randomization changes simulated mass, friction, delay, lighting, and other settings during training. The hope is that the real robot looks like one more member of that training range. Random variation cannot protect against a difference that was never included.",
-          "System identification measures the real system and narrows the simulator settings. Even then, deployment should move through safe stages: held-out simulation, limited real calibration, shadow runs, and bounded operation with a stop rule.",
+        { title: "Crossing from simulation to reality", paragraphs: [
+          "Domain randomization answers the sim-to-real gap with variety: during training, change the simulated mass, friction, delay, and lighting, and hope that the real robot looks like one more member of that training range. Sometimes it does, and the transfer works. But notice the exact shape of the hope — random variation cannot protect against a difference that was never included. If the real robot has a sensor delay the simulator never modeled, no amount of randomizing the other parameters will cover it, and the first hardware test will say so.",
+          "System identification walks the other direction: measure the real system and narrow the simulator's settings until the two agree. Even then, deployment should move through safe stages — held-out simulation first, then limited real calibration, then shadow runs, then bounded operation with a stop rule. The pattern is this chapter's lesson in miniature: a claim about a new world is only as strong as the range of worlds you actually tested, and the crossing should be gradual enough to survive being wrong.",
         ] },
       ],
     },

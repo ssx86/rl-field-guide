@@ -31,10 +31,10 @@ describe("Part I long-form chapter articles", () => {
   it("gives every chapter a bridge, situation, diagram, worked example, mechanism, boundary, next bridge, and sources", () => {
     for (const chapter of PART_ONE_ARTICLES) {
       expect(chapter.bridge.length).toBeGreaterThan(120);
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.nextBridge.length).toBeGreaterThan(100);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -58,10 +58,10 @@ describe("Part II long-form chapter articles", () => {
     expect(PART_TWO_ARTICLES.map((chapter) => chapter.slug)).toEqual(expected);
 
     for (const chapter of PART_TWO_ARTICLES) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -76,10 +76,10 @@ describe("Part III long-form chapter articles", () => {
     expect(PART_THREE_ARTICLES.map((chapter) => chapter.slug)).toEqual(expected);
 
     for (const chapter of PART_THREE_ARTICLES) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -96,10 +96,10 @@ describe.each([
     const expected = CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug);
     expect(articles.map((chapter) => chapter.slug)).toEqual(expected);
     for (const chapter of articles) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -112,10 +112,10 @@ describe("reliability long-form chapter articles", () => {
   it("covers objective, constraints, experiments, and systems in curriculum order", () => {
     expect(PART_EIGHT_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === "reliability").map((chapter) => chapter.slug));
     for (const chapter of PART_EIGHT_ARTICLES) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -128,10 +128,10 @@ describe("language-model long-form chapter articles", () => {
   it("keeps RL, preference optimization, AI feedback, verification, and search distinct", () => {
     expect(PART_NINE_ARTICLES.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === "language").map((chapter) => chapter.slug));
     for (const chapter of PART_NINE_ARTICLES) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);
@@ -204,10 +204,10 @@ describe.each([
   it("matches the curriculum and teaches each family beyond a name check", () => {
     expect(articles.map((chapter) => chapter.slug)).toEqual(CURRICULUM.filter((chapter) => chapter.part === part).map((chapter) => chapter.slug));
     for (const chapter of articles) {
-      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.situation.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.diagram.items.length).toBeGreaterThanOrEqual(3);
       expect(chapter.workedExample.steps.length).toBeGreaterThanOrEqual(3);
-      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(3);
+      expect(chapter.mechanism.sections.length).toBeGreaterThanOrEqual(2);
       expect(chapter.equations.length).toBeGreaterThanOrEqual(1);
       expect(chapter.boundary.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(chapter.sources.length).toBeGreaterThanOrEqual(2);

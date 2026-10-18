@@ -13,9 +13,8 @@ export const PART_TWO_ARTICLES = [
     situation: {
       title: "The same number can hide two different situations",
       paragraphs: [
-        "A controller sees that a machine is at 80°C. It can cool the machine, keep it running, or stop it. The number on the screen looks clear, but it may leave out something important.",
-        "Perhaps the machine has climbed from 60°C to 80°C. It may keep heating up. Or perhaps it has cooled from 95°C to 80°C. It may keep cooling. The same screen reading can lead to a different next result.",
-        "The number on the screen is an observation. It is simply what the controller receives. If we also record whether the temperature is rising or falling, the learner can tell the two cases apart.",
+        "You are the controller of a factory machine, and the screen reads 80°C. From where you sit, the options look simple: cool it, keep it running, or stop it. But the number on the screen is quieter than the machine. Perhaps the temperature climbed from 60°C over the last ten minutes. Then the machine is still heating, and 80 is about to become 90. Perhaps it just cooled from 95°C. Then the danger is passing. Two different machines, one reading, two very different next chapters.",
+        "What the controller receives is an observation — the raw delivery of information, nothing more. What the controller needs is a state: a summary that carries the past facts which actually change what happens next. Add the temperature's direction of travel to the screen reading. The two cases come apart, and the learner can finally see which situation it is in. The art of this chapter is deciding what belongs in that summary. The past always matters. The only question is which parts of it earn a place.",
       ],
     },
     diagram: {
@@ -43,10 +42,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "Now we can name the pieces without losing sight of the machine.",
       sections: [
-        { title: "A state is a useful memory", paragraphs: ["The past still matters. We just ask the state to carry the parts of the past that change the next result. This requirement is called the Markov property."] },
-        { title: "An MDP describes this kind of task", paragraphs: ["A Markov Decision Process, or MDP, lists the states, the actions, and the possible results. It also says how a run begins. The policy is the rule that chooses actions."] },
-        { title: "The policy changes the data", paragraphs: ["A controller that always stops at 80°C will rarely see what happens at 90°C. The situations it visits make up its occupancy. Unvisited situations do not create training evidence."] },
-        { title: "Time may belong in the state", paragraphs: ["One minute left is different from one hour left. If the remaining time changes the best action, the learner must know it. A clock can therefore be part of the state."] },
+        { title: "A state is a memory with a job", paragraphs: [
+          "The past has not stopped mattering — it never does. What the Markov property asks is narrower and far more useful. The state should carry the parts of the past which change the next result. Everything older can then be safely forgotten. The bare temperature reading fails this test. The trend, a fact about the past, moves the failure odds from 5 percent to 30. Add the trend, and the pair (temperature, direction) passes. A good state is not a diary. It is a memory with a job to do.",
+          "Time deserves a seat in that memory more often than you might expect. One minute left on the clock is a different situation from one hour left. The temperature and the trend may be identical. Yet the best action can change when the horizon shrinks. If the remaining time changes what should be done, the learner must see it. A hidden clock makes two different situations look identical. A learner that cannot tell them apart will average together answers that deserve to stay separate.",
+        ]},
+        { title: "Naming the whole task — and who visits it", paragraphs: [
+          "Once you commit to a state, the whole task can be written down as a Markov Decision Process. An MDP lists the states, the actions available in each, and the chances of every possible next state and reward. It also says how a run begins. The policy is the rule that chooses actions from states. Nothing here is exotic. It is the interaction loop you drew in Part 1. It now stands on the promise that the state is enough.",
+          "Here is the consequence people miss. A controller that always stops at 80°C will almost never see 90°C. So 90°C will never appear in its training data with any action attached. The situations a policy visits make up its occupancy. Unvisited situations create no evidence. Change the policy and you change the data, even though the factory itself never moved. In reinforcement learning, the learner's own behavior is part of its experimental design. That theme will follow us to the last page of this book.",
+        ]},
       ],
     },
     equations: [
@@ -69,9 +72,8 @@ export const PART_TWO_ARTICLES = [
     situation: {
       title: "The number belongs to a plan for acting",
       paragraphs: [
-        "A robot waits in corridor A. Its policy usually tells it to move right, but the wheels sometimes slip. Some trips are quick and some are slow.",
-        "We can ask how much reward the robot expects from A if it keeps following that policy. The answer is called the state value. It is a forecast, not a reward hidden inside the floor.",
-        "We can ask a narrower question too: what if the robot moves right now, then returns to its policy? That answer is called the action value. The first action has been fixed, so the question is different.",
+        "Return to the robot waiting in corridor A. Its policy usually says 'move right.' The outcome is genuinely out of its hands. On most trips it rolls straight through. Sometimes the wheels slip, and it loses time. Some trips are quick, some are slow, and no single trip settles anything. So we ask a cooler-headed question. If the robot keeps following this policy from A, what reward can it expect on average across the whole future? That forecast is the state value.",
+        "A narrower question sits beside it. Suppose the robot moves right now — this once, by decree — and after that single move returns to its policy. What is the expected reward then? That is the action value. Because the first move has been fixed, it answers a different question with a different number. Neither value is buried in the floor like treasure. Both are forecasts made under stated rules. They belong to a plan for acting, not to a place. Change the policy, and the same corridor changes its value.",
       ],
     },
     diagram: {
@@ -99,10 +101,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "The symbols are easier when each one is tied to a question. Convention: lowercase v_π, q_π denote true values under policy π; uppercase V, Q denote the learner's current estimates. This book uses uppercase from the next chapter onward.", // Marcus P1 fix
       sections: [
-        { title: "State value asks, 'How good is it to be here?'", paragraphs: ["The answer depends on the policy that acts from here. Change the policy and the robot may choose different routes. The state value changes too."] },
-        { title: "Action value asks, 'How good is this first move?'", paragraphs: ["We fix the first action, then follow the policy. Comparing action values helps the robot choose. Advantage is the action value minus the usual state value."] },
-        { title: "Bellman means one step plus the rest", paragraphs: ["The next reward covers one step. The next state's value covers all later steps. Writing the forecast this way gives a Bellman equation."] },
-        { title: "Following a policy and choosing the best action are different", paragraphs: ["One equation averages the actions from a stated policy. Another takes the largest action value. That maximum changes the question from 'What will this policy do?' to 'What is the best action?' "] },
+        { title: "Two questions, two values", paragraphs: [
+          "Keep two questions sharply separated. Every formula in this book answers one of them. State value asks, 'How good is it to be here?' The answer always depends on the policy that acts from here. A bold policy and a timid one write different futures from the same corridor. Change the policy, and the state value changes with it. That is why we write v with a subscript π. A value without its policy is a number without its question.",
+          "Action value asks, 'How good is this first move?' Fix one action, then follow the policy afterward. The gap between an action's value and the state's usual value is the advantage. It is exactly what a chooser needs. An action that beats its state's average has a positive advantage and deserves attention. Later chapters will speak of methods that 'use the advantage.' They are simply sharpening this comparison between what was chosen and what is normal here.",
+        ]},
+        { title: "One step plus the rest", paragraphs: [
+          "Now comes the idea that makes calculation possible. A long future is painful to sum directly. So a Bellman equation breaks it after one step. The next reward covers the step you can see. The next state's value stands in for everything after it. Look back at the equations in this chapter. You will find that shape everywhere — one real reward, a discount, and a borrowed forecast. 'Bellman' is not new mathematics. It is the name for a powerful way of arranging the accounting.",
+          "One fork remains, and it decides which question an equation answers. Averaging over the actions of a stated policy describes what that policy will actually do. That is the π(a|s) in the first equation. Taking the maximum instead imagines the chooser behaving greedily from the next state onward. That is the max in the second equation. The maximum quietly changes the question from 'What will this policy do?' to 'What is the best action?' Hold onto the distinction. The coming chapters build entire algorithms on it.",
+        ]},
       ],
     },
     equations: [
@@ -124,9 +130,8 @@ export const PART_TWO_ARTICLES = [
     situation: {
       title: "A small map can be solved on paper",
       paragraphs: [
-        "Imagine four rooms connected by doors. The goal gives +1. Every other move gives 0. We know the whole map and the result of every action.",
-        "Start by giving every room value 0. A room beside the goal can discover the +1 first. On the next round, that information reaches a room two steps away. The useful news moves backward through the map.",
-        "This repeated use of known rules is called dynamic programming, or DP. Here, 'programming' means arranging calculations. It does not mean writing computer code.",
+        "Imagine four rooms connected by doors. One room holds a goal worth +1, and every other move earns 0. Suppose you also know the entire map — exactly what each action does in each room. Then you could solve this on paper before any robot takes a step. Begin by giving every room value 0, since nothing is known yet. After one round of calculation, the room beside the goal discovers the +1. After a second round, that news reaches a room two steps away. Value flows backward through the map, one round at a time.",
+        "This repeated use of known rules is called dynamic programming, or DP. The word 'programming' here means arranging calculations in a smart order. It is an older sense of the word, not writing computer code. The name has frightened students for decades without cause. The idea is the friendly one you just watched. If the rules are known, the goal's value can percolate backward until every room knows its future. No real trips, no risk, no exploration required.",
       ],
     },
     diagram: {
@@ -154,10 +159,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "There are two jobs: work out what a policy will do, then make the policy better.",
       sections: [
-        { title: "Policy evaluation keeps the actions fixed", paragraphs: ["Follow the current policy in the known model. Update the values again and again. Stop when another round changes them by only a small amount."] },
-        { title: "Policy improvement uses the new values", paragraphs: ["At each state, look one step ahead. If another action has a larger forecast, change the policy. Repeating evaluation and improvement is called policy iteration."] },
-        { title: "Value iteration mixes both jobs", paragraphs: ["Value iteration takes the best action inside every update. It does not wait for a complete policy evaluation. In a finite discounted task, the values move toward the best possible values."] },
-        { title: "The update order can save work", paragraphs: ["A fresh value can be used immediately instead of waiting for a full round. We can also update important states first. The model stays the same; only the calculation order changes."] },
+        { title: "Judge the policy, then improve it", paragraphs: [
+          "The whole of dynamic programming swings between two jobs. The first is evaluation. Hold the policy fixed, follow it through the known model, and update the values round after round. Stop when another pass would barely move them. You are judging a stated rule. Monte Carlo will make the same judgment from real trips in the next chapter. Here the model supplies every consequence, so no trip is ever risked. The second job is improvement. At each state, look one step ahead. If some action now promises a larger forecast than the policy's own choice, switch to it.",
+          "Do evaluation, then improvement, then evaluation again, and you have policy iteration. Each improvement step is safe. Under the values just computed, the new policy is never worse than the old one. In a finite discounted task, the alternation settles on the best policy. Notice how the two jobs feed each other. Better values suggest better actions. Better actions change which futures deserve re-judging.",
+        ]},
+        { title: "Blending the jobs, and sweeping smartly", paragraphs: [
+          "Nothing forces you to finish one job before starting the other. Value iteration takes the greedy action inside every value update. It folds improvement into the sweep itself and never waits for a complete evaluation. In a finite discounted task, its values still climb toward the best possible ones. This willingness to interleave judging and improving is called generalized policy iteration. You will meet its ghost in nearly every algorithm ahead — even the ones that learn without any model.",
+          "The order of updates is a quiet economy. A freshly computed value can be used immediately, instead of waiting for the whole round to finish. The states that matter most can be swept first — the goal's neighbors before the far corners. None of this changes the model or the answer being approached. Only the calculation order changes. But in a large world, the order decides whether an answer arrives this week or next year. That is why practitioners care about it so much.",
+        ]},
       ],
     },
     equations: [
@@ -178,7 +187,7 @@ export const PART_TWO_ARTICLES = [
     bridge: "The model is gone. The learner can still follow a policy, record what happens, and learn after the ending is known.",
     situation: {
       title: "One finished card game gives one answer",
-      paragraphs: ["A player has a total of 18 and chooses to stop drawing cards. The game later ends in a win worth +1 or a loss worth −1. We do not need to know every hidden card probability first.", "One game gives one result. Many games from similar situations give many results. Their average estimates how good that situation is under the player's policy.", "Learning this way is called Monte Carlo learning, or MC learning. The name means we use repeated random trials. Here, each complete game is one trial."],
+      paragraphs: ["Suppose you are playing a card game whose hidden rules you do not know. You cannot list the shuffle probabilities. You would not fully trust a list if you could. Your total is 18, and you choose to stop drawing. The game plays out to a win worth +1 or a loss worth −1. Notice what you learned from. Not a rulebook — an outcome. That one finished game is a small, honest piece of evidence about what stopping from 18 tends to earn.", "One game gives one noisy answer. Many games from similar situations give many, and their average settles into an estimate. It estimates how good that situation is under your policy. This is Monte Carlo learning. The name simply means learning from repeated random trials, with each complete game serving as one trial. The strategy is the oldest one in statistics. When you cannot compute the expectation, repeat the experiment and measure it. The catch, which this chapter will face squarely, is what waiting for 'complete' costs."],
     },
     diagram: {
       title: "Finish the run, then look backward", caption: "Monte Carlo waits for the later rewards to be observed. It does not fill in the unfinished future with its current guess.",
@@ -204,10 +213,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "Waiting for the ending solves one problem and creates three others.",
       sections: [
-        { title: "The target uses rewards that really happened", paragraphs: ["The learner does not insert its current value guess into the return. A wrong value estimate cannot directly change this target. Chance still makes the result noisy."] },
-        { title: "A repeated state creates a small choice", paragraphs: ["First-visit MC uses only the first time a state appears in one game. Every-visit MC uses every appearance. Both can work, but they do not use the same samples."] },
-        { title: "Improving the policy still needs exploration", paragraphs: ["If an action is never tried, its return is unknown. An epsilon-soft policy keeps a small chance for every action. Lowering epsilon too quickly can preserve an early mistake."] },
-        { title: "Long tasks make waiting expensive", paragraphs: ["A short game has a clear ending. A factory controller may run for months. Waiting for a complete return can delay learning and make the results vary widely."] },
+        { title: "An honest target, and one bookkeeping choice", paragraphs: [
+          "The heart of the method is the target the learner moves toward. Monte Carlo builds the return from rewards that actually happened, end to end. It never inserts its own current value guess into the sum. That honesty has a real payoff. A wrong value estimate cannot directly corrupt the target, the way it will in the next chapter's method. Chance still makes individual returns noisy. But the noise belongs to the world, not to the learner's self-echo.",
+          "One bookkeeping choice appears immediately. Suppose the same state turns up twice within a single game. You hold 18, draw down to 16, and later see 18 again. First-visit MC uses only the first appearance. Every-visit MC uses both. The two agree closely in most practice, and both can be proved sound. But they average different samples, so they can disagree in their digits. Know which one your code implements before you compare results with anyone.",
+        ]},
+        { title: "The price of waiting", paragraphs: [
+          "To improve a policy rather than merely judge it, every action needs evidence. Evidence comes only from trying. If stopping from 18 is never tried, no amount of averaging will reveal its worth. An epsilon-soft policy keeps a small probability on every action for exactly this reason. Lowering that epsilon too quickly can freeze an early mistake in place. The policy stops visiting the very alternatives that could have corrected it. Exploration, which you first met at the café counter, returns here with real teeth.",
+          "The deeper cost is time. A hand of cards ends in seconds, so waiting for complete returns is cheap. A factory controller may run for months. A task with no natural ending makes the whole idea wobble. Waiting delays learning badly. Complete returns also vary wildly from run to run. Hold that discomfort for one more page. The next chapter asks exactly whether the learner can start sooner, with a few real rewards and one careful guess about the unfinished future.",
+        ]},
       ],
     },
     equations: [
@@ -228,7 +241,7 @@ export const PART_TWO_ARTICLES = [
     bridge: "Monte Carlo learning waits for a complete result. That can take a long time. We will now update earlier, while keeping a clear line between rewards we have seen and future value we are only estimating.",
     situation: {
       title: "The charger can send useful news backward",
-      paragraphs: ["A robot reaches a charger after twenty moves. Monte Carlo learning waits until the trip ends before changing the first state's value. The wait may be long." ,"Another method updates after one move. When the robot sees the charger, the state just before it improves at once. Later visits can carry that better forecast farther backward." ,"This is called temporal-difference learning, or TD learning. It compares two predictions made at nearby times. The target uses a real reward and an estimated value for the unfinished future."],
+      paragraphs: ["A robot needs twenty moves to reach its charger. Under Monte Carlo learning, the value of the first position cannot change until the whole trip is known. The first state waits, in effect, for the ending of the world. But watch what actually happens along the way. When the robot finally sees the charger, the state just before it improves at once. Its future is now nearly certain. Something real has been learned before any trip was completed.", "On the robot's next trip, that improved state stands one step earlier in the chain. Its better forecast can flow one step farther back. Trip by trip, the news about the charger travels backward down the corridor. Nobody ever waits for a whole trip to be summed. This is temporal-difference learning, or TD. It does not compare a prediction to a finished outcome. It compares two predictions made at nearby times, using one real reward and one borrowed forecast."],
     },
     diagram: {
       title: "Choose where real rewards stop and the estimate begins", caption: "A short target learns sooner and borrows more. A long target waits for more real rewards before using a value estimate.",
@@ -254,10 +267,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "The family of methods changes one simple choice: how long to wait before borrowing a forecast.",
       sections: [
-        { title: "Bootstrapping means using one estimate inside another", paragraphs: ["A one-step target learns quickly, but a wrong next-state value makes the target wrong too. Monte Carlo avoids that borrowed estimate, yet its complete returns can vary much more."] },
-        { title: "An n-step target waits for n rewards", paragraphs: ["A larger n uses more events that really happened. It also delays the update and needs more memory. If the task ends early, there is no value left to borrow."] },
-        { title: "Lambda blends many waiting times", paragraphs: ["A lambda return gives weights to one-step, two-step, and longer targets. Lambda 0 gives TD(0). In a finished episodic task, lambda 1 moves toward Monte Carlo."] },
-        { title: "A trace keeps recent states ready for an update", paragraphs: ["An eligibility trace is a fading mark on recently visited states. A new TD error can update every state whose mark remains. The mark shows recency, not proof of cause."] },
+        { title: "How long to wait before borrowing", paragraphs: [
+          "Every method in this family turns one dial. How much of the future must be real before the learner may guess the rest? A one-step target sees one actual reward and borrows a forecast for everything after. That borrowing is called bootstrapping, and it cuts both ways. It lets learning start immediately. But whatever is wrong in the next state's value seeps into the target, and from there into the update. Monte Carlo, at the other extreme, borrows nothing. It pays for that purity with returns that swing much more widely.",
+          "Between the extremes sit the n-step targets. A larger n means more rewards that truly happened. It also means a smaller borrowed estimate in each target, which sounds strictly better. But it delays the updates and holds more of the trip in memory. It accepts more variance from the real world too. And if the task ends before n steps arrive, there is no value left to borrow at all. The target must simply stop where the truth stops.",
+        ]},
+        { title: "Lambda blends the wait; traces deliver the update", paragraphs: [
+          "Rather than argue over the single best n, the lambda return blends them. It weights the one-step, two-step, and longer targets together. The weights fade according to one number, λ. Set λ to 0 and you recover TD(0), learning at the first opportunity. Set λ to 1 in a finished episodic task and the blend slides toward Monte Carlo. Between those poles lies a continuum. Lambda is simply where you choose to stand on it.",
+          "Blending many target lengths could be expensive. The eligibility trace is the trick that makes it cheap. A trace is a fading mark on each recently visited state. Every step shrinks the old marks by γλ and stamps the current state with a one. When a new TD error appears, every state whose mark survives receives a share of it, all at once. The mark measures recency, not proof of cause. States are updated because they were nearby. The world's true credit assignment may disagree.",
+        ]},
       ],
     },
     equations: [
@@ -278,7 +295,7 @@ export const PART_TWO_ARTICLES = [
     bridge: "TD learning used a value for the next state. A learner that improves its actions needs a more exact answer. We will put one transition on the table and change only the way its future is valued.",
     situation: {
       title: "A short path beside a cliff makes the difference visible",
-      paragraphs: ["A walker can use a short path beside a cliff or take a longer safe path. Its epsilon-greedy policy usually chooses the best-looking move and sometimes tries a random move." ,"Suppose one random move sends the walker toward the cliff. One learning rule includes that risky next move in its target. Another rule imagines that the walker becomes greedy from the next state onward." ,"The two rules saw the same transition. They learn different values because they are answering questions about different future behavior."],
+      paragraphs: ["Picture a walker choosing between two paths. The short path runs beside a cliff; the longer route is safer. Its epsilon-greedy policy usually picks the best-looking move. Now and then it throws in a random one. That is the standing price of exploration, and most days it is a small price. Now suppose one of those random moves sends the walker one step toward the cliff edge. The transition has happened. It sits in the log, waiting to be learned from. And here the story forks.", "One learning rule, reading this transition, values the move the walker actually made next. That includes the risky step toward the edge. Another rule imagines the walker turning perfectly greedy from the next state onward. It acts as if the randomness had never existed. Both rules saw the same state, the same action, the same reward. They will learn different values, because they answer questions about different futures. Near a cliff, that disagreement is not academic. It decides which path the walker ends up trusting."],
     },
     diagram: {
       title: "Keep the transition fixed and change only the future", caption: "The reward is the same in every row. The rows differ only in which next-action value enters the target.",
@@ -305,10 +322,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "The algorithm names come last. First decide which future each update is meant to judge.",
       sections: [
-        { title: "SARSA follows the behavior that produced the data", paragraphs: ["Its full name records State, Action, Reward, State, Action. The last action is the one really chosen next. If behavior keeps exploring, the learned value includes the cost of that exploration."] },
-        { title: "Expected SARSA replaces one draw with an average", paragraphs: ["A sampled next action may be lucky or unlucky. Expected SARSA averages all next actions under a stated policy. It uses more calculation and removes this one source of randomness."] },
-        { title: "Q-learning judges a greedy future", paragraphs: ["The behavior policy may still explore, but the maximum values the best-looking next action. This makes Q-learning off-policy. The greedy target does not make real exploration safe."] },
-        { title: "Double Q-learning separates choosing from scoring", paragraphs: ["A noisy high estimate often wins a maximum. Double Q-learning uses one table to choose the action and another to score it. This reduces that upward bias but cannot remove every error."] },
+        { title: "Futures that include the explorer", paragraphs: [
+          "SARSA's full name is a shopping list — State, Action, Reward, State, Action. The final item is the whole point. The last action is the one the behavior policy really chose next. So the learned value includes the cost of living with exploration. A walker that keeps stumbling near the cliff will find that danger honestly priced into its values. That is why SARSA often learns the safer route. It values the future it will actually live in, stumbles included.",
+          "Expected SARSA makes one surgical change. Instead of using the single next action that happened to be sampled, it averages all next actions under the stated policy. A sampled action may be lucky or unlucky. The average removes that one source of randomness from the target. The cost is a little more computation per step. In the cliff example, it prices in the explorer's average behavior rather than the most recent whim. That usually steadies learning without changing the question being asked.",
+        ]},
+        { title: "Futures that imagine a different walker", paragraphs: [
+          "Q-learning takes the maximum over next actions. That quietly changes whose future is being valued. The behavior policy may still explore. The walker may still be thrown toward the cliff tomorrow. But the target imagines greedy behavior from the next state onward. This is what 'off-policy' means. Data is collected under one policy; judgment is passed on another. The greedy target is mathematically clean, and it often races toward the optimal values. But do not mistake it for a safety feature. The imagined future is not the one the walker will live.",
+          "The maximum has one more weakness worth naming now. It grows louder in later chapters. When several noisy estimates compete, the largest is often large by luck. Taking a maximum therefore leans systematically upward. Double Q-learning splits the job. One table chooses the winning action, and a different table scores it. Since the two tables' errors do not align, much of the upward bias cancels. It is a patch rather than a cure — but a cheap and famous one.",
+        ]},
       ],
     },
     equations: [
@@ -329,7 +350,7 @@ export const PART_TWO_ARTICLES = [
     bridge: "Separating the data-collecting policy from the judged policy creates a new duty. Before reusing the log, we must check what it actually saw.",
     situation: {
       title: "The old route chooser rarely tried B",
-      paragraphs: ["The old behavior policy chooses route A with chance 0.9 and B with chance 0.1. A proposed target policy reverses the chances. It wants B most of the time." ,"A rare B record matters a lot to the new policy. We can give it more weight. But making one record nine times heavier does not turn it into nine independent trips." ,"If the old policy never chose B, the log contains no B result. No weighting formula can create the missing trip. New data or an extra model assumption is required."],
+      paragraphs: ["Your company's old routing policy chose route A nine times out of ten, and route B once. A new policy you want to evaluate reverses those odds. It wants B most of the time. The log in front of you holds hundreds of A trips and a scattering of B trips. Every B record suddenly matters enormously to your question. You can weight it nine times heavier than before. The arithmetic will happily oblige. But notice what you did not do. You did not turn one real trip into nine independent ones.", "The harder case sits one step further. Suppose the old policy never chose B at all. Then the log contains no B result, and no weighting formula can conjure the missing experience. A ratio whose denominator is zero is not a huge weight. It is an undefined one. This is the coverage question, and it comes before every clever correction. Can the old data speak about the actions the new policy needs? If not, you need new data or an extra assumption — not better arithmetic."],
     },
     diagram: {
       title: "First ask whether the log contains the needed action", caption: "A probability ratio can change the weight of an observed result. It cannot invent a result for an action that never happened.",
@@ -355,10 +376,14 @@ export const PART_TWO_ARTICLES = [
     mechanism: {
       introduction: "Once coverage is present, weights can adjust the old records. That still leaves two different dangers.",
       sections: [
-        { title: "Importance sampling changes who each record represents", paragraphs: ["The target-to-behavior ratio is called an importance ratio. Under the right coverage and probability conditions, weighting by this ratio changes an average from the behavior policy to the target policy."] },
-        { title: "Long trips multiply the weights", paragraphs: ["A trip with many actions may multiply many ratios. The final weight can become huge or almost zero. Clipping or normalizing weights can calm the estimate, but it also changes the answer."] },
-        { title: "Three ordinary ideas can form a dangerous loop", paragraphs: ["The loop combines off-policy data, bootstrapping, and function approximation. This combination is called the deadly triad. Shared parameters spread one error. Bootstrapping then reuses the changed estimate as a new target. The mismatch in data can keep feeding the error."] },
-        { title: "A smooth training curve is not a proof", paragraphs: ["Replay and target networks often reduce shaking during training. They do not guarantee that every off-policy problem will converge. We must still check coverage, ratios, value size, TD errors, and the target policy itself."] },
+        { title: "Re-weighting old evidence — and where it strains", paragraphs: [
+          "When coverage does hold, importance sampling does something quietly remarkable. Weight each record by the ratio ρ = π/b — the target's chance of the action divided by the behavior's chance. That converts an average over the behavior policy's choices into an average over the target's choices. One record, viewed under new management. The conditions are real, though. The behavior's chance must be known and positive wherever the target might act. That is exactly the coverage check from the worked example above.",
+          "Single steps re-weight gracefully; long trips do not. A trajectory of many actions multiplies many ratios together. Products of chances behave badly. One near-zero ratio collapses the whole trip's weight. One large ratio inflates it. The variance of the estimate explodes. Clipping the ratios or normalizing them across a batch calms things down. But be honest about the trade. You have slightly changed the question to buy stability. The answer is now an approximation with a smoother face.",
+        ]},
+        { title: "The deadly triad", paragraphs: [
+          "Now assemble the three ingredients this book has been handing you one at a time. Off-policy data, bootstrapping, and function approximation. Each alone is reasonable. Together they can form a loop. Shared parameters spread one state's error into its neighbors. Bootstrapping reuses the changed estimate as part of a new target. The off-policy mismatch keeps feeding the error instead of damping it. Sutton and Barto named this combination the deadly triad. The name is earned. With all three present, divergence is not an exotic failure. It is a live possibility.",
+          "Practitioners dull the triad rather than defeat it. Replay buffers break the correlation between consecutive updates. Target networks freeze the borrowed forecast so it cannot chase the learner's own changes. These tools often produce smooth, convincing training curves. A smooth curve is still not a proof. Guarantees are scarce in this corner of the field. So the working habit is vigilance. Check coverage, watch the ratios, and watch value magnitudes and TD errors. Never let the target policy go unexamined.",
+        ]},
       ],
     },
     equations: [

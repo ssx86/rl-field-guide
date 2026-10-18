@@ -12,9 +12,8 @@ export const PART_SIX_ARTICLES = [
     situation: {
       title: "The driving lesson contains the center of the lane, but not the edge",
       paragraphs: [
-        "A skilled driver records camera pictures and steering actions while staying near the center of a lane. We can train a policy to predict the driver's action from each picture. This direct copying method is called Behavior Cloning, or BC.",
-        "Now let the copied policy drive. One small steering error moves the car toward the lane edge. Pictures from the edge were rare in the lesson, so the next prediction may be worse. The policy's own action has changed the kind of picture it must answer next.",
-        "Dataset Aggregation, or DAgger, adds the missing recovery lessons. The learner drives, the expert labels the states that the learner actually reaches, and those new examples join the training set. This helps, but learner driving and repeated expert help may be costly or unsafe.",
+        "Imagine a skilled driver agreeing to teach your robot. For hours she drives near the center of the lane while a camera records everything she sees and a log records every steering command she issues. You now own thousands of picture-action pairs, and you can train a network to predict her action from each picture. This direct copying recipe is called Behavior Cloning, and it is nothing more exotic than supervised learning wearing a reinforcement learning costume. Yet the moment you hand the wheel to the copy, the trouble begins.",
+        "Let the copy drive, and watch one small steering error pull the car toward the lane edge. Pictures from the edge were rare in the lesson, so the next prediction is made in territory the network barely studied — and it may be worse than the last. Here is the trap: the policy's own action decides which picture it must answer next. Dataset Aggregation, or DAgger, breaks the loop by adding the missing recovery lessons. The learner drives, the expert labels the states the learner actually reaches, and those answers join the training set — if you can afford the expert's repeated help.",
       ],
     },
     diagram: {
@@ -42,21 +41,13 @@ export const PART_SIX_ARTICLES = [
     mechanism: {
       introduction: "The main question is simple: which states supplied the training questions, and which states will appear when the learner takes control?",
       sections: [
-        { title: "Behavior Cloning learns an answer key from demonstrations", paragraphs: [
-          "For a small set of actions, the model can learn a probability for each action. For steering, it can learn a range or a probability distribution. In both cases, the expert action is treated like the answer on a training worksheet.",
-          "This is supervised learning. It uses no reward and does not become reinforcement learning just because the trained policy later acts many times in a row.",
+        { title: "Copying is supervised learning, and the exam keeps changing", paragraphs: [
+          "Start with what Behavior Cloning actually is. For a small set of actions, the model learns a probability for each action; for steering, it learns a range or a probability distribution. Either way, the expert action is treated like the answer on a training worksheet, and fitting those answers is ordinary supervised learning. No reward enters the picture, and nothing becomes reinforcement learning merely because the trained policy later acts many times in a row. The method deserves a plain name: it is a copier.",
+          "So why does the copier fail? Because the training pictures came from expert driving, while the deployment pictures come from learner driving — and the policy's own actions decide which pictures arrive next. Researchers call the gap covariate shift, but the name understates what happens here, because the shift sits inside a feedback loop. The learner chooses an action, the action changes the next state, and that new state becomes the learner's next question. A small error moves the camera toward the lane edge, where examples are sparse, so the next guess is worse, and the loop tightens.",
         ] },
-        { title: "The learner creates a different collection of states", paragraphs: [
-          "Training pictures came from expert driving. Deployment pictures come from learner driving. When those two collections differ, researchers call the problem covariate shift.",
-          "Here the shift is part of a feedback loop. The learner chooses an action, the action changes the next state, and that new state becomes the learner's next question. Ordinary test accuracy hides this loop.",
-        ] },
-        { title: "DAgger collects answers where the learner is confused", paragraphs: [
-          "DAgger repeats a cycle. Run the current learner, record the states it reaches, ask the expert for good actions there, add the answers, and train again. Early runs may mix expert and learner control for safety.",
-          "The added data follows the learner as it changes. It teaches recovery instead of merely adding more perfect trips down the center of the lane.",
-        ] },
-        { title: "Two good experts may choose different actions", paragraphs: [
-          "A blocked path may be safe to pass on the left or on the right. Averaging those two steering actions could point straight at the obstacle. The disagreement is not necessarily a labeling error.",
-          "The policy may need to represent several possible actions or receive an extra clue about the expert's intention. Data quality includes this kind of choice, not only the number of recordings.",
+        { title: "DAgger turns confusion into new questions", paragraphs: [
+          "DAgger breaks the loop by letting the learner ask for help where it actually goes. The cycle is simple to describe: run the current learner, record the states it reaches, ask the expert what she would do in each of those states, add her answers to the training set, and retrain. Because the added data follows the learner as it changes, the new lessons teach recovery instead of adding more perfect trips down the center of the lane. Early rounds may mix expert and learner control so that a weak first policy cannot cause harm.",
+          "One more caution belongs here, because it shows what good data means. Two safe experts may genuinely disagree: a blocked path might be safely passed on the left or the right, and averaging those two steering commands could point the car straight at the obstacle. That disagreement is not a labeling error. The policy may need to represent several possible actions, or receive an extra clue about the expert's intention, so data quality includes the shape of the choices, not just the count of recordings.",
         ] },
       ],
     },
@@ -83,9 +74,8 @@ export const PART_SIX_ARTICLES = [
     situation: {
       title: "One route can fit several stories",
       paragraphs: [
-        "Imagine that a driver avoids a short road across a field. Perhaps the field is dangerous. Perhaps the paved road uses less energy. Perhaps leaving the road is against the rules. The same route supports all three stories.",
-        "A method can search for a reward that would make the expert's behavior look sensible. This is called Inverse Reinforcement Learning, or IRL. It works backward from behavior to a possible goal instead of starting with a known reward.",
-        "IRL does not uncover a label hidden inside the demonstration. Different rewards can lead to the same best action. More demonstrations can remove some explanations, but they may still leave several answers.",
+        "Watch a driver turn away from a short road that cuts across a field, and start inventing explanations. Perhaps the field is dangerous when wet. Perhaps the paved road uses less energy. Perhaps leaving the road is simply against the rules of the site. The same route supports all three stories, and from the outside you cannot tell them apart. Behavior Cloning never faced this puzzle, because it copies the turn without caring why it happened. But the moment you want the reason, you discover that one observed choice can fit many different goals.",
+        "A method can search for a reward that would make the expert's behavior look sensible under the known world rules. This backward step is called Inverse Reinforcement Learning, or IRL, and it works from behavior toward a possible goal instead of starting from a known reward. Notice what IRL does not do: it does not uncover a label hidden inside the demonstration. Different rewards can lead to the same best action, so more demonstrations can remove some explanations while still leaving several alive. The guess is rarely unique.",
       ],
     },
     diagram: {
@@ -113,21 +103,13 @@ export const PART_SIX_ARTICLES = [
     mechanism: {
       introduction: "Goal learning always depends on what the learner can observe, what kinds of rewards it is allowed to consider, and how nearly optimal the expert is assumed to be.",
       sections: [
-        { title: "Inverse RL finds a possible explanation", paragraphs: [
-          "IRL asks which reward would make the expert's trips look good under the known world rules. Once learned, that reward can guide a new plan when the surroundings change.",
-          "The result is an explanation inside the chosen model. Adding a constant, changing the scale, or reshaping a reward can leave the preferred policy unchanged. A narrow set of demonstrations creates even more ambiguity.",
+        { title: "From explaining a reward to allowing several good trips", paragraphs: [
+          "Inverse RL asks which reward would make the expert's trips look good, and once such a reward is learned it can guide a new plan when the surroundings change — the whole appeal of recovering a reason instead of an action. But hold on to your skepticism: the answer is an explanation inside the chosen model, not a certificate of the expert's true motive. Adding a constant, changing the scale, or reshaping a reward can leave the preferred policy unchanged, and a narrow set of demonstrations deepens the ambiguity. Any recovered reward is one member of a family of candidates.",
+          "Maximum-Entropy IRL takes this ambiguity seriously by leaving room for several good choices. An expert may take either of two safe routes to work, and MaxEnt gives higher probability to higher-reward trips while still allowing that variety — the word entropy here means spread among possible choices, and it prevents the model from treating every unchosen action as forbidden. Still, the method can only use features that were recorded. A goal the data never measured remains invisible to it, however elegant the mathematics becomes.",
         ] },
-        { title: "Maximum-entropy IRL leaves room for several good choices", paragraphs: [
-          "An expert may choose either of two safe routes. Maximum-Entropy Inverse Reinforcement Learning, or MaxEnt IRL, gives higher probability to higher-reward trips while still allowing variety.",
-          "The word entropy here means spread among possible choices. It prevents the model from treating every unchosen action as forbidden. It still cannot use a feature that was never recorded.",
-        ] },
-        { title: "GAIL learns to resemble the expert", paragraphs: [
-          "Generative Adversarial Imitation Learning, or GAIL, uses a judge called a discriminator. The judge tries to tell expert state-action pairs from learner pairs. The learner changes its policy to make that judgment harder.",
-          "The learner is then pushed toward the expert's occupancy distribution, meaning the pattern of states and actions visited over time. The judge's score is a training signal, not a uniquely meaningful human reward.",
-        ] },
-        { title: "A human choice can contain habit, missing information, and unfair rules", paragraphs: [
-          "A demonstration may reflect the expert's goal, but it may also reflect habit, limited knowledge, or a rule the learner cannot see. Copying or explaining the behavior can preserve all of these together.",
-          "A learned reward should therefore be tested in situations where competing explanations lead to different actions. Similar behavior on the original demonstrations is only the first check.",
+        { title: "Matching behavior, and the human inside the data", paragraphs: [
+          "Generative Adversarial Imitation Learning, or GAIL, quietly changes the question. Instead of recovering a reward at all, it trains a judge called a discriminator to tell expert state-action pairs from learner pairs, while the learner changes its policy to make that judgment harder. Pushed this way, the learner converges toward the expert's occupancy distribution — the pattern of states and actions visited over time. The judge's score has real force as a training signal, but it is not a human-readable reward, and the method still needs live interaction with the environment or a simulator.",
+          "Whichever route you take, remember that a human choice can contain habit, missing information, and unfair rules alongside the goal. A demonstration may reflect what the expert knew, what she had always done, or a constraint the learner cannot see — and copying or explaining the behavior preserves all of it together. A learned reward should therefore be tested in situations where competing explanations lead to different actions. Similar behavior on the original demonstrations is only the first and weakest check.",
         ] },
       ],
     },
@@ -154,9 +136,8 @@ export const PART_SIX_ARTICLES = [
     situation: {
       title: "A medical record contains outcomes only for treatments that were actually used",
       paragraphs: [
-        "Suppose doctors often used treatment A for a certain kind of patient and never used treatment B. The log contains outcomes after A. It contains no direct answer for B in that situation.",
-        "A Q-network still produces a number for B because one network shares patterns across many inputs. If that unsupported number is accidentally high, the policy may choose B. There is no new patient trial to correct the mistake.",
-        "Learning only from a fixed collection of past transitions is called Offline Reinforcement Learning, or Offline RL. Its central problem is deciding what the data really supports before trusting a possible improvement.",
+        "Suppose the doctors on your ward almost always treat a certain kind of patient with drug A and never with drug B. The hospital log is full of outcomes after A — recoveries, side effects, readmissions — and it contains not a single direct answer for B in that situation. Now you want to do better than the old policy using only this fixed record of past transitions, a setting called Offline Reinforcement Learning, or Offline RL. The moment your new policy becomes curious about drug B, the data goes silent.",
+        "That silence would not matter if the network shared it. A Q-network produces a number for every action, including B, because one network shares patterns across many inputs — and if that unsupported number comes out accidentally high, maximization will choose B. There is no new patient trial to correct the mistake; the log cannot argue back. This is the central problem of offline RL, and it is not a bug in any particular algorithm. It is the question the whole field is built around: what does the data really support before you trust an improvement?",
       ],
     },
     diagram: {
@@ -184,21 +165,14 @@ export const PART_SIX_ARTICLES = [
     mechanism: {
       introduction: "Offline algorithms can be compared by one plain question: where do they stop the policy from chasing a number made in a data-poor area?",
       sections: [
-        { title: "BCQ lets the policy choose among familiar actions", paragraphs: [
-          "Batch-Constrained Q-learning, or BCQ, learns which actions look like actions in the log. It proposes those familiar candidates and lets Q choose among them. A small adjustment may be allowed around each candidate.",
-          "This reduces questions about completely new actions. It can also hide a rare good action when the learned behavior model fails to represent it.",
-        ] },
-        { title: "CQL pushes doubtful action values downward", paragraphs: [
-          "Conservative Q-Learning, or CQL, adds a penalty when many candidate actions receive values above the logged actions. The policy then has less reason to exploit an unsupported high Q.",
-          "The penalty intentionally adds caution. Too little caution leaves false high values. Too much can push down a real but rare improvement. Its strength must be checked for the actual dataset.",
-        ] },
-        { title: "IQL selects better actions from inside the data", paragraphs: [
-          "Implicit Q-Learning, or IQL, fits a state value from the Q values of logged actions. It uses expectile regression, a weighted average that can lean toward the better part of those logged values.",
-          "The policy then copies high-advantage logged actions more strongly. IQL avoids an explicit maximum over unseen actions, but it still cannot learn a good action that the data never supports.",
+        { title: "Three places to put the caution", paragraphs: [
+          "Batch-Constrained Q-learning, or BCQ, puts the caution before the choice. It learns which actions resemble actions in the log, proposes those familiar candidates — perhaps with a small adjustment around each one — and lets Q pick among them. Questions about completely new actions simply never reach the maximization step. The price is subtle: if the learned behavior model fails to represent a rare good action, that action stays invisible, and with it any improvement that only it could offer.",
+          "Conservative Q-Learning, or CQL, puts the caution inside the numbers themselves. It adds a penalty whenever many candidate actions receive values above the logged actions, pushing doubtful values downward until the policy has less reason to exploit an unsupported high Q. The penalty is deliberately added caution, and its strength is a real dial: too little and false high values survive, too much and a real but rare improvement gets pushed down along with the fakes. Its setting must be checked against the actual dataset.",
+          "Implicit Q-Learning, or IQL, refuses to look outside the log at all. It fits a state value from the Q values of logged actions, using expectile regression — a weighted average that can lean toward the better part of those logged values — and then trains the policy to copy high-advantage logged actions more strongly. By never taking an explicit maximum over unseen actions, it avoids one route to false optimism. It still cannot conjure a good action that the data never supports.",
         ] },
         { title: "The dataset is part of the problem, not just a file", paragraphs: [
-          "A log collected by experts differs from one collected by beginners or by a changing mixture of policies. Missing failures, wrong end-of-episode labels, and poor coverage can change the answer before any algorithm is chosen.",
-          "Reports should describe who collected the data, which actions appear in which states, how rewards were recorded, and which groups are thinly covered. A dataset name or total size is not enough.",
+          "Notice that all three methods assume the dataset itself is worth trusting, and that assumption deserves its own scrutiny. A log collected by experts differs from one collected by beginners or by a changing mixture of policies; missing failures, wrong end-of-episode labels, and poor coverage can change the answer before any algorithm is chosen. The caution tools of the previous section manage missing evidence, but they cannot create it.",
+          "So when you read or write an offline RL report, ask the questions the data must answer: who collected it, which actions appear in which states, how were rewards recorded, and which patient groups or situations are thinly covered. A dataset name and a total row count are not an answer. The dataset is part of the problem statement, and often it is the part that decides the outcome.",
         ] },
       ],
     },
@@ -225,9 +199,8 @@ export const PART_SIX_ARTICLES = [
     situation: {
       title: "A trip becomes an ordered sentence made of goals, states, and actions",
       paragraphs: [
-        "After a recorded trip ends, we can add up how much reward remained at each step. This number is called return-to-go. A trip with five rewards of 2 has return-to-go 10 at the start, then 8, 6, 4, and 2.",
-        "Decision Transformer, or DT, reads return-to-go, the current state, and earlier actions in order. A Transformer is a sequence model that can connect pieces across that history. DT learns to predict the action that appeared next in the log.",
-        "During deployment, we enter a desired return-to-go. Each real reward is subtracted before the next decision. The number is a request, not a promise. The model still needs similar successful behavior in its training data.",
+        "Take any recorded trip and, standing at each step, add up how much reward remained from that point to the end. This running number is called return-to-go: a trip with five rewards of 2 has return-to-go 10 at the start, then 8, 6, 4, and 2 as the trip unfolds. Now arrange the whole trip as an ordered sentence — return-to-go, state, action, return-to-go, state, action — and hand it to a Transformer, a sequence model that connects pieces across a history. Decision Transformer, or DT, learns to predict the action that came next in the log.",
+        "At deployment, the order of the sentence is what matters, because the request comes before the action that must answer it. You enter a desired return-to-go, the model predicts an action, the world returns a real reward, and you subtract it before asking for the next action. Keep one thing firmly in mind: the number is a request, not a promise. If the training data contains no trip that ever earned anything close to your target, typing a larger number does not create the missing skill.",
       ],
     },
     diagram: {
@@ -255,21 +228,13 @@ export const PART_SIX_ARTICLES = [
     mechanism: {
       introduction: "Decision Transformer changes the shape of the training problem. It does not remove the old question of whether the dataset contains useful evidence.",
       sections: [
-        { title: "Training knows the completed future; deployment does not", paragraphs: [
-          "For a finished training trip, return-to-go can be calculated by adding future recorded rewards. That information is legal because the action label also comes from the finished record.",
-          "At deployment, the future has not happened. The input is a desired number chosen by the user or system. Calling both numbers return-to-go should not hide this important difference.",
+        { title: "Training looks back at a finished future; deployment only wishes", paragraphs: [
+          "There is a quiet asymmetry underneath this method. For a finished training trip, return-to-go can be calculated exactly, because the future rewards are already recorded — and using that information is legal, since the action label comes from the same finished record. At deployment there is no finished future. The input is a desired number chosen by you or by the system, subtracted downward as real rewards arrive. Both numbers are called return-to-go, but only one of them is a fact; the other is a wish.",
+          "Inside the model, the boundary between past and future is drawn by causal attention: an action prediction may use only earlier pieces of the sequence, and time markers tell the model where each state and action belongs. The boundary is easy to break by accident. A one-step mistake in sequence construction can leak a later reward or action into the input, silently turning your evaluation into fiction, and a limited context window can quietly drop older information. A small hand-written trip, checked piece by piece to see exactly what is visible at every prediction, is the cheapest insurance.",
         ] },
-        { title: "The model may read the past, but never the answer from the future", paragraphs: [
-          "Causal attention means that an action prediction may use only earlier pieces in the sequence. Time markers tell the model where each state and action belongs. A limited context window may drop older information.",
-          "A one-step mistake in sequence construction can leak a later reward or action into the input. A small hand-written trip is useful for checking exactly which pieces are visible at every prediction.",
-        ] },
-        { title: "The action loss is still supervised learning", paragraphs: [
-          "For a small action set, training can use cross-entropy. For steering or force, it can fit numbers or an action distribution. In either case, the target is the action recorded in the offline data.",
-          "There is no explicit Bellman maximum asking whether an absent action is better. That avoids one offline failure route, but the model can still enter unfamiliar states after its own early mistakes.",
-        ] },
-        { title: "A larger target number may be an impossible request", paragraphs: [
-          "A high target can select patterns from high-return trips when such trips exist. If all 100-point trips began in an easy state, the model may learn that association rather than a plan for reaching 100 from a hard state.",
-          "Useful tests vary the starting state and requested return together. They check actual closed-loop success, action support, and a safe fallback when the request is outside the training range.",
+        { title: "What the loss is, and what a big number can buy", paragraphs: [
+          "Understand what the training loss really is, because it decides what can go wrong. For a small action set, training uses cross-entropy; for steering or force, it fits numbers or an action distribution. In every case the target is the action recorded in the offline data — supervised learning again, wearing sequence-model clothes, with no Bellman maximum asking whether some absent action might be better. That removes one route to offline failure. It does not remove the copier's oldest problem: after its own early mistakes, the model can still enter states unlike any example it learned from.",
+          "So what does typing a bigger target buy you? Only patterns that already exist. A high target can steer the model toward pieces of high-return trips when such trips are present — but if every 100-point trip began in an easy state, the model learns the association 'easy state, big number', not a plan for reaching 100 from a hard one. Useful tests therefore vary the starting state and the requested return together, check actual closed-loop success and action support, and include a safe fallback for requests outside the training range.",
         ] },
       ],
     },
@@ -296,9 +261,8 @@ export const PART_SIX_ARTICLES = [
     situation: {
       title: "The log records a result only for the item that was shown",
       paragraphs: [
-        "Suppose an old recommender showed item A 80% of the time and item B 20% of the time. A new policy reverses those chances. The log has many outcomes for A and far fewer for B.",
-        "We can give the rare B records more influence so that the old log better resembles the new policy. This idea is called importance sampling. It works only when the log records how likely the old policy was to choose each action.",
-        "If the old policy never chose B in a certain state, no reweighting can reveal B's result there. A learned model may make a guess, but that answer comes from extra assumptions rather than direct logged evidence.",
+        "Suppose your old recommender showed item A 80 percent of the time and item B 20 percent of the time. The log reflects those odds: many outcomes after A, far fewer after B. Now a candidate policy reverses the chances, and you must judge it before it touches a real user. You cannot run it — staying offline is the whole point — so you must squeeze the answer out of data collected by a different policy. The log records a result only for the item that was actually shown.",
+        "One idea is to give the rare B records more influence, so that the old log better resembles the new policy. This is importance sampling, and it works only when the log records how likely the old policy was to choose each action — those probabilities are the exchange rate between the two worlds. If the old policy never chose B in a certain state, no reweighting can reveal B's result there; a learned model may fill the gap, but its answer comes from extra assumptions rather than logged evidence. Every evaluation method pays for missing direct experience somehow.",
       ],
     },
     diagram: {
@@ -326,21 +290,14 @@ export const PART_SIX_ARTICLES = [
     mechanism: {
       introduction: "Off-Policy Evaluation, or OPE, means judging one target policy with data collected by another behavior policy. Every method pays for missing direct experience in a different way.",
       sections: [
-        { title: "Importance sampling changes how loudly each recorded trip speaks", paragraphs: [
-          "At every step, divide the target policy's probability of the logged action by the behavior policy's probability. Multiplying those ratios gives the full trip weight. The average then represents the target policy under strong assumptions.",
-          "Long trips can produce extremely large or small products. Normalizing or clipping weights can reduce noise, but it also changes the estimate. Exact behavior probabilities are valuable data and should be logged at collection time.",
+        { title: "Three routes to a number, each with its own failure", paragraphs: [
+          "Importance sampling changes how loudly each recorded trip speaks. At every step, divide the target policy's probability of the logged action by the behavior policy's probability, multiply those ratios along the trip, and use the product as the trip's weight; under strong assumptions the average then represents the target policy. But watch what multiplication does on a long trip: ratios compound into extremely large or vanishingly small products, so one unusual trip can dominate the estimate or disappear from it. Normalizing or clipping reduces that noise while changing the estimate, and exact behavior probabilities should be logged at collection time.",
+          "Fitted Q Evaluation, or FQE, avoids weights by learning a value instead. Keep the target policy fixed, repeatedly fit Q from logged transitions, and replace the greedy maximum with the target policy's average next-action value. Because the model shares information across similar states, FQE often varies less than full-trip reweighting. Its weakness is the mirror image of its strength: where the target policy leaves the logged data, the model extrapolates smoothly and confidently — and can be confidently wrong. Weights are honest about their noise; a value model hides its bias.",
+          "A Doubly Robust, or DR, estimator tries to keep the best of both. It starts from a learned value as a guess, then uses importance-weighted logged results to correct the difference between that guess and what actually happened. Under the right conditions the estimate stays sound when either the value model or the probability model is correct — that is the 'doubly' — but the name offers no protection when both are wrong, when weights explode, or when an action has no support in the log at all.",
         ] },
-        { title: "FQE learns the value of one fixed policy", paragraphs: [
-          "Fitted Q Evaluation, or FQE, keeps the target policy fixed. It repeatedly fits Q from logged transitions, using the target policy's average next-action value instead of choosing the largest Q.",
-          "FQE often varies less than full-trip reweighting because the model shares information across similar states. It can still be confidently wrong where the target policy leaves the logged data.",
-        ] },
-        { title: "A doubly robust estimate starts with a model and corrects it", paragraphs: [
-          "A Doubly Robust, or DR, estimator uses a learned value as a starting guess. Importance-weighted logged results then correct the difference between that guess and what actually happened.",
-          "Under the right conditions, the estimate can remain sound when either the value model or the probability model is correct. The name does not protect it when both are wrong, weights explode, or an action has no support.",
-        ] },
-        { title: "Choosing the winner uses up evaluation evidence", paragraphs: [
-          "If the same log scores fifty policies and we report only the highest score, random estimation noise helps choose the winner. The winning estimate is then too optimistic on average.",
-          "Policy selection and final confirmation should use separate data when possible. Another option is to name candidates in advance and adjust uncertainty for many comparisons. The final policy should not grade itself.",
+        { title: "Spending the evidence honestly", paragraphs: [
+          "There is one more way to fool yourself, and it needs no fancy mathematics. Suppose the same log scores fifty candidate policies and you report only the highest score. Random estimation noise helped choose that winner, so the winning estimate is too optimistic on average — the log has been spent twice, once to select and once to boast. Keep policy selection and final confirmation on separate data when possible, or name candidates in advance and adjust the uncertainty for the many comparisons. The final policy should never grade itself.",
+          "A final habit completes the discipline. Whatever route you chose, report how much evidence the estimate really uses: the tails of the weight distribution, the effective sample size, the overlap between behavior and target policies, and an uncertainty interval around the final number. Two estimators agreeing is weak evidence when they share the same blind spot, so name the assumptions each one leans on. An estimate without those attachments is a claim about the estimator, not about the policy.",
         ] },
       ],
     },

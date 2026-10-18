@@ -16,8 +16,8 @@ export const PART_ONE_ARTICLES = [
     situation: {
       title: "Not every scoring system needs RL",
       paragraphs: [
-        "An automatic door opens when its sensor detects a person — a rule an engineer can write in one line. A photo classifier studies labelled pictures and compares each guess against the supplied answer. Both systems have a source of truth that exists outside themselves.",
-        "A warehouse robot faces a different world. When it turns left, its position shifts, its battery drains, and the next decision starts from a situation its previous action helped create. Nobody stands at each intersection to say which turn was correct. The robot must learn from what its choices cause over time — that gap is where reinforcement learning lives.",
+        "An automatic door opens when its sensor detects a person. That behavior is a rule an engineer can write in one line. When the door misbehaves, you can find the faulty line. A photo classifier works differently, but it too has a source of truth outside itself. It studies labelled pictures and compares each guess against the supplied answer. In both systems, someone already knows the right output. The system's whole job is to reproduce it well.",
+        "Now imagine a warehouse robot at an intersection. When it turns left, its position shifts and its battery drains. The next decision starts from a situation its previous action helped create. Nobody stands at each corner to mark which turn was correct. The robot only discovers, much later, whether the delivery was fast. It must learn from what its own choices cause over time. That gap, between a score and an answer key, is where reinforcement learning lives.",
       ],
     },
     diagram: {
@@ -46,13 +46,13 @@ export const PART_ONE_ARTICLES = [
       introduction: "What changes when a problem really does need RL?",
       sections: [
         { title: "From predictions to decisions", paragraphs: [
-          "A predictor tells you what will happen. A policy tells you what to do. The difference sounds small, but it changes everything about how the system learns. When a robot decides to turn left, that decision moves it to a new part of the building, changes its battery level, and determines what options remain open for the next choice. A prediction can be wrong and nothing else changes. A policy decision, once executed, reshapes the world the learner will face.",
-          "Because the world does not come with answer keys, the learner has to work backward from outcomes. If a delivery took forty minutes and the robot made seven turns, which of those turns helped, and which wasted time? Nobody marks each turn as correct or incorrect. The learner must distribute credit across the whole sequence — a problem so fundamental it has its own name: credit assignment.",
-          "And here is the twist that separates reinforcement learning from every other kind of machine learning: the robot's own choices determine what data it will see. If it never turns onto Maple Street, it will never know whether Maple Street is faster. To find out, it has to risk a slower delivery today. That trade-off — the cost of gathering information versus the cost of using what you already know — is the exploration problem, and it has no counterpart in supervised learning.",
+          "A predictor tells you what will happen. A policy tells you what to do. The difference sounds small, but it changes everything about how the system learns. When a robot decides to turn left, that decision moves it to a new part of the building. It also changes the robot's battery level and determines what options remain open for the next choice. A prediction can be wrong and nothing else changes. A policy decision, once executed, reshapes the world the learner will face.",
+          "The world does not come with answer keys. The learner has to work backward from outcomes. If a delivery took forty minutes and the robot made seven turns, which of those turns helped, and which wasted time? Nobody marks each turn as correct or incorrect. The learner must distribute credit across the whole sequence — a problem so fundamental it has its own name: credit assignment.",
+          "And here is the twist that separates reinforcement learning from every other kind of machine learning: the robot's own choices determine what data it will see. If it never turns onto Maple Street, it will never know whether Maple Street is faster. To find out, it has to risk a slower delivery today. That trade-off is the exploration problem. It is the cost of gathering information versus the cost of using what you already know, and it has no counterpart in supervised learning.",
         ]},
         { title: "Judging a chain, not a single step", paragraphs: [
-          "One more shift in perspective completes the picture. A single turn might look good — the robot moves, it feels productive — and still ruin the delivery because it led into a dead end. Conversely, a turn that feels wasteful now might be the only path to a much better route three steps later. Reinforcement learning therefore evaluates choices by their long-term consequences, not their immediate rewards. The sum of rewards across an entire trip is called the return, and maximizing return — not any single reward — is the goal.",
-          "But be careful. A return is just a number. It is useful for learning, but it does not automatically equal what people actually care about. If you design the rewards poorly — say, giving one point per package delivered — the system may learn to deliver many tiny packages and ignore the urgent ones. The gap between what you can measure and what you truly want is the reward design problem, and we will return to it in Part 8.",
+          "One more shift in perspective completes the picture. A single turn might look good — the robot moves, it feels productive — and still ruin the delivery because it led into a dead end. Conversely, a turn that feels wasteful now might be the only path to a much better route three steps later. Reinforcement learning therefore evaluates choices by their long-term consequences, not their immediate rewards. The sum of rewards across an entire trip is called the return. Maximizing return — not any single reward — is the goal.",
+          "But be careful. A return is just a number. It is useful for learning, but it does not automatically equal what people actually care about. Suppose you give one point per package delivered. The system may learn to deliver many tiny packages and ignore the urgent ones. The gap between what you can measure and what you truly want is the reward design problem, and we will return to it in Part 8.",
         ]},
       ],
     },
@@ -79,9 +79,8 @@ export const PART_ONE_ARTICLES = [
     situation: {
       title: "What the robot chose, and what the world decided",
       paragraphs: [
-        "A cleaning robot sees walls, dirt, and its battery level. It sends the command 'move right.' The floor then decides whether the wheels slip. The move may use power, reach a new place, and clean some dirt.",
-        "The robot chose the command. It did not choose whether the wheels would slip. The line between what the learner chooses and what the world produces is called the agent-environment boundary.",
-        "We decide where to draw that line. If a fixed controller handles the motors, the learned action may be 'go to the next hallway.' If the learner controls each wheel, the action may be a motor force. Both descriptions can be valid, but they create different learning problems.",
+        "Watch a cleaning robot work through one move. It sees walls, dirt, and a battery reading of 40 percent. Then it sends the command 'move right.' Notice how little of what happens next is up to it. The floor decides whether the wheels slip. The move costs power whether or not it succeeds. The robot may reach a new place or stay exactly where it was. The robot chose the command; the world chose everything that followed.",
+        "There is a line between what the learner chooses and what the world produces. It is called the agent-environment boundary. Here is the surprising part: you decide where to draw it. Suppose a fixed controller handles the motors. Then the learned action might be 'go to the next hallway.' Suppose instead the learner commands each wheel directly. Then the action becomes a motor force. Both descriptions fit the same robot, yet they create different learning problems — one with a few meaningful actions, one with many primitive ones.",
       ],
     },
     diagram: {
@@ -109,10 +108,14 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "Four names in the loop must stay separate",
       sections: [
-        { title: "An observation is what the robot receives", paragraphs: ["A camera picture, a battery reading, or a map can be an observation. It may still leave out speed, a locked door, or another hidden fact."] },
-        { title: "A state promises that the useful past is already included", paragraphs: ["Suppose two identical pictures come from different speeds. Their next results will differ, so the picture alone is not a complete state. Calling the picture s does not add the missing speed."] },
-        { title: "A transition rule describes many possible results", paragraphs: ["The rule says that moving right reaches B 80% of the time. One recorded move shows only one result. A single success cannot prove the 80% rule."] },
-        { title: "A trajectory keeps the steps in order", paragraphs: ["A trajectory stores observations, actions, rewards, and later observations in time order. A training program may shuffle whole records. It must not change which reward followed which action."] },
+        { title: "From observation to state", paragraphs: [
+          "Start with what the robot actually receives: a camera picture, a battery reading, maybe a map. Each of these is an observation. An observation is allowed to be incomplete. It may leave out the robot's speed or the fact that a door locked ten minutes ago. Nothing goes wrong simply because the input is partial. Trouble appears only when the missing fact changes what happens next.",
+          "Suppose two identical camera pictures come from two different speeds. The slow robot stops safely; the fast one skids into the wall. Calling the picture a state makes a promise the picture cannot keep. A state is meant to contain everything needed to predict the next result. Renaming the picture s does not add the missing speed. The honest move is to put the speed into the state — or admit the input is only an observation.",
+        ]},
+        { title: "Rules describe many results; records keep the order", paragraphs: [
+          "A transition rule describes many possible results at once. Moving right from hallway A reaches hallway B 80 percent of the time. It fails in place the other 20 percent. A single recorded move shows only one of those outcomes. That is why one lucky arrival at B proves nothing about the rule. The rule lives in the chances, and the chances reveal themselves only across many tries.",
+          "Each step that actually happens is written down in order. The record holds the information, the action, the reward that followed, and the new information that came next. That ordered record is a trajectory. Later, a training program may shuffle whole records to speed up learning. That is fine. What it must never do is change which reward followed which action. Break that pairing and you have rewritten history. The algorithm would learn from a world that never existed.",
+        ]},
       ],
     },
     equations: [
@@ -140,9 +143,8 @@ export const PART_ONE_ARTICLES = [
     situation: {
       title: "Why the last reward matters most",
       paragraphs: [
-        "A robot can take a narrow shortcut and earn +2 now. The gate may then close and trap it. A wider hallway gives 0 now but reaches the destination two steps later for +10. Looking only at the next reward chooses the shortcut. Looking at the full route can choose the hallway.",
-        "The total of future rewards is called return. We may give later rewards a smaller weight by multiplying them by a number called gamma, written γ. This is called discounting. Gamma is a design choice, not a rule that far-away results are morally less important.",
-        "The horizon tells us how far the task can continue. Sometimes the task truly ends: the parcel is delivered or the game is over. Sometimes the computer only stops recording because a time limit was reached. The hidden future is gone in the first case, but it still exists in the second.",
+        "Suppose the robot can squeeze through a narrow shortcut and collect +2 immediately. But the gate behind it may close and trap it for the rest of the trip. The wider hallway pays 0 now and feels like a waste. It reaches the destination two steps later for +10. Which choice is better depends on how far ahead you add. Looking only at the next reward, the shortcut wins. Looking at the whole route, the hallway wins. The total of future rewards — the return — is exactly that wider view.",
+        "Two more details shape what the return means. First, we may give later rewards a smaller weight. Each one is multiplied by a number called gamma, written γ. This is discounting, and it is a design choice — not a claim that far-away results matter less morally. Second, we must ask whether the task truly ended or the recording simply stopped. If the parcel is delivered, the future inside this task is gone. If the computer stopped because of a time limit, the hidden future still exists. Ignoring it will bias everything we learn.",
       ],
     },
     diagram: {
@@ -170,10 +172,14 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "Four details decide what the return means",
       sections: [
-        { title: "Start with the reward after the current action", paragraphs: ["In this book, Gₜ starts with Rₜ₊₁. That reward gets weight 1, not γ. Writing one real step beside the formula helps prevent an off-by-one mistake."] },
-        { title: "Gamma changes how far rewards travel", paragraphs: ["A small γ focuses learning on nearby results. A γ close to 1 carries information farther, but estimates can become noisier. Report the task horizon and γ together."] },
-        { title: "Some tasks end and some keep going", paragraphs: ["A game or delivery has a natural end. A heating controller may run without a natural finish. We can cut a continuing task into training pieces, but those cuts do not turn into real endings."] },
-        { title: "Termination and truncation need different flags", paragraphs: ["Termination means the task ended. Truncation means the record stopped for an outside reason, such as a time limit. Code should remove future value only for true termination."] },
+        { title: "Where the return starts, and how far it reaches", paragraphs: [
+          "Before you trust any return calculation, check where it starts counting. In this book, Gₜ begins with Rₜ₊₁ — the reward that arrives after the current action. That first reward keeps weight 1, not γ. The detail sounds pedantic. Yet this off-by-one slip is one of the most common bugs in reinforcement-learning code. The cheapest protection is to write one real step of your task beside the formula. Then match every symbol to an event that truly happened.",
+          "Next ask how far ahead the return should reach. Gamma decides that. A small γ fades the future quickly. Learning concentrates on nearby results, and the estimates stay calm. A γ close to 1 carries information far down the route. But distant rewards arrive noisier, and the estimates can shake. Neither choice is free, so report the task horizon and γ together. An average return of 40 means something quite different under different pairs.",
+        ]},
+        { title: "Endings, and things that only look like endings", paragraphs: [
+          "Some tasks have a natural finish. A delivery ends when the parcel arrives. A game ends at checkmate or the final whistle. Others never truly end. A heating controller could run for years, tonight looking exactly like this morning. For a continuing task we can still cut the stream into training pieces, and that is often convenient. But be clear about what we did. Those cuts are bookkeeping, not endings. The world never agreed to reset itself for our convenience.",
+          "The distinction earns a name because it changes the arithmetic. Termination means the task itself ended. Nothing remains inside it, so the future's value is zero, and the learning target should say so. Truncation means the record stopped for an outside reason, such as a time limit. The world could have continued. So the target should estimate the missing future from V(Sₜ₊₁) instead of zeroing it out. Code should carry two separate flags. Only the true-termination flag may erase future value.",
+        ]},
       ],
     },
     equations: [
@@ -202,9 +208,8 @@ export const PART_ONE_ARTICLES = [
     situation: {
       title: "When the same action gives different answers",
       paragraphs: [
-        "A robot crosses a glass hallway. On most trips it reaches the next room and earns +5. On 20% of trips, glare confuses its sensor. It must recover and earns only +1. The robot took the same action, but the world produced different results.",
-        "Expected reward is a weighted average. We multiply each possible reward by its chance, then add the products. If the robot repeats the trip many times, its average reward may move toward 4.2. One trip still gives either +5 or +1.",
-        "The policy can also use randomness. It might choose the hallway 70% of the time and the stairs 30% of the time. Randomness in the policy chooses the action. Randomness in the environment changes what happens after the action. These are two different sources of uncertainty.",
+        "Let's follow the robot across a glass hallway. On most trips the crossing is clean, and the robot earns +5. But on about one trip in five, glare confuses its sensor. It must stop and recover, so it earns only +1. Notice what did and did not change. The robot took the same action from the same situation both times. The world itself produced different results. When one action can give different answers, reward becomes a random quantity, and a single trip stops being trustworthy evidence.",
+        "To compare choices we need the long-run average, called the expected reward. Multiply each possible reward by its chance, then add the products. The hallway's expectation is 0.8×5 + 0.2×1 = 4.2. Yet no trip ever pays 4.2 — the average exists only as a tendency across many repetitions. Keep one more distinction in mind. The policy can also roll dice. It might choose the hallway 70 percent of the time and the stairs 30 percent. Randomness in the policy picks the action. Randomness in the environment picks what happens after it.",
       ],
     },
     diagram: {
@@ -232,10 +237,14 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "Four probability ideas are enough for the next chapters",
       sections: [
-        { title: "A random variable can take different values", paragraphs: ["Reward is a random variable when the same action can give +5 or +1. We often use an uppercase letter for the unknown result and a lowercase letter for one result that was observed."] },
-        { title: "The vertical bar tells us what is held fixed", paragraphs: ["E[R | S=s, A=a] means: average the reward after fixing state s and action a. It does not mix in other states or other actions."] },
-        { title: "A stochastic policy gives chances to actions", paragraphs: ["For a short list of actions, all action probabilities must be at least zero and add to one. The policy then samples one action from that list."] },
-        { title: "The average can hide rare harm", paragraphs: ["A very bad result may happen rarely enough that the average still looks good. Safety limits and risk measures ask questions that expected return alone cannot answer."] },
+        { title: "The grammar of chance", paragraphs: [
+          "A few pieces of notation will carry us through the coming chapters. Each earns its place by answering a question. When the same action can return +5 or +1, the reward is a random variable. We write it with an uppercase letter, like R. The outcome of one particular trip — the 5 you just watched — gets a lowercase r. The capital letter stands for 'the number that has not been decided yet.' Keeping the two apart keeps your algebra honest.",
+          "The vertical bar in E[R | S=s, A=a] reads as 'given,' or 'holding fixed.' It means: average the reward after pinning the state to s and the action to a. Mix in nothing else. A stochastic policy assigns chances to actions. For a short list, every probability is at least zero, and together they sum to one. The policy then samples one action from that list. With these three tools you can state precisely which uncertainty an average is averaging over. That clarity is most of the battle.",
+        ]},
+        { title: "What the average will not tell you", paragraphs: [
+          "Suppose one action yields +5 almost always, and a rare glitch yields −1000. The average can still look attractive. A learner chasing it will keep choosing that action, right up to the day the glitch arrives. Expected value summarizes a distribution; it is not the distribution. The spread, the worst cases, and how often they visit are all hidden behind one number. Safety limits and risk measures exist precisely because those questions are real. Expected return alone cannot answer them.",
+          "The data can deepen the trap. Suppose the current policy almost never tries an action. The log then holds almost no evidence about it. Its average is a guess dressed up as a number. That is a coverage problem, not ordinary noise. Collecting more of the same data will not fix it. Remember this gap when we reach exploration. How much you know about each option matters as much as what the averages say.",
+        ]},
       ],
     },
     equations: [
@@ -264,9 +273,8 @@ export const PART_ONE_ARTICLES = [
     situation: {
       title: "A café has to learn which menu card works best",
       paragraphs: [
-        "A café can show three digital menu cards. Card A has been shown 100 times and averages 3.0. Card B has been shown only twice and averages 3.4. Card C has never been shown.",
-        "Always showing B uses the highest current average. This is exploitation. But two trials are weak evidence. Trying C may earn less today and still reveal a much better card for the next hundred customers. This is exploration.",
-        "A multi-armed bandit repeats this choice while resetting after each round. A contextual bandit also looks at information such as time or weather. It is still a bandit only when today's card does not change tomorrow's customer or choices.",
+        "Imagine you run a café that can show three digital menu cards at the counter. Card A has been shown 100 times and averages a satisfaction score of 3.0. Card B has been shown only twice and averages 3.4 — the current champion. Card C has never been shown at all. Always displaying B feels like the responsible choice. It has a name: exploitation. But two trials are weak evidence. Trying C may earn a little less today. It may still reveal a much better card for the next hundred customers. Spending one choice on information is exploration.",
+        "This repeated decision, with a reset after every round, is the multi-armed bandit. It is the smallest problem that still contains the whole exploration dilemma. A contextual bandit adds one honest luxury. It conditions the choice on information known beforehand, such as the hour or the weather. One menu may win in the morning and another at night. Yet it remains a bandit only while today's card does not change tomorrow's customers. The moment one choice shapes the next situation, you have left this chapter's world behind.",
       ],
     },
     diagram: {
@@ -294,10 +302,14 @@ export const PART_ONE_ARTICLES = [
     mechanism: {
       introduction: "Bandit learning has two separate jobs",
       sections: [
-        { title: "First estimate each option", paragraphs: ["When rewards stay stable, a running average treats every result equally. If customer taste changes, old results can become less useful. A constant step size gives newer results more influence."] },
-        { title: "Then decide what to try", paragraphs: ["Epsilon-greedy uses simple random trials. UCB uses how often each option has been tried. Thompson sampling uses a probability model. Similar-looking choices can rest on different assumptions."] },
-        { title: "Regret counts the cost of learning", paragraphs: ["Regret compares the reward actually collected with the reward from always using the best option. Exploration raises regret now and may lower it later. The useful balance depends on how long the decisions will continue."] },
-        { title: "Context can change the best option", paragraphs: ["One menu may work in the morning and another in the evening. A contextual bandit uses information known before the choice. If today's choice changes tomorrow's context, we need a full sequential model instead."] },
+        { title: "Two jobs: estimating and choosing", paragraphs: [
+          "Bandit learning quietly splits into two jobs. Confusing them is the classic beginner's mistake. The first job is estimation: keep an average reward for each option. When customer taste is stable, treating every result equally is exactly right. When taste drifts, old results become dead weight. A constant step size α lets newer results dominate. The estimate Q(a) is a memory with a policy for forgetting. Choose that forgetting policy as deliberately as any other.",
+          "The second job is deciding what to try next. The famous rules differ only here. Epsilon-greedy is blunt: use the current winner, but with probability ε pick at random. UCB is more surgical. It adds an uncertainty bonus that shrinks as an option is tried more often. So it explores exactly where the evidence is thin. Thompson sampling draws a whole possible model of the world and acts as if it were true. The rules can look alike in code. Yet they rest on different assumptions about what uncertainty means.",
+        ]},
+        { title: "What exploration costs, and where the bandit world ends", paragraphs: [
+          "Exploration is not free, and regret is the ledger that proves it. Regret compares the reward you actually collected with the reward of the best fixed option over the same span. Every probe of a losing option adds regret now. Every refusal to probe a winning option adds regret for as long as you refuse. The right balance depends on how long the decisions continue. A stall open for one day should explore far less than one open for a year.",
+          "Context is the last refinement and also the exit sign. A contextual bandit conditions its choice on facts known before the decision — morning versus evening, rain versus sun. The best option can change with them. But the reset assumption still rules. Today's choice must not change tomorrow's context. Suppose showing a card trains customers, drains stock, or shifts what they want next week. Then the rounds are no longer independent. You need the full sequential machinery that begins in the next part of the book.",
+        ]},
       ],
     },
     equations: [

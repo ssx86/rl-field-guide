@@ -12,9 +12,8 @@ export const PART_EIGHT_ARTICLES = [
     situation: {
       title: "The support bot learns to close the ticket, not solve the problem",
       paragraphs: [
-        "Imagine a support bot that earns one point whenever a ticket closes. Easy tickets close after a useful answer. Hard tickets also close if the bot sends a polite goodbye. The score cannot tell those two endings apart.",
-        "The real goal is a solved customer problem. Ticket closure is only a measurable stand-in. A stand-in like this is called a proxy. The agent does not know what we meant; it searches for actions that make the proxy larger.",
-        "We can add smaller rewards for useful progress. That practice is called reward shaping. We can also learn a score from human choices. Both methods add guidance, but each new signal can contain a new shortcut.",
+        "Imagine a support bot that earns one point whenever a ticket closes, and watch what the incentive actually rewards. Easy tickets close after a genuinely useful answer, so the point and the help arrive together. Hard tickets also close when the bot sends a polite goodbye — the customer gives up, the ticket shuts, the point lands. The score cannot tell those two endings apart. The real goal is a solved customer problem; ticket closure is only a measurable stand-in, and such a stand-in is called a proxy. The agent does not know what you meant — it searches for actions that make the proxy larger.",
+        "You have two ways to add guidance, and each carries its own risk. You can add smaller rewards for useful progress; that practice is called reward shaping. Or you can learn a score from human choices, letting people's comparisons define what 'better' means. Both methods can genuinely speed up learning. But here is the pattern to watch for the rest of this chapter: every new signal you introduce is another place for the agent to find a shortcut you did not intend.",
       ],
     },
     diagram: {
@@ -42,21 +41,13 @@ export const PART_EIGHT_ARTICLES = [
     mechanism: {
       introduction: "Reward design is the job of checking whether a learnable score still points toward the result people want.",
       sections: [
-        { title: "A proxy becomes less trustworthy when we push it hard", paragraphs: [
-          "Ticket closure may match solved problems in ordinary records. Once the agent is paid for closure, it searches unusual cases too. The proxy can then separate from the goal.",
-          "This pattern is often called Goodhart's law. In reinforcement learning, or RL, the bad behavior is also called specification gaming. The agent follows the written scoring rule while defeating its purpose.",
+        { title: "Goodhart's law, and the one shaping rule with a guarantee", paragraphs: [
+          "Ticket closure may match solved problems closely in ordinary records, and that is exactly what makes it dangerous. Once you pay the agent for closure, it searches the unusual cases too, and there the proxy separates from the goal. The pattern is old enough to have a name — Goodhart's law — and in reinforcement learning, or RL, the resulting bad behavior is called specification gaming: the agent follows the written scoring rule while defeating its purpose. The lesson is not that proxies are forbidden. It is that a proxy becomes less trustworthy precisely when you push it hard.",
+          "There is, however, one shaping rule with a guarantee attached. Potential-based reward shaping gives each state a helper number, written Φ, and pays each move the discounted next helper number minus the current one. Add terms of exactly this form, keep the discount, terminal treatment, and helper function consistent with the task, and the added rewards cancel across a full path — the best policy is unchanged, and information merely arrives earlier. The theorem protects this precise formula and nothing else, so a bonus that merely looks like progress can quietly change which route is best.",
         ] },
-        { title: "One kind of shaping keeps the old best policy", paragraphs: [
-          "Potential-based reward shaping gives each state a helper number, written Φ. A move receives the discounted next helper number minus the current one. The added terms cancel across a full path under the required conditions.",
-          "The discount, terminal treatment, and helper function must match the task. A bonus that merely looks similar may change which route is best. The theorem protects a precise formula, not every reward called progress.",
-        ] },
-        { title: "A learned reward is still a prediction", paragraphs: [
-          "People can compare two behaviors when they cannot write a perfect formula. A reward model learns from those comparisons and predicts which new behavior people would prefer. The policy then searches for high predicted scores.",
-          "That search can find odd outputs outside the examples people judged. Reviewers may also disagree or miss an affected group. High-scoring behavior still needs fresh human checks and real outcome measures.",
-        ] },
-        { title: "Some limits should not be sold for more points", paragraphs: [
-          "A single total can let one good result pay for one forbidden result. For example, many fast answers might outweigh one deceptive closure. That trade may be unacceptable even when the average score rises.",
-          "Keep quality, cost, safety, and fairness visible as separate measures. A hard rule can become a constraint or an action block. The next chapter explains those tools.",
+        { title: "Learned scores, and limits that should not be for sale", paragraphs: [
+          "When no formula can be written, a reward model can be learned instead. People compare two behaviors; the model learns to predict which new behavior they would prefer; the policy then searches for high predicted scores. Remember what that object is: a prediction, fitted to the examples people actually judged. The search can find odd outputs far outside those examples, and reviewers may disagree or miss an affected group, so high-scoring behavior still needs fresh human checks and real outcome measures. A learned score is an experiment that must keep being tested.",
+          "One more design rule protects things that should not have a price. A single reward total lets one good result pay for one forbidden result — many fast answers outweighing one deceptive closure, say — and that trade may be unacceptable even when the average rises. Keep quality, cost, safety, and fairness visible as separate measures, and turn the truly non-negotiable rules into constraints or action blocks rather than prices. The next chapter explains those tools.",
         ] },
       ],
     },
@@ -83,9 +74,8 @@ export const PART_EIGHT_ARTICLES = [
     situation: {
       title: "The average hides the bad one run in a hundred",
       paragraphs: [
-        "Policy A always returns 8. Policy B returns 10 on ninety-nine runs and −100 on one run. B has the higher average, 8.9. A person responsible for safety may still choose A.",
-        "One approach writes harm as a separate cost with a budget. This is called constrained reinforcement learning. Its formal task is a Constrained Markov Decision Process, or CMDP. Reward and cost remain two visible numbers.",
-        "Another approach studies the worst part of the result distribution. This is risk-sensitive reinforcement learning. A common measure is Conditional Value at Risk, or CVaR. It averages the outcomes inside a chosen bad tail.",
+        "Policy A returns 8 on every run. Policy B returns 10 on ninety-nine runs out of a hundred and −100 on the remaining one. B has the higher average, 8.9, so a table of expected returns declares B the winner. Yet if you are the person responsible when the machine fails — a surgery, a delivery, a loan decision — you may choose A without hesitation, and you would not be irrational. Both tables are arithmetically correct. The disagreement is about which question is being asked.",
+        "One way to make the question explicit is to write harm as a separate cost with a budget, a formulation called constrained reinforcement learning, whose formal task is a Constrained Markov Decision Process, or CMDP; reward and cost stay two visible numbers instead of one blended score. Another way is to study the worst part of the result distribution directly — risk-sensitive reinforcement learning — using measures such as Conditional Value at Risk, or CVaR, which averages the outcomes inside a chosen bad tail. Different tools, different protected quantities.",
       ],
     },
     diagram: {
@@ -113,21 +103,13 @@ export const PART_EIGHT_ARTICLES = [
     mechanism: {
       introduction: "The phrase safe reinforcement learning, or safe RL, is too broad by itself. We must name the protected quantity, the time window, and where the protection acts.",
       sections: [
-        { title: "A cost budget stays separate from reward", paragraphs: [
-          "A CMDP asks for high expected reward while each expected cost stays below its budget. A Lagrangian method gives every broken budget an adjustable price. The price rises when training observes too much cost.",
-          "This is still an average constraint. A few terrible paths may hide inside an acceptable expected cost. Training may also cross the limit while the price and policy adjust.",
+        { title: "Budgets, bounded steps, and where the guarantee stops", paragraphs: [
+          "A CMDP asks for high expected reward while each expected cost stays below its budget, and the standard solver idea is the Lagrangian: give every broken budget an adjustable price, and let the price rise whenever training observes too much cost. It is a market mechanism, and markets are noisy — training may cross the limit while the price and the policy adjust to each other. Remember also what the constraint is not: it is an average. A few terrible paths can hide inside an acceptable expected cost.",
+          "Constrained Policy Optimization, or CPO, attacks the overshoot problem by shrinking the step. It compares a proposed policy with the current one inside a trust region, then seeks reward improvement while respecting an estimated cost limit, so the budget does not jump suddenly between iterations. Read the guarantee carefully, though: it rests on local approximations and expected quantities, and it does not make every path safe. Estimation error, line search, and code details still matter.",
         ] },
-        { title: "A smaller update can reduce sudden budget jumps", paragraphs: [
-          "Constrained Policy Optimization, or CPO, compares a proposed policy with the current one. It uses a trust region to keep the update nearby. It then seeks reward improvement while respecting an estimated cost limit.",
-          "The guarantee uses local approximations and expected quantities. It does not make every path safe. Estimation error, line search, and code details still matter.",
-        ] },
-        { title: "Tail risk needs real tail data", paragraphs: [
-          "CVaR focuses attention on the worst chosen fraction of returns. A one-percent tail needs many runs before its average becomes stable. With one hundred runs, only one result may fall inside that tail.",
-          "Confidence intervals and the actual count of bad events should accompany the estimate. A model of the return distribution can organize the data. It cannot invent disasters that were never sampled.",
-        ] },
-        { title: "Robustness ends at the edge of the tested changes", paragraphs: [
-          "Robust reinforcement learning trains for several possible environment rules. The set may include different friction, sensor noise, delays, or deliberate disturbances. The policy then prepares for the worst case inside that set.",
-          "A narrow set misses real failures. A very wide set can make the agent needlessly timid. An action shield adds another layer by blocking moves that a verified rule marks unsafe.",
+        { title: "Tails, changing worlds, and the shield outside", paragraphs: [
+          "CVaR focuses attention on the worst chosen fraction of returns — but a tail is made of data, and the data must exist. A one-percent tail needs many runs before its average becomes stable; with one hundred runs, a single result may be all that falls inside the tail. Report confidence intervals and the actual count of bad events, not just the tail estimate. A model of the return distribution can organize the data. It cannot invent disasters that were never sampled.",
+          "Robustness adds another axis: instead of one world, train for a set of possible environment rules — different friction, sensor noise, delays, or deliberate disturbances — and prepare for the worst case inside the set. The set is the claim. A narrow set misses real failures. A very wide set can make the agent needlessly timid. An action shield adds another layer by blocking moves that a verified rule marks unsafe, before they reach the world at all.",
         ] },
       ],
     },
@@ -154,9 +136,8 @@ export const PART_EIGHT_ARTICLES = [
     situation: {
       title: "Two algorithms can win at different points on the same graph",
       paragraphs: [
-        "Algorithm A reaches 80 quickly and then stops improving. Algorithm B learns slowly and reaches 90 after ten times more environment steps. The final score favors B. A tight data budget may favor A.",
-        "A random seed controls repeatable sources of randomness, such as the starting numbers and environment choices. Different seeds can lead to different experience. Several complete training runs show how much the result moves.",
-        "A confidence interval gives a range for an estimated result. It does not promise where every future run will land. It also cannot repair three poorly chosen runs or many measurements copied from one run.",
+        "Algorithm A reaches a score of 80 quickly and then stops improving. Algorithm B learns slowly and eventually reaches 90 — after ten times more environment steps. Which one is better? The final score favors B; a tight data budget favors A; a product with impatient users favors A even more. The comparison cannot be settled by one number at one moment. And underneath the curves sits randomness itself: a seed controls the repeatable randomness of starting numbers and environment choices, and different seeds can lead to genuinely different learning experiences.",
+        "The honest answer to run-to-run variation is to repeat the whole training run and show how much the result moves. A confidence interval then gives a range for the estimated result — but notice what it does not promise. It does not say where every future run will land, and it cannot repair three poorly chosen runs or many measurements copied from one run. The interval is a summary of the evidence you actually gathered, nothing more.",
       ],
     },
     diagram: {
@@ -184,21 +165,13 @@ export const PART_EIGHT_ARTICLES = [
     mechanism: {
       introduction: "A reproducible experiment lets another person rebuild the comparison and see how far the evidence really reaches.",
       sections: [
-        { title: "A learning curve must travel with its budget", paragraphs: [
-          "Plot results against environment steps. Sometimes also plot updates and wall-clock time. Time to reach a target, area under the curve, and final score answer different practical questions.",
-          "Give the baseline a fair tuning budget and similar access to evaluation. If one method tries one hundred settings and another tries five, the comparison also measures search effort.",
+        { title: "Curves with budgets, and runs as the experimental unit", paragraphs: [
+          "First, make the curve tell the truth about its budget. Plot results against environment steps, and sometimes also against updates and wall-clock time, because time to reach a target, area under the curve, and final score answer different practical questions. Then give the baseline a fair tuning budget and similar evaluation access: if one method tries one hundred settings and another tries five, your comparison quietly measures search effort instead of learning. A learning curve without its budget is an advertisement, not a measurement.",
+          "Second, choose the right experimental unit. Ten evaluations inside one training run share the same learned policy and the same history; they are not ten independent training runs, and treating them that way makes uncertainty look far smaller than it is. The full training run is the unit that repeats. Within that discipline, the common mean interval using the t distribution works when its assumptions are reasonable, but RL results can be lopsided or heavy-tailed, so statistical bootstrap resampling and robust summaries often serve better. Count runs, not checkpoints.",
         ] },
-        { title: "The full run is the experimental unit", paragraphs: [
-          "Ten evaluations inside one training run share the same learned policy and history. They are not ten independent training runs. Treating them that way makes uncertainty look smaller than it is.",
-          "A common mean interval uses the t distribution when its assumptions are reasonable. RL results can be lopsided or heavy-tailed. Statistical bootstrap resampling and robust summaries may then be more useful.",
-        ] },
-        { title: "A middle-half average can steady the center", paragraphs: [
-          "The Interquartile Mean, or IQM, removes the lowest and highest quarters before averaging. It is less controlled by extreme runs than an ordinary mean and uses more information than a median.",
-          "IQM still leaves out the tails on purpose. Show failure rates, performance profiles, and raw run values when rare failures matter. A tidy center must not erase a dangerous edge.",
-        ] },
-        { title: "An ablation asks whether a component caused the gain", paragraphs: [
-          "An ablation removes or replaces one part of a method. The changed version gets a fair training and tuning budget. The test should predict where that part ought to help.",
-          "Code that runs again proves only that the pipeline can run there. Matching a score is stronger. Supporting the same conclusion across new implementations or tasks is stronger again.",
+        { title: "Steady centers and honest causes", paragraphs: [
+          "The Interquartile Mean, or IQM, is one such robust summary: remove the lowest and highest quarters of the runs, then average what remains. It is less controlled by extreme runs than an ordinary mean and uses more information than a median, which makes it a steadier estimate of the center. But steadiness is a choice with a cost — the tails are excluded on purpose. When rare failures matter, and in safety-adjacent work they always do, show failure rates, performance profiles, and the raw run values beside the tidy center.",
+          "Finally, when a method wins, ask what part of it caused the gain. An ablation removes or replaces one part of a method, gives the changed version a fair training and tuning budget, and tests where that part ought to help. The ladder of evidence continues upward from there: code that runs again proves only that the pipeline can run there; matching a score is stronger; supporting the same conclusion across new implementations or tasks is stronger still. Each rung costs more effort and buys more trust.",
         ] },
       ],
     },
@@ -225,9 +198,8 @@ export const PART_EIGHT_ARTICLES = [
     situation: {
       title: "One boolean flag removes almost all of the next value",
       paragraphs: [
-        "Suppose a simulator stops after 1,000 steps. The task itself could continue, but our data collection has a time limit. If the learner treats this stop as a true ending, it throws away the value after step 1,000.",
-        "A true ending is called termination. A stop caused by an outside limit is called truncation. Modern environment interfaces return separate flags because the value target usually treats these two events differently.",
-        "An environment Application Programming Interface, or API, defines the returned observation, reward, and flags. A wrapper is code that changes those values before training sees them. Wrapper order therefore becomes part of the learning problem.",
+        "Suppose your simulator stops recording after 1,000 steps — not because the task ended, but because you set a time limit. The task itself could continue. Now ask what the learner should believe at that final recorded step. If it treats the stop as a true ending, it concludes that all future value vanished at step 1,000, and every value target near the boundary is trained on that fiction. A true ending is called termination; a stop caused by an outside limit is called truncation. Modern environment interfaces return separate flags precisely because the mathematics treats these two events differently.",
+        "Around that decision sits the plumbing you actually touch every day. An environment Application Programming Interface, or API, defines the returned observation, reward, and flags; a wrapper is code that changes those values before training sees them — scaling observations, clipping rewards, stacking frames, repeating actions. Each wrapper can be useful, and the order in which they are applied changes what the learner receives. That makes wrapper order part of the learning problem, not a style preference to be settled by habit.",
       ],
     },
     diagram: {
@@ -255,21 +227,13 @@ export const PART_EIGHT_ARTICLES = [
     mechanism: {
       introduction: "Systems work protects the meaning of the algorithm from the moment an action is sent until the run can be rebuilt.",
       sections: [
-        { title: "The environment contract belongs to the mathematics", paragraphs: [
-          "Test observation shapes, number types, action bounds, reward units, reset behavior, and both ending flags. Also test the last observation returned at an ending. A small mismatch can reach every later update.",
-          "Wrappers may normalize observations, clip rewards, repeat actions, or stack frames. Each change can be useful. List their exact order and version so two projects with the same environment name still know whether they trained on the same task.",
+        { title: "Contracts that carry mathematics", paragraphs: [
+          "Treat the environment contract as mathematics, because it is. Test observation shapes, number types, action bounds, reward units, reset behavior, and both ending flags — including the last observation returned at an ending, the one your bootstrap target may need. A small mismatch here reaches every later update. Wrappers deserve the same respect: each one that normalizes, clips, repeats, or stacks is a transformation of the learning problem, so list their exact order and versions. Two projects citing the same environment name may still have trained on different tasks.",
+          "Old experience lives in a changing database — the replay buffer — and its design quietly decides what the learner sees. Capacity, the removal rule, priorities, and sequence boundaries shape which experience is sampled, and concurrent writers change the mix again. Store what the algorithm will later need to explain itself: episode identity, source policy, ending flags, and any action probabilities an off-policy method requires. Test saving, loading, and sequence boundaries. Private trajectories also impose access limits and a deletion policy of their own.",
         ] },
-        { title: "Old experience lives in a changing database", paragraphs: [
-          "A replay buffer stores old transitions for later learning. Its capacity, removal rule, priorities, and sequence boundaries decide which experience is sampled. Concurrent writers can change that mix again.",
-          "Store episode identity, source policy, ending flags, and any probability needed by the algorithm. Test saving, loading, and sequence boundaries. Private trajectories also need access limits and a deletion policy.",
-        ] },
-        { title: "Saving only the network cannot resume learning", paragraphs: [
-          "Network weights are only one part of a running learner. Optimizer state, target networks, replay position, normalizer values, counters, and random state can all change the next update.",
-          "The random state is often held by a Random Number Generator, or RNG. Compare an uninterrupted run with a save-and-resume run. A file that loads successfully may still restart a different experiment.",
-        ] },
-        { title: "Logs should help explain a failure", paragraphs: [
-          "Track reward parts, ending reasons, action limits, value scale, learning errors, gradient size, replay age, policy delay, constraint breaks, invalid numbers, and throughput. A single average return hides too many causes.",
-          "Bind every run to its code, configuration, environment, and data format. A hash is a short identifier made from those versions. It helps find the same artifacts, but it cannot prove that they were correct.",
+        { title: "What a checkpoint must contain, and what logs must show", paragraphs: [
+          "Saving only the network cannot resume learning, because weights are one part of a running learner. Optimizer state, target networks, replay position, normalizer values, counters, and the random state — often held by a Random Number Generator, or RNG — all change the next update. The cheapest test is a comparison: run once uninterrupted, then run save-and-resume, and check that the two agree. A file that loads successfully may still restart a different experiment than the one you thought you were continuing.",
+          "Logs finish the story by making failures explainable. Track reward parts, ending reasons, action limits, value scale, learning errors, gradient size, replay age, policy delay, constraint breaks, invalid numbers, and throughput — a single average return hides too many causes to debug from. Bind every run to its code, configuration, environment, and data format; a hash is a short identifier made from those versions, and it helps you find the same artifacts again. It helps you retrieve the ingredients. It cannot prove that they were correct.",
         ] },
       ],
     },
